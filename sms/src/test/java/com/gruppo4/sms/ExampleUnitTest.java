@@ -1,4 +1,4 @@
-package com.gruppo_4.sms_library;
+package com.gruppo4.sms;
 
 import org.junit.Test;
 

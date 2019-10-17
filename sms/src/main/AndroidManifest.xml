@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gruppo_4.sms_library">
+    package="com.gruppo4.sms">
 
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -9,7 +9,7 @@
 
     <application>
         <receiver
-            android:name="com.gruppo_4.sms.SMSReceiver"
+            android:name="com.gruppo4.sms.SMSReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BROADCAST_SMS">

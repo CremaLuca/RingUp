@@ -1,4 +1,4 @@
-package com.gruppo_4.sms_library;
+package com.gruppo4.sms;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.gruppo_4.sms_library.test", appContext.getPackageName());
+        assertEquals("com.gruppo4.sms.test", appContext.getPackageName());
     }
 }

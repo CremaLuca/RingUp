@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.os.Bundle;
 
+import com.gruppo4.sms.SMSController;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
