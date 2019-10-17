@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gruppo_4.el_ing_sw">
+    package="com.gruppo4.SMSApp">
 
     <application
         android:allowBackup="true"

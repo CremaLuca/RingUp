@@ -1,2 +1,2 @@
-include ':app', ':sms_library'
-rootProject.name='el-ing-sw'
+include ':app', ':sms'
+rootProject.name='SMSApp'

@@ -1,10 +1,9 @@
-package com.gruppo_4.el_ing_sw;
+package com.gruppo4.SMSApp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.os.Bundle;
-import com.gruppo_4.sms_library.*;
 
 public class MainActivity extends AppCompatActivity {
 

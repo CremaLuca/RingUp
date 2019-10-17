@@ -9,7 +9,7 @@
 
     <application>
         <receiver
-            android:name=".SMSReceiver"
+            android:name="com.gruppo_4.sms.SMSReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BROADCAST_SMS">

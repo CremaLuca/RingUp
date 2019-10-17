@@ -1,4 +1,4 @@
-package com.gruppo_4.el_ing_sw;
+package com.gruppo4.SMSApp;
 
 import org.junit.Test;
 
