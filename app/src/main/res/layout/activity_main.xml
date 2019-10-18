@@ -7,40 +7,40 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/smile_button"
-        android:layout_width="90dp"
+        android:id="@+id/sendSmileButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="38dp"
-        android:layout_marginEnd="100dp"
-        android:text="SMILE"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:text="Send smile!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
 
-    <EditText
-        android:id="@+id/number"
-        android:layout_width="171dp"
-        android:layout_height="39dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="120dp"
-        android:layout_marginEnd="100dp"
-        android:hint="Telephone Number"
-        android:inputType="textPersonName"
+    <AutoCompleteTextView
+        android:id="@+id/phoneNumberTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="80dp"
+        android:contentDescription="Numero di telefono"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/smileReceiver"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="47dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="124dp"
+        android:layout_marginEnd="244dp"
+        android:text="Insert a phone number"
+        app:layout_constraintBottom_toTopOf="@+id/phoneNumberTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
