@@ -1,4 +1,6 @@
-package com.gruppo4.sms;
+package com.gruppo4.sms.listeners;
+
+import com.gruppo4.sms.SMSMessage;
 
 public interface SMSRecieveListener {
 
