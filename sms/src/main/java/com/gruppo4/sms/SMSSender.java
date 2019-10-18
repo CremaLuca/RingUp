@@ -8,6 +8,11 @@ import android.telephony.SmsManager;
 
 public class SMSSender extends BroadcastReceiver {
 
+    /**
+     * This method is subscribed to the intent of a message sent, and will be called whenever a message is sent using this library.
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         SMSController.SMSSentState state = SMSController.SMSSentState.ERROR_GENERIC_FAILURE;

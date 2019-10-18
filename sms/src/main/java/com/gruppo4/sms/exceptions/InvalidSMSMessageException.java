@@ -1,12 +1,22 @@
 package com.gruppo4.sms.exceptions;
 
+import com.gruppo4.sms.SMSMessage;
+
 public class InvalidSMSMessageException extends Exception {
 
-    public InvalidSMSMessageException(String message) {
+    private SMSMessage.MessageTextState state;
+
+    public InvalidSMSMessageException(String message, SMSMessage.MessageTextState state) {
         super(message);
+        this.state = state;
     }
 
-    public InvalidSMSMessageException(Throwable cause) {
+    public InvalidSMSMessageException(Throwable cause, SMSMessage.MessageTextState state) {
         super(cause);
+        this.state = state;
+    }
+
+    public SMSMessage.MessageTextState getState(){
+        return this.state;
     }
 }

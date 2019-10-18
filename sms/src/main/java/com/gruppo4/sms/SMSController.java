@@ -21,7 +21,7 @@ public class SMSController{
     /**
      * List of recieve listeners that are triggered on message recieved
      */
-    private ArrayList<SMSRecieveListener> onRecieveListeners;
+    private ArrayList<SMSRecieveListener> onReceiveListeners;
 
     /**
      * SINGLETON
@@ -37,10 +37,19 @@ public class SMSController{
         ERROR_LIMIT_EXCEEDED
     }
 
-    public SMSController() {
-        onRecieveListeners = new ArrayList<>();
+    /**
+     * Private because only this class can instantiate itself
+     */
+    private SMSController() {
+        onReceiveListeners = new ArrayList<>();
+        onSentListeners = new ArrayList<>();
     }
 
+    /**
+     * Send a single SMS message
+     * @param context
+     * @param message
+     */
     public static void sendMessage(Context context, SMSMessage message){
         //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our SMSSender class
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
@@ -48,11 +57,15 @@ public class SMSController{
     }
 
     public static void addOnSentListener(SMSSentListener listener){
+        if(listener == null)
+            throw new NullPointerException();
         getInstance().onSentListeners.add(listener);
     }
 
     public static void addOnReceiveListener(SMSRecieveListener listener){
-        getInstance().onRecieveListeners.add(listener);
+        if(listener == null)
+            throw new NullPointerException();
+        getInstance().onReceiveListeners.add(listener);
     }
 
     /**
@@ -72,7 +85,7 @@ public class SMSController{
      */
     protected static void onReceive(SMSMessage message){
         //Foreach listener call its method.
-        for(SMSRecieveListener listener : getInstance().onRecieveListeners){
+        for(SMSRecieveListener listener : getInstance().onReceiveListeners){
             listener.onSMSRecieve(message);
         }
     }
