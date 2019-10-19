@@ -38,6 +38,14 @@ public class SMSReceivedMessage {
         return telephoneNumber;
     }
 
+    public String getMessage(){
+        String message = "";
+        for(SMSPacket packet : packets){
+            message += packet.getMessage();
+        }
+        return message;
+    }
+
     protected boolean checkCompleted(){
         for (int i=0;i<packets.length;i++){
             if(packets[i] == null)

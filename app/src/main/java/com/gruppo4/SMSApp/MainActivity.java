@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
 
     @Override
     public void onSMSRecieve(SMSReceivedMessage message) {
+        Log.d("MainActivity","Received message:" + message.getMessage());
         Toast.makeText(this,message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
     }
 
