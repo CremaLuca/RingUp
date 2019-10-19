@@ -37,9 +37,6 @@ public class SMSController{
         ERROR_LIMIT_EXCEEDED
     }
 
-    /**
-     * Private because only this class can instantiate itself
-     */
     private SMSController() {
         onReceiveListeners = new ArrayList<>();
         onSentListeners = new ArrayList<>();

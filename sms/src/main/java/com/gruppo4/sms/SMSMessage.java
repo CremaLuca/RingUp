@@ -7,7 +7,6 @@ public class SMSMessage {
     private String telephoneNumber;
     private String messageText;
 
-    public static final int MAX_MESSAGE_LENGTH = 160;
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
     public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
 
@@ -15,8 +14,7 @@ public class SMSMessage {
      * A set of states for the message validity tests
      */
     public enum MessageTextState{
-        MESSAGE_TEXT_VALID,
-        MESSAGE_TEXT_TOO_LONG
+        MESSAGE_TEXT_VALID
     }
 
     /**
@@ -40,7 +38,7 @@ public class SMSMessage {
 
         MessageTextState messageTextState = checkMessageText(messageText);
         if(messageTextState == MessageTextState.MESSAGE_TEXT_VALID)
-            this.messageText = messageText;
+        this.messageText = messageText;
         else
             throw new InvalidSMSMessageException("The message text is invalid, reason: " + messageTextState, messageTextState);
     }
@@ -59,10 +57,7 @@ public class SMSMessage {
      * @return The state of the message after the tests
      */
     public static MessageTextState checkMessageText(String messageText) {
-        if(messageText.length() > MAX_MESSAGE_LENGTH){
-           return MessageTextState.MESSAGE_TEXT_TOO_LONG;
-        }
-        //If all the tests are passed the message is valid.
+        //TODO : Controllare che non abbia caratteri proibiti
         return MessageTextState.MESSAGE_TEXT_VALID;
     }
 
