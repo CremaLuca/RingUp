@@ -23,6 +23,8 @@ public class SMSController{
      */
     private ArrayList<SMSRecieveListener> onReceiveListeners;
 
+    private int applicationCode;
+
     /**
      * SINGLETON
      */
@@ -37,9 +39,12 @@ public class SMSController{
         ERROR_LIMIT_EXCEEDED
     }
 
-    private SMSController() {
+    public SMSController(int applicationCode) {
         onReceiveListeners = new ArrayList<>();
         onSentListeners = new ArrayList<>();
+        this.applicationCode = applicationCode;
+
+        instance = this;
     }
 
     /**
@@ -47,22 +52,33 @@ public class SMSController{
      * @param context
      * @param message
      */
-    public static void sendMessage(Context context, SMSMessage message){
+    public void sendMessage(Context context, SMSMessage message){
         //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our SMSSender class
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
-        SmsManager.getDefault().sendTextMessage(message.getTelephoneNumber(),null,message.getMessageText(), sentPI,null);
+        SmsManager smsManager = SmsManager.getDefault();
+        SMSPacket[] packets = message.getPackets();
+        for (SMSPacket packet: packets) {
+            Log.d("SMSController",packet.getSMSOutput());
+            smsManager.sendTextMessage(message.getTelephoneNumber(),null,packet.getSMSOutput(), sentPI,null);
+        }
     }
 
-    public static void addOnSentListener(SMSSentListener listener){
+    public void addOnSentListener(SMSSentListener listener){
         if(listener == null)
             throw new NullPointerException();
-        getInstance().onSentListeners.add(listener);
+        onSentListeners.add(listener);
     }
 
-    public static void addOnReceiveListener(SMSRecieveListener listener){
+    public void addOnReceiveListener(SMSRecieveListener listener){
         if(listener == null)
             throw new NullPointerException();
-        getInstance().onReceiveListeners.add(listener);
+        onReceiveListeners.add(listener);
+    }
+
+    public static int getApplicationCode(){
+        if(instance == null)
+            throw new IllegalStateException("SMSController not initialized");
+        return instance.applicationCode;
     }
 
     /**
@@ -77,11 +93,12 @@ public class SMSController{
     }
 
     /**
-     * Method used by SMSReceiver to trigger every listener on message recieved
+     * Method used by SMSReceiver to trigger every listener on message received
      * @param message
      */
     protected static void onReceive(SMSMessage message){
         //Foreach listener call its method.
+        Log.d("SMSController",message.getMessageText());
         for(SMSRecieveListener listener : getInstance().onReceiveListeners){
             listener.onSMSRecieve(message);
         }
@@ -89,7 +106,7 @@ public class SMSController{
 
     protected static SMSController getInstance(){
         if(instance == null)
-            instance = new SMSController();
+            throw new IllegalStateException("SMSController not initialized");
         return instance;
     }
 

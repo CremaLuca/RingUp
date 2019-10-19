@@ -19,6 +19,8 @@ import com.gruppo4.sms.listeners.SMSSentListener;
 
 public class MainActivity extends AppCompatActivity implements SMSRecieveListener, SMSSentListener {
 
+    SMSController smsController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +29,10 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
         //Richiediamo il permesso di leggere i messaggi
         requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
 
-        SMSController.addOnReceiveListener(this);
-        SMSController.addOnSentListener(this);
+        smsController = new SMSController(123);
+
+        smsController.addOnReceiveListener(this);
+        smsController.addOnSentListener(this);
 
         Button sendSmileButton = findViewById(R.id.sendSmileButton);
         sendSmileButton.setOnClickListener(new View.OnClickListener() {
@@ -42,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
     public void onSendSmileButton(){
         String phoneNumber = ((AutoCompleteTextView)findViewById(R.id.phoneNumberTextView)).getText().toString();
         try {
-            SMSMessage message = new SMSMessage(phoneNumber, "Ciao!");
-            SMSController.sendMessage(this, message);
+            SMSMessage message = new SMSMessage(phoneNumber, "Ciao!",1);
+            smsController.sendMessage(this, message);
         }catch(InvalidSMSMessageException messageException){
             Log.e("MainActivity",messageException.getMessage());
         }catch(InvalidTelephoneNumberException telephoneException){

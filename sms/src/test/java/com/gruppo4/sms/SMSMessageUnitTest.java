@@ -20,7 +20,7 @@ public class SMSMessageUnitTest {
     @Test
     public void phone_number_isLongEnough(){
         try {
-            message = new SMSMessage("+39111", "Test message");
+            message = new SMSMessage("+39111", "Test message",1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -32,7 +32,7 @@ public class SMSMessageUnitTest {
     @Test
     public void phone_number_isShortEnough(){
         try {
-            message = new SMSMessage("+39111111111111111111111111", "Test message");
+            message = new SMSMessage("+39111111111111111111111111", "Test message",1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -44,7 +44,7 @@ public class SMSMessageUnitTest {
     @Test
     public void phone_number_hasCountryCode(){
         try {
-            message = new SMSMessage("111111111", "Test message");
+            message = new SMSMessage("111111111", "Test message",1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -56,7 +56,7 @@ public class SMSMessageUnitTest {
     @Test
     public void phone_number_hasNoLetters(){
         try {
-            message = new SMSMessage("+11a1b11c1", "Test message");
+            message = new SMSMessage("+11a1b11c1", "Test message",1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -67,8 +67,12 @@ public class SMSMessageUnitTest {
 
     @Test
     public void message_text_isShortEnough(){
+        String messageTooLong = "";
+        for(int i=0;i<500;i++){
+            messageTooLong += "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        }
         try {
-            message = new SMSMessage("+391111111111", "Test message that should be too long for the 160 characters limit for normal SMS messages and that should not be able to be sent with a single message and requires multiple ones to be fully sent");
+            message = new SMSMessage("+391111111111", messageTooLong,1);
             Assert.fail("Should have thrown InvalidSMSMessageException exception");
         }catch(InvalidSMSMessageException e){
             //Success
@@ -80,7 +84,7 @@ public class SMSMessageUnitTest {
     @Test
     public void sms_isNormalMessageOk(){
         try {
-            message = new SMSMessage("+391111111111", "This is a test message");
+            message = new SMSMessage("+391111111111", "This is a test message",1);
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }
@@ -89,7 +93,7 @@ public class SMSMessageUnitTest {
     @Test
     public void sms_hasSameTelephoneNumber(){
         try {
-            message = new SMSMessage("+391111111111", "This is a test message");
+            message = new SMSMessage("+391111111111", "This is a test message",1);
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }
@@ -99,7 +103,7 @@ public class SMSMessageUnitTest {
     @Test
     public void sms_hasSameText(){
         try {
-            message = new SMSMessage("+391111111111", "This is a test message");
+            message = new SMSMessage("+391111111111", "This is a test message",1);
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }

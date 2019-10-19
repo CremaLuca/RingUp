@@ -6,15 +6,17 @@ import org.junit.Test;
 
 public class SMSControllerUnitTest {
 
+    SMSController smsController;
+
     @Before
     public void init() {
-
+        smsController = new SMSController((byte)1);
     }
 
     @Test
     public void message_sent_listener_isNotNull(){
         try {
-            SMSController.addOnSentListener(null);
+            smsController.addOnSentListener(null);
             Assert.fail("Should have thrown NullPointerException exception");
         }catch(NullPointerException e){
             //Success
@@ -24,7 +26,7 @@ public class SMSControllerUnitTest {
     @Test
     public void message_received_listener_isNotNull(){
         try {
-            SMSController.addOnReceiveListener(null);
+            smsController.addOnReceiveListener(null);
             Assert.fail("Should have thrown NullPointerException exception");
         }catch(NullPointerException e){
             //Success
