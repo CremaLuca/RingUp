@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.gruppo4.sms.listeners.SMSRecieveListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SMSController{
@@ -19,11 +21,16 @@ public class SMSController{
     private ArrayList<SMSSentListener> onSentListeners;
 
     /**
-     * List of recieve listeners that are triggered on message recieved
+     * List of recieve listeners that are triggered on message received
      */
     private ArrayList<SMSRecieveListener> onReceiveListeners;
 
     private int applicationCode;
+
+    /**
+     * List of incomplete messages received, when every packet of a message is arrived it gets removed from this list
+     */
+    private ArrayList<SMSReceivedMessage> receivedMessages;
 
     /**
      * SINGLETON
@@ -42,6 +49,7 @@ public class SMSController{
     public SMSController(int applicationCode) {
         onReceiveListeners = new ArrayList<>();
         onSentListeners = new ArrayList<>();
+        receivedMessages = new ArrayList<>();
         this.applicationCode = applicationCode;
 
         instance = this;
@@ -57,10 +65,18 @@ public class SMSController{
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
         SmsManager smsManager = SmsManager.getDefault();
         SMSPacket[] packets = message.getPackets();
+
+        ArrayList<String> textMessages = new ArrayList<>();
+        ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
+
         for (SMSPacket packet: packets) {
-            Log.d("SMSController",packet.getSMSOutput());
-            smsManager.sendTextMessage(message.getTelephoneNumber(),null,packet.getSMSOutput(), sentPI,null);
+            textMessages.add(packet.getSMSOutput());
+            onSentIntents.add(null);
+            Log.d("SMSController", "Packet:" + packet.getSMSOutput());
         }
+        //Except for the last one that will be a real callback
+        onSentIntents.set(onSentIntents.size() - 1,sentPI);
+        smsManager.sendMultipartTextMessage(message.getTelephoneNumber(),null,textMessages, onSentIntents,null);
     }
 
     public void addOnSentListener(SMSSentListener listener){
@@ -93,15 +109,39 @@ public class SMSController{
     }
 
     /**
-     * Method used by SMSReceiver to trigger every listener on message received
+     * Method used by SMSReceiver to send a packet
+     * @param packet
+     */
+    protected static void onReceive(SMSPacket packet, String telephoneNumber){
+        //Use it only if it's for our application
+        if(getInstance().applicationCode == packet.getApplicationCode()) {
+            //Let's see if we already have the message stored
+            boolean found = false;
+            for (SMSReceivedMessage msg : getInstance().receivedMessages) {
+                if (msg.getMessageCode() == packet.getMessageCode()) {
+                    msg.addPacket(packet);
+                    found = true;
+                    break;
+                }
+            }
+            //If not found then create a new Received Message
+            if (!found) {
+                getInstance().receivedMessages.add(new SMSReceivedMessage(packet, telephoneNumber));
+            }
+        }
+    }
+
+    /**
+     * Call every listener once every packet of a message is arrived
      * @param message
      */
-    protected static void onReceive(SMSMessage message){
+    protected static void callReceiveListeners(SMSReceivedMessage message){
         //Foreach listener call its method.
-        Log.d("SMSController",message.getMessageText());
         for(SMSRecieveListener listener : getInstance().onReceiveListeners){
             listener.onSMSRecieve(message);
         }
+        //Remove the message from the incomplete ones
+        getInstance().receivedMessages.remove(message);
     }
 
     protected static SMSController getInstance(){

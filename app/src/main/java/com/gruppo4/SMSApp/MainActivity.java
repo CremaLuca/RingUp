@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
+import com.gruppo4.sms.SMSReceivedMessage;
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.listeners.SMSRecieveListener;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
     public void onSendSmileButton(){
         String phoneNumber = ((AutoCompleteTextView)findViewById(R.id.phoneNumberTextView)).getText().toString();
         try {
-            SMSMessage message = new SMSMessage(phoneNumber, "Ciao!",1);
+            SMSMessage message = new SMSMessage(phoneNumber, "Smile!AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAA",1);
             smsController.sendMessage(this, message);
         }catch(InvalidSMSMessageException messageException){
             Log.e("MainActivity",messageException.getMessage());
@@ -115,12 +116,13 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
     }
 
     @Override
-    public void onSMSRecieve(SMSMessage message) {
+    public void onSMSRecieve(SMSReceivedMessage message) {
         Toast.makeText(this,message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onSMSSent(SMSController.SMSSentState state) {
+        Log.d("MainActivity","Message sent");
         switch (state){
             case MESSAGE_SENT:
                 Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();

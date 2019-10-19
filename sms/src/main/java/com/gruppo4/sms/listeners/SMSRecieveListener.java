@@ -1,9 +1,9 @@
 package com.gruppo4.sms.listeners;
 
-import com.gruppo4.sms.SMSMessage;
+import com.gruppo4.sms.SMSReceivedMessage;
 
 public interface SMSRecieveListener {
 
-    void onSMSRecieve(SMSMessage message);
+    void onSMSRecieve(SMSReceivedMessage message);
 
 }
