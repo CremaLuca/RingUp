@@ -17,6 +17,8 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".SMSSent" />
+        <receiver android:name=".SMSDelivered" />
     </application>
 
 </manifest>
