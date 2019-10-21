@@ -24,8 +24,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SMSReceivedListener, SMSSentListener {
 
-    SMSController smsController;
-
     private RecyclerView recyclerView;
     private SmileAdapter mAdapter;
 
@@ -50,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         mAdapter = new SmileAdapter(smiles);
         recyclerView.setAdapter(mAdapter);
 
-        smsController = SMSController.setup(123);
+        SMSController.setup(123);
 
-        smsController.addOnReceiveListener(this);
+        SMSController.addOnReceiveListener(this);
 
         Button sendSmileButton = findViewById(R.id.sendSmileButton);
         sendSmileButton.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         String phoneNumber = ((AutoCompleteTextView)findViewById(R.id.phoneNumberTextView)).getText().toString();
         try {
             SMSMessage message = new SMSMessage(phoneNumber, "Smile! :)",1);
-            smsController.sendMessage(this, message, this);
+            SMSController.sendMessage(this, message, this);
         }catch(InvalidSMSMessageException messageException){
             Log.e("MainActivity",messageException.getMessage());
         }catch(InvalidTelephoneNumberException telephoneException){

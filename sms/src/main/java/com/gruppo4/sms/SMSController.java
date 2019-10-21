@@ -56,7 +56,7 @@ public class SMSController{
      * @param context
      * @param message
      */
-    public void sendMessage(Context context, SMSMessage message, SMSSentListener listener){
+    public static void sendMessage(Context context, SMSMessage message, SMSSentListener listener){
         //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our OnSMSSent class
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT_" + message.getMessageCode()), 0);
         BroadcastReceiver receiver = new OnSMSSent(message, listener);
@@ -80,10 +80,10 @@ public class SMSController{
         smsManager.sendMultipartTextMessage(message.getTelephoneNumber(),null,textMessages, onSentIntents,null);
     }
 
-    public void addOnReceiveListener(SMSReceivedListener listener){
+    public static void addOnReceiveListener(SMSReceivedListener listener){
         if(listener == null)
             throw new NullPointerException();
-        onReceiveListeners.add(listener);
+        getInstance().onReceiveListeners.add(listener);
     }
 
     public static int getApplicationCode(){
@@ -130,7 +130,7 @@ public class SMSController{
 
     protected static SMSController getInstance(){
         if(instance == null)
-            throw new IllegalStateException("SMSController not initialized");
+            throw new IllegalStateException("SMSController is not setup!");
         return instance;
     }
 
