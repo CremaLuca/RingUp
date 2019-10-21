@@ -15,11 +15,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Richiediamo il permesso di leggere i messaggi
-        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
+        //Richiediamo il permesso di leggere e inviare i messaggi
+
+        //requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
         requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
 
-
+        //richiama il metodo per l'invio del messaggio
+        SMSController contr = new SMSController();
+        contr.sendMessage("3457090735","ciao, questo è un sms di prova");
 
 
     }
