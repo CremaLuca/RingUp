@@ -4,7 +4,7 @@ public class SMSMessage {
     String text_message;
     String tel_number;
 
-    SMSMessage(String numeroTelefono, String testo){
+    public SMSMessage(String numeroTelefono, String testo){
         text_message = testo;
         tel_number = numeroTelefono;
     }
