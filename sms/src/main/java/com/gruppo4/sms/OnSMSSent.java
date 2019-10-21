@@ -8,12 +8,12 @@ import android.telephony.SmsManager;
 
 import com.gruppo4.sms.listeners.SMSSentListener;
 
-public class SMSSender extends BroadcastReceiver {
+public class OnSMSSent extends BroadcastReceiver {
 
     private SMSMessage message;
     private SMSSentListener listener;
 
-    public SMSSender(SMSMessage message, SMSSentListener listener){
+    public OnSMSSent(SMSMessage message, SMSSentListener listener){
         this.message = message;
         this.listener = listener;
     }

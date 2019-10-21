@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-public class SMSReceiver extends BroadcastReceiver {
+public class OnSMSReceived extends BroadcastReceiver {
 
 	private static final String TAG = "SMSReciever";
 	private static final String PDU_TYPE = "pdus";

@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import com.gruppo4.sms.listeners.SMSReceiveListener;
+import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class SMSController{
     /**
      * List of receive listeners that are triggered on message received
      */
-    private ArrayList<SMSReceiveListener> onReceiveListeners;
+    private ArrayList<SMSReceivedListener> onReceiveListeners;
 
     private int applicationCode;
 
@@ -57,9 +57,9 @@ public class SMSController{
      * @param message
      */
     public void sendMessage(Context context, SMSMessage message, SMSSentListener listener){
-        //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our SMSSender class
+        //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our OnSMSSent class
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT_" + message.getMessageCode()), 0);
-        BroadcastReceiver receiver = new SMSSender(message, listener);
+        BroadcastReceiver receiver = new OnSMSSent(message, listener);
         //Set the new BroadcastReceiver to intercept intents with the right filter
         context.registerReceiver(receiver,new IntentFilter("SMS_SENT_" + message.getMessageCode()));
         //Retrieve the Android default smsManager
@@ -80,7 +80,7 @@ public class SMSController{
         smsManager.sendMultipartTextMessage(message.getTelephoneNumber(),null,textMessages, onSentIntents,null);
     }
 
-    public void addOnReceiveListener(SMSReceiveListener listener){
+    public void addOnReceiveListener(SMSReceivedListener listener){
         if(listener == null)
             throw new NullPointerException();
         onReceiveListeners.add(listener);
@@ -93,7 +93,7 @@ public class SMSController{
     }
 
     /**
-     * Method used by SMSReceiver to send a packet
+     * Method used by OnSMSReceived to send a packet
      * @param packet
      */
     protected static void onReceive(SMSPacket packet, String telephoneNumber){
@@ -121,8 +121,8 @@ public class SMSController{
      */
     protected static void callReceiveListeners(SMSReceivedMessage message){
         //Foreach listener call its method.
-        for(SMSReceiveListener listener : getInstance().onReceiveListeners){
-            listener.onSMSReceive(message);
+        for(SMSReceivedListener listener : getInstance().onReceiveListeners){
+            listener.onSMSReceived(message);
         }
         //Remove the message from the incomplete ones
         getInstance().receivedMessages.remove(message);

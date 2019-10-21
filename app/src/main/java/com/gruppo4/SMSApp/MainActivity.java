@@ -17,12 +17,12 @@ import com.gruppo4.sms.SMSMessage;
 import com.gruppo4.sms.SMSReceivedMessage;
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.listeners.SMSReceiveListener;
+import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SMSReceiveListener, SMSSentListener {
+public class MainActivity extends AppCompatActivity implements SMSReceivedListener, SMSSentListener {
 
     SMSController smsController;
 
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceiveListene
     }
 
     @Override
-    public void onSMSReceive(SMSReceivedMessage message) {
+    public void onSMSReceived(SMSReceivedMessage message) {
         if(message.getMessageCode() == 1) {
             Log.d("MainActivity", "Received message:" + message.getMessage());
             Toast.makeText(this, message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
