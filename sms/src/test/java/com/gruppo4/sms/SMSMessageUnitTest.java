@@ -68,7 +68,7 @@ public class SMSMessageUnitTest {
     @Test
     public void message_text_isShortEnough(){
         String messageTooLong = "";
-        for(int i=0;i<500;i++){
+        for(int i=0;i<2500;i++){
             messageTooLong += "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         }
         try {

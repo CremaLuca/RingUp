@@ -16,6 +16,7 @@ public class SmileAdapter extends RecyclerView.Adapter<SmileAdapter.MyViewHolder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView textView;
+
         public MyViewHolder(TextView v) {
             super(v);
             textView = v;

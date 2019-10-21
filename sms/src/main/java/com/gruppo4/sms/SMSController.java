@@ -32,12 +32,23 @@ public class SMSController{
      */
     private static SMSController instance;
 
-    public SMSController(int applicationCode) {
+    private SMSController(int applicationCode) {
         onReceiveListeners = new ArrayList<>();
         receivedMessages = new ArrayList<>();
         this.applicationCode = applicationCode;
+    }
 
-        instance = this;
+    public static SMSController setup(int applicationCode){
+        if(instance != null){
+            //We can't have multiple application codes in the same app
+            if(instance.applicationCode != applicationCode) {
+                throw new IllegalStateException("The SMSController is already initalized!");
+            }else{
+                return instance;
+            }
+        }
+        instance = new SMSController(applicationCode);
+        return instance;
     }
 
     /**

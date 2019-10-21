@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
         setContentView(R.layout.activity_main);
 
         //Richiediamo il permesso di leggere i messaggi
+        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
+        //Chiediamo il permesso di mandarli i messaggi
         requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
 
         ArrayList<String> smiles = new ArrayList<>();
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
         mAdapter = new SmileAdapter(smiles);
         recyclerView.setAdapter(mAdapter);
 
-        smsController = new SMSController(123);
+        smsController = SMSController.setup(123);
 
         smsController.addOnReceiveListener(this);
 
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
                 mAdapter.getSmiles().add("You sent a smile");
                 mAdapter.notifyDataSetChanged();
                 break;
+
             default:
                 Log.w("MainActivity","Unable to send sms, reason: "+message.getSentState());
                 Toast.makeText(this, "Unable to send smile :(", Toast.LENGTH_LONG).show();
