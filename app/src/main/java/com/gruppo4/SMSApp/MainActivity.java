@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.gruppo4.sms.SMSController;
+import com.gruppo4.sms.SMSMessage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,13 +19,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Richiediamo il permesso di leggere e inviare i messaggi
-
-        //requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
         requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
 
-        //richiama il metodo per l'invio del messaggio
+        //invia un sms all'apertura dell'app
         SMSController contr = new SMSController();
-        contr.sendMessage("3457090735","ciao, questo è un sms di prova");
+        SMSMessage sms = new SMSMessage("3457090735", "prova sms con classe SMSMessage");
+        contr.sendMessage(sms);
 
         //toast per notificare l'invio del messaggio
         Context context = getApplicationContext();

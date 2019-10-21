@@ -4,33 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity" >
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="132dp"
-        android:text="inserisci numero telefono"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="inserisci il testo"
+        android:layout_marginStart="24dp"
+        android:text="Per ora testo e numero di telefono sono statici"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="258dp" />
+        tools:layout_editor_absoluteY="134dp" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="invia sms"
-        tools:layout_editor_absoluteX="222dp"
-        tools:layout_editor_absoluteY="183dp" />
-
+        android:layout_marginTop="24dp"
+        android:text="invia messaggio"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:layout_editor_absoluteX="138dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
