@@ -9,8 +9,9 @@ public class SMSMessage {
     private String telephoneNumber;
     private String messageText;
     private int messageCode;
+    private SentState sentState;
 
-    public static final int MAX_MESSAGE_LENGTH = SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH * Byte.MAX_VALUE; //This is because package number cannot exceed three characters
+    public static final int MAX_MESSAGE_LENGTH = SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH * 999; //This is because package number cannot exceed three characters
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
     public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
 
@@ -33,6 +34,17 @@ public class SMSMessage {
         TELEPHONE_NUMBER_NOT_A_NUMBER
     }
 
+    public enum SentState{
+        NOT_SENT,
+        MESSAGE_SENT,
+        ERROR_GENERIC_FAILURE,
+        ERROR_RADIO_OFF,
+        ERROR_NULL_PDU,
+        ERROR_NO_SERVICE,
+        ERROR_LIMIT_EXCEEDED
+    }
+
+
     public SMSMessage(String telephoneNumber, String messageText, int messageCode) throws InvalidSMSMessageException, InvalidTelephoneNumberException{
 
         TelephoneNumberState telephoneNumberState = checkTelephoneNumber(telephoneNumber);
@@ -48,6 +60,7 @@ public class SMSMessage {
             throw new InvalidSMSMessageException("The message text is invalid, reason: " + messageTextState, messageTextState);
 
         this.messageCode = messageCode;
+        this.sentState = SentState.NOT_SENT;
     }
 
     public String getTelephoneNumber() {
@@ -56,6 +69,10 @@ public class SMSMessage {
 
     public String getMessageText() {
         return messageText;
+    }
+
+    public int getMessageCode(){
+        return messageCode;
     }
 
     public SMSPacket[] getPackets(){
@@ -116,6 +133,16 @@ public class SMSMessage {
         }
         //If it passed all the tests we are sure the number is valid.
         return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
+    }
+
+    protected void setSentState(SentState state){
+        //If the state is correct we can override it, if there is an error in a packet we keep the error
+        if(this.sentState == SentState.NOT_SENT || this.sentState == SentState.MESSAGE_SENT)
+            this.sentState = state;
+    }
+
+    public SentState getSentState(){
+        return sentState;
     }
 
 }

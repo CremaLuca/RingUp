@@ -1,7 +1,5 @@
 package com.gruppo4.sms;
 
-import android.util.Log;
-
 class SMSPacket {
 
     private String message;
@@ -10,11 +8,10 @@ class SMSPacket {
     private int packetNumber;
     private int totalNumber;
 
-    static final char SEPARATOR_CHAR = '-';
+    static final char SEPARATOR_CHAR = '_';
     static final String SEPARATOR = SEPARATOR_CHAR + ""; //Workaround because string + char concatenations gives some problems
 
-    public static final int PACKAGE_MESSAGE_MAX_LENGTH = 142; //160 - 4(applicationCode) - 4(messageCode) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
-
+    public static final int PACKAGE_MESSAGE_MAX_LENGTH = 144; //160 - 3(applicationCode) - 3(messageCode) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
 
     /**
      *

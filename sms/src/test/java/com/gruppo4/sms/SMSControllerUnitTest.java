@@ -10,7 +10,7 @@ public class SMSControllerUnitTest {
 
     @Before
     public void init() {
-        smsController = new SMSController((byte)1);
+        smsController = new SMSController(1);
     }
 
     @Test

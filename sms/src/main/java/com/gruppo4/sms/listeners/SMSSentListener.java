@@ -1,7 +1,7 @@
 package com.gruppo4.sms.listeners;
 
-import com.gruppo4.sms.SMSController;
+import com.gruppo4.sms.SMSMessage;
 
 public interface SMSSentListener {
-    void onSMSSent(SMSController.SMSSentState state);
+    void onSMSSent(SMSMessage message);
 }
