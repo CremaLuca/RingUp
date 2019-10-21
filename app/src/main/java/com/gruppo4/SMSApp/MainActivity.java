@@ -1,9 +1,5 @@
 package com.gruppo4.SMSApp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +7,10 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
@@ -33,9 +33,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         setContentView(R.layout.activity_main);
 
         //Richiediamo il permesso di leggere i messaggi
-        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
+        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1);
         //Chiediamo il permesso di mandarli i messaggi
-        requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
+        requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
 
         ArrayList<String> smiles = new ArrayList<>();
 
@@ -61,14 +61,14 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         });
     }
 
-    public void onSendSmileButton(){
-        String phoneNumber = ((AutoCompleteTextView)findViewById(R.id.phoneNumberTextView)).getText().toString();
+    public void onSendSmileButton() {
+        String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
         try {
-            SMSMessage message = new SMSMessage(phoneNumber, "Smile! :)",1);
+            SMSMessage message = new SMSMessage(phoneNumber, "Smile! :)", 1);
             SMSController.sendMessage(this, message, this);
-        }catch(InvalidSMSMessageException messageException){
-            Log.e("MainActivity",messageException.getMessage());
-        }catch(InvalidTelephoneNumberException telephoneException){
+        } catch (InvalidSMSMessageException messageException) {
+            Log.e("MainActivity", messageException.getMessage());
+        } catch (InvalidTelephoneNumberException telephoneException) {
             String error = "";
             switch (telephoneException.getState()) {
                 case TELEPHONE_NUMBER_TOO_SHORT:
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                     break;
             }
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
-            Log.e("MainActivity",telephoneException.getMessage());
+            Log.e("MainActivity", telephoneException.getMessage());
         }
 
         super.onCreate(savedInstanceState);
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSReceived(SMSReceivedMessage message) {
-        if(message.getMessageCode() == 1) {
+        if (message.getMessageCode() == 1) {
             Log.d("MainActivity", "Received message:" + message.getMessage());
             Toast.makeText(this, message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
             mAdapter.getSmiles().add(message.getTelephoneNumber() + " sent you a smile :)");
@@ -144,18 +144,14 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSSent(SMSMessage message) {
-        Log.d("MainActivity","Message sent");
-        switch (message.getSentState()){
-            case MESSAGE_SENT:
-                Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
-                mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
-                mAdapter.notifyDataSetChanged();
-                break;
-
-            default:
-                Log.w("MainActivity","Unable to send sms, reason: "+message.getSentState());
-                Toast.makeText(this, "Unable to send smile :(", Toast.LENGTH_LONG).show();
-                break;
+        Log.d("MainActivity", "Message sent");
+        if (message.getSentState() == SMSMessage.SentState.MESSAGE_SENT) {
+            Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
+            mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
+            mAdapter.notifyDataSetChanged();
+        } else {
+            Log.w("MainActivity", "Unable to send sms, reason: " + message.getSentState());
+            Toast.makeText(this, "Unable to send smile :(", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -8,7 +8,7 @@ public class SMSReceivedMessage {
     private int messageCode;
     private String telephoneNumber;
 
-    public SMSReceivedMessage(SMSPacket packet, String telephoneNumber){
+    SMSReceivedMessage(SMSPacket packet, String telephoneNumber) {
         packets = new SMSPacket[packet.getTotalNumber()];
         packets[packet.getPacketNumber() - 1] = packet;
 
@@ -16,13 +16,13 @@ public class SMSReceivedMessage {
         this.messageCode = packet.getMessageCode();
         this.telephoneNumber = telephoneNumber;
 
-        if(checkCompleted())
+        if (checkCompleted())
             SMSController.callReceiveListeners(this);
     }
 
-    public void addPacket(SMSPacket packet){
+    void addPacket(SMSPacket packet) {
         packets[packet.getPacketNumber() - 1] = packet;
-        if(checkCompleted())
+        if (checkCompleted())
             SMSController.callReceiveListeners(this);
     }
 
@@ -38,17 +38,17 @@ public class SMSReceivedMessage {
         return telephoneNumber;
     }
 
-    public String getMessage(){
-        String message = "";
-        for(SMSPacket packet : packets){
-            message += packet.getMessage();
+    public String getMessage() {
+        StringBuilder message = new StringBuilder();
+        for (SMSPacket packet : packets) {
+            message.append(packet.getMessage());
         }
-        return message;
+        return message.toString();
     }
 
-    protected boolean checkCompleted(){
-        for (int i=0;i<packets.length;i++){
-            if(packets[i] == null)
+    private boolean checkCompleted() {
+        for (SMSPacket packet : packets) {
+            if (packet == null)
                 return false;
         }
         return true;

@@ -13,24 +13,21 @@ import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
 
-public class SMSController{
-
-    /**
-     * List of receive listeners that are triggered on message received
-     */
-    private ArrayList<SMSReceivedListener> onReceiveListeners;
-
-    private int applicationCode;
-
-    /**
-     * List of incomplete messages received, when every packet of a message is arrived it gets removed from this list
-     */
-    private ArrayList<SMSReceivedMessage> receivedMessages;
+public class SMSController {
 
     /**
      * SINGLETON
      */
     private static SMSController instance;
+    /**
+     * List of receive listeners that are triggered on message received
+     */
+    private ArrayList<SMSReceivedListener> onReceiveListeners;
+    private int applicationCode;
+    /**
+     * List of incomplete messages received, when every packet of a message is arrived it gets removed from this list
+     */
+    private ArrayList<SMSReceivedMessage> receivedMessages;
 
     private SMSController(int applicationCode) {
         onReceiveListeners = new ArrayList<>();
@@ -38,12 +35,12 @@ public class SMSController{
         this.applicationCode = applicationCode;
     }
 
-    public static SMSController setup(int applicationCode){
-        if(instance != null){
+    public static SMSController setup(int applicationCode) {
+        if (instance != null) {
             //We can't have multiple application codes in the same app
-            if(instance.applicationCode != applicationCode) {
+            if (instance.applicationCode != applicationCode) {
                 throw new IllegalStateException("The SMSController is already initalized!");
-            }else{
+            } else {
                 return instance;
             }
         }
@@ -53,15 +50,16 @@ public class SMSController{
 
     /**
      * Send a SMSMessage, multiple packets could be sent
+     *
      * @param context
      * @param message
      */
-    public static void sendMessage(Context context, SMSMessage message, SMSSentListener listener){
+    public static void sendMessage(Context context, SMSMessage message, SMSSentListener listener) {
         //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our OnSMSSent class
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT_" + message.getMessageCode()), 0);
         BroadcastReceiver receiver = new OnSMSSent(message, listener);
         //Set the new BroadcastReceiver to intercept intents with the right filter
-        context.registerReceiver(receiver,new IntentFilter("SMS_SENT_" + message.getMessageCode()));
+        context.registerReceiver(receiver, new IntentFilter("SMS_SENT_" + message.getMessageCode()));
         //Retrieve the Android default smsManager
         SmsManager smsManager = SmsManager.getDefault();
         //Split the message in packets (multiple SMSs)
@@ -70,35 +68,36 @@ public class SMSController{
         ArrayList<String> textMessages = new ArrayList<>();
         ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
 
-        for (SMSPacket packet: packets) {
+        for (SMSPacket packet : packets) {
             textMessages.add(packet.getSMSOutput());
             onSentIntents.add(null); //Empty, will explain later why
-            Log.d("SMSController", "Packet_"+packet.getPacketNumber()+":" + packet.getSMSOutput());
+            Log.d("SMSController", "Packet_" + packet.getPacketNumber() + ":" + packet.getSMSOutput());
         }
         //Except for the last pending intent that will be a real callback, we want it ONLY when the last packet is sent
-        onSentIntents.set(onSentIntents.size() - 1,sentPI);
-        smsManager.sendMultipartTextMessage(message.getTelephoneNumber(),null,textMessages, onSentIntents,null);
+        onSentIntents.set(onSentIntents.size() - 1, sentPI);
+        smsManager.sendMultipartTextMessage(message.getTelephoneNumber(), null, textMessages, onSentIntents, null);
     }
 
-    public static void addOnReceiveListener(SMSReceivedListener listener){
-        if(listener == null)
+    public static void addOnReceiveListener(SMSReceivedListener listener) {
+        if (listener == null)
             throw new NullPointerException();
         getInstance().onReceiveListeners.add(listener);
     }
 
-    public static int getApplicationCode(){
-        if(instance == null)
+    public static int getApplicationCode() {
+        if (instance == null)
             throw new IllegalStateException("SMSController not initialized");
         return instance.applicationCode;
     }
 
     /**
      * Method used by OnSMSReceived to send a packet
+     *
      * @param packet
      */
-    protected static void onReceive(SMSPacket packet, String telephoneNumber){
+    static void onReceive(SMSPacket packet, String telephoneNumber) {
         //Use it only if it's for our application
-        if(getInstance().applicationCode == packet.getApplicationCode()) {
+        if (getInstance().applicationCode == packet.getApplicationCode()) {
             //Let's see if we already have the message stored
             boolean found = false;
             for (SMSReceivedMessage msg : getInstance().receivedMessages) {
@@ -117,19 +116,20 @@ public class SMSController{
 
     /**
      * Call every listener once every packet of a message is arrived
+     *
      * @param message
      */
-    protected static void callReceiveListeners(SMSReceivedMessage message){
+    static void callReceiveListeners(SMSReceivedMessage message) {
         //Foreach listener call its method.
-        for(SMSReceivedListener listener : getInstance().onReceiveListeners){
+        for (SMSReceivedListener listener : getInstance().onReceiveListeners) {
             listener.onSMSReceived(message);
         }
         //Remove the message from the incomplete ones
         getInstance().receivedMessages.remove(message);
     }
 
-    protected static SMSController getInstance(){
-        if(instance == null)
+    static SMSController getInstance() {
+        if (instance == null)
             throw new IllegalStateException("SMSController is not setup!");
         return instance;
     }
