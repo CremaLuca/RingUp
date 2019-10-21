@@ -17,12 +17,12 @@ import com.gruppo4.sms.SMSMessage;
 import com.gruppo4.sms.SMSReceivedMessage;
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.listeners.SMSRecieveListener;
+import com.gruppo4.sms.listeners.SMSReceiveListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SMSRecieveListener, SMSSentListener {
+public class MainActivity extends AppCompatActivity implements SMSReceiveListener, SMSSentListener {
 
     SMSController smsController;
 
@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
         requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
 
         ArrayList<String> smiles = new ArrayList<>();
-        smiles.add("+393467965447 sent you a smile :)");
 
         recyclerView = findViewById(R.id.my_recycler_view);
 
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
                     error = "Telephone number is too short!";
                     break;
                 case TELEPHONE_NUMBER_TOO_LONG:
-                    error="Telephone number is too long!";
+                    error = "Telephone number is too long!";
                     break;
                 case TELEPHONE_NUMBER_NO_COUNTRY_CODE:
                     error = "You have to insert the country code";
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
     }
 
     @Override
-    public void onSMSRecieve(SMSReceivedMessage message) {
+    public void onSMSReceive(SMSReceivedMessage message) {
         if(message.getMessageCode() == 1) {
             Log.d("MainActivity", "Received message:" + message.getMessage());
             Toast.makeText(this, message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements SMSRecieveListene
         switch (message.getSentState()){
             case MESSAGE_SENT:
                 Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
-                mAdapter.getSmiles().add("You sent a smile");
+                mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
                 mAdapter.notifyDataSetChanged();
                 break;
 

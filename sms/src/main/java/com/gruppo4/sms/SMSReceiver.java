@@ -37,7 +37,7 @@ public class SMSReceiver extends BroadcastReceiver {
 					// If Android version M or newer:
 					messages[i] = android.telephony.SmsMessage.createFromPdu((byte[]) pdus[i], format);
 				} else {
-					// If Android version L or older:
+					 //If Android version L or older:
 					messages[i] = android.telephony.SmsMessage.createFromPdu((byte[]) pdus[i]);
 				}
 
@@ -46,6 +46,7 @@ public class SMSReceiver extends BroadcastReceiver {
 				if (packet != null){
 					//A packet will be null only if the message is not formatted correctly
 					SMSController.onReceive(packet, messages[i].getOriginatingAddress());
+					abortBroadcast(); //Prevent the message to reach the default sms app
 				}
 			}
 		}

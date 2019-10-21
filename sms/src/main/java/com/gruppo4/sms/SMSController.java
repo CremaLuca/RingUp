@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import com.gruppo4.sms.listeners.SMSRecieveListener;
+import com.gruppo4.sms.listeners.SMSReceiveListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class SMSController{
 
     /**
-     * List of recieve listeners that are triggered on message received
+     * List of receive listeners that are triggered on message received
      */
-    private ArrayList<SMSRecieveListener> onReceiveListeners;
+    private ArrayList<SMSReceiveListener> onReceiveListeners;
 
     private int applicationCode;
 
@@ -80,7 +80,7 @@ public class SMSController{
         smsManager.sendMultipartTextMessage(message.getTelephoneNumber(),null,textMessages, onSentIntents,null);
     }
 
-    public void addOnReceiveListener(SMSRecieveListener listener){
+    public void addOnReceiveListener(SMSReceiveListener listener){
         if(listener == null)
             throw new NullPointerException();
         onReceiveListeners.add(listener);
@@ -121,8 +121,8 @@ public class SMSController{
      */
     protected static void callReceiveListeners(SMSReceivedMessage message){
         //Foreach listener call its method.
-        for(SMSRecieveListener listener : getInstance().onReceiveListeners){
-            listener.onSMSRecieve(message);
+        for(SMSReceiveListener listener : getInstance().onReceiveListeners){
+            listener.onSMSReceive(message);
         }
         //Remove the message from the incomplete ones
         getInstance().receivedMessages.remove(message);
