@@ -2,8 +2,8 @@ package com.gruppo4.sms;
 
 public class SMSMessage {
 
-    String numero = "";
-    String testo = "";
+    private String numero = "";
+    private String testo = "";
 
     //costruttore
     public SMSMessage(String numTel, String txt){
