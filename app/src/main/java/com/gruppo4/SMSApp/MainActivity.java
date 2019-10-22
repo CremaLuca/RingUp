@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private RecyclerView recyclerView;
     private SmileAdapter mAdapter;
 
+    private static final String SMILE_COMMAND = "SMILE_COMMAND";
+    private Button sendSmileButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +51,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         mAdapter = new SmileAdapter(smiles);
         recyclerView.setAdapter(mAdapter);
 
-        SMSController.setup(123);
+        SMSController.setup(this, 123);
 
         SMSController.addOnReceiveListener(this);
 
-        Button sendSmileButton = findViewById(R.id.sendSmileButton);
+        sendSmileButton = findViewById(R.id.sendSmileButton);
         sendSmileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,11 +64,14 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         });
     }
 
+    /**
+     * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
+     */
     public void onSendSmileButton() {
         String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
         try {
-            SMSMessage message = new SMSMessage(phoneNumber, "Smile! :)", 1);
-            SMSController.sendMessage(this, message, this);
+            SMSMessage message = new SMSMessage(phoneNumber, SMILE_COMMAND);
+            SMSController.sendMessage(message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
         } catch (InvalidTelephoneNumberException telephoneException) {
@@ -134,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSReceived(SMSReceivedMessage message) {
-        if (message.getMessageCode() == 1) {
+        if (message.getMessage().equals(SMILE_COMMAND)) {
             Log.d("MainActivity", "Received message:" + message.getMessage());
             Toast.makeText(this, message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
             mAdapter.getSmiles().add(message.getTelephoneNumber() + " sent you a smile :)");

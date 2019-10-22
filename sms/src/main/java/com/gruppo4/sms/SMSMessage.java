@@ -15,7 +15,16 @@ public class SMSMessage {
     private int messageCode;
     private SentState sentState;
 
-    public SMSMessage(String telephoneNumber, String messageText, int messageCode) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    /**
+     * Wrap for a text message, used to check the parameters validity
+     *
+     * @param telephoneNumber a valid telephone number to send the message to
+     * @param messageText     the text to be sent via one or multiple SMS depending on its length
+     * @throws InvalidSMSMessageException      if the message is longer than MAX_MESSAGE_LENGTH
+     * @throws InvalidTelephoneNumberException if the number is longer than MAX_TELEPHONE_NUMBER_LENGTH or shorter than
+     *                                         MIN_TELEPHONE_NUMBER_LENGTH or misses country code or is not a number
+     */
+    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
 
         TelephoneNumberState telephoneNumberState = checkTelephoneNumber(telephoneNumber);
         if (telephoneNumberState == TelephoneNumberState.TELEPHONE_NUMBER_VALID)
@@ -29,7 +38,7 @@ public class SMSMessage {
         else
             throw new InvalidSMSMessageException("The message text is invalid, reason: " + messageTextState, messageTextState);
 
-        this.messageCode = messageCode;
+        this.messageCode = (int) (Math.random() * 999);
         this.sentState = SentState.NOT_SENT;
     }
 
@@ -43,7 +52,6 @@ public class SMSMessage {
         if (messageText.length() > MAX_MESSAGE_LENGTH) {
             return MessageTextState.MESSAGE_TEXT_TOO_LONG;
         }
-        //TODO : Controllare che non abbia caratteri proibiti
         return MessageTextState.MESSAGE_TEXT_VALID;
     }
 
@@ -75,18 +83,36 @@ public class SMSMessage {
         return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
     }
 
+    /**
+     * Telephone Number is the number this message has to be sent to or has been already sent
+     *
+     * @return the telephone number
+     */
     public String getTelephoneNumber() {
         return telephoneNumber;
     }
 
+    /**
+     * Message Text is the content of the message that can be sent via one or multiple SMS
+     *
+     * @return the message
+     */
     public String getMessageText() {
         return messageText;
     }
 
+    /**
+     * Message Code is an identifier for the service that will send or use the message content
+     * @return the message code
+     */
     public int getMessageCode() {
         return messageCode;
     }
 
+    /**
+     * Splits the message in packets that can be sent via SMS
+     * @return the array of packets to be sent via SMS
+     */
     SMSPacket[] getPackets() {
         //Calculate the number of packets we have to send in order to send the full message
         int packetsCount = (int) (Math.floor(messageText.length() / SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH) + 1);
@@ -107,10 +133,18 @@ public class SMSMessage {
         return packets;
     }
 
+    /**
+     * Sent State is the state for a message that has to be sent or that has been sent
+     * @return
+     */
     public SentState getSentState() {
         return sentState;
     }
 
+    /**
+     * Setter for the sent state, should be called only by the message sender class
+     * @param state
+     */
     void setSentState(SentState state) {
         //If the state is correct we can override it, if there is an error in a packet we keep the error
         if (this.sentState == SentState.NOT_SENT || this.sentState == SentState.MESSAGE_SENT)
@@ -136,6 +170,9 @@ public class SMSMessage {
         TELEPHONE_NUMBER_NOT_A_NUMBER
     }
 
+    /**
+     * A set of states for the message
+     */
     public enum SentState {
         NOT_SENT,
         MESSAGE_SENT,

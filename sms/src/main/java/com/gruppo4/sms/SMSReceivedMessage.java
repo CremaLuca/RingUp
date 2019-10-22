@@ -8,6 +8,10 @@ public class SMSReceivedMessage {
     private int messageCode;
     private String telephoneNumber;
 
+    /**
+     * @param packet
+     * @param telephoneNumber
+     */
     SMSReceivedMessage(SMSPacket packet, String telephoneNumber) {
         packets = new SMSPacket[packet.getTotalNumber()];
         packets[packet.getPacketNumber() - 1] = packet;
@@ -15,29 +19,50 @@ public class SMSReceivedMessage {
         this.applicationCode = packet.getApplicationCode();
         this.messageCode = packet.getMessageCode();
         this.telephoneNumber = telephoneNumber;
-
+        //If we have all the packets for this message (1 in this case) we can notify the app that we received a message
         if (checkCompleted())
             SMSController.callReceiveListeners(this);
     }
 
+    /**
+     * @param packet
+     */
     void addPacket(SMSPacket packet) {
+        if (packets[packet.getPacketNumber()] != null)
+            throw new IllegalStateException("There shouldn't be another packet at the position " + packet.getPacketNumber() + " for the message " + messageCode);
+
         packets[packet.getPacketNumber() - 1] = packet;
         if (checkCompleted())
             SMSController.callReceiveListeners(this);
     }
 
+    /**
+     * @return
+     */
     public int getApplicationCode() {
         return applicationCode;
     }
 
-    public int getMessageCode() {
+    /**
+     *
+     * @return
+     */
+    int getMessageCode() {
         return messageCode;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTelephoneNumber() {
         return telephoneNumber;
     }
 
+    /**
+     * This method can only be called once the message is fully re-constructed
+     * @return the message content
+     */
     public String getMessage() {
         StringBuilder message = new StringBuilder();
         for (SMSPacket packet : packets) {
@@ -46,6 +71,10 @@ public class SMSReceivedMessage {
         return message.toString();
     }
 
+    /**
+     * Controls if the message is fully re-constructed by its packets
+     * @return
+     */
     private boolean checkCompleted() {
         for (SMSPacket packet : packets) {
             if (packet == null)

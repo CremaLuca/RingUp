@@ -10,14 +10,14 @@ public class SMSControllerUnitTest {
 
     @Before
     public void init() {
-        smsController = SMSController.setup(1);
+        smsController = SMSController.setup(null, 1);
     }
 
 
     @Test
     public void message_received_listener_isNotNull(){
         try {
-            smsController.addOnReceiveListener(null);
+            SMSController.addOnReceiveListener(null);
             Assert.fail("Should have thrown NullPointerException exception");
         }catch(NullPointerException e){
             //Success

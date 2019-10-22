@@ -16,7 +16,7 @@ public class SMSPacketUnitTest {
 
     @Test
     public void parse_packet_wrongFormat() {
-        Assert.assertNull(SMSPacket.parseSMSPacket("This is definetly" + SMSPacket.SEPARATOR + "a wrong format" + SMSPacket.SEPARATOR + "whatever the format will be"));
+        Assert.assertNull(SMSPacket.parseSMSPacket("This is definitely " + SMSPacket.SEPARATOR + "a wrong format" + SMSPacket.SEPARATOR + "whatever the format will be"));
     }
 
     //Normal tests

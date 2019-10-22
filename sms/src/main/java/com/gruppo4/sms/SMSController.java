@@ -1,12 +1,16 @@
 package com.gruppo4.sms;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
 
 import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
@@ -29,37 +33,46 @@ public class SMSController {
      */
     private ArrayList<SMSReceivedMessage> receivedMessages;
 
+    private Context context;
+
+
     private SMSController(int applicationCode) {
         onReceiveListeners = new ArrayList<>();
         receivedMessages = new ArrayList<>();
         this.applicationCode = applicationCode;
     }
 
-    public static SMSController setup(int applicationCode) {
+    public static SMSController setup(Context context, int applicationCode) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED) {
+            throw new SecurityException("Missing Manifest.permission.SEND_SMS permission, use requestPermissions() to be granted this permission runtime");
+        }
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED) {
+            throw new SecurityException("Missing Manifest.permission.RECEIVE_SMS permission, use requestPermissions() to be granted this permission runtime");
+        }
         if (instance != null) {
             //We can't have multiple application codes in the same app
-            if (instance.applicationCode != applicationCode) {
+            if (instance.applicationCode != applicationCode)
                 throw new IllegalStateException("The SMSController is already initalized!");
-            } else {
-                return instance;
-            }
+
+        } else {
+            instance = new SMSController(applicationCode);
         }
-        instance = new SMSController(applicationCode);
+        instance.context = context;
         return instance;
     }
 
     /**
      * Send a SMSMessage, multiple packets could be sent
      *
-     * @param context
-     * @param message
+     * @param message the message to be sent via SMS
+     * @param listener called when the message is completely sent to the provider
      */
-    public static void sendMessage(Context context, SMSMessage message, SMSSentListener listener) {
+    public static void sendMessage(SMSMessage message, SMSSentListener listener) {
         //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our OnSMSSent class
-        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT_" + message.getMessageCode()), 0);
+        PendingIntent sentPI = PendingIntent.getBroadcast(getInstance().context, 0, new Intent("SMS_SENT_" + message.getMessageCode()), 0);
         BroadcastReceiver receiver = new OnSMSSent(message, listener);
         //Set the new BroadcastReceiver to intercept intents with the right filter
-        context.registerReceiver(receiver, new IntentFilter("SMS_SENT_" + message.getMessageCode()));
+        getInstance().context.registerReceiver(receiver, new IntentFilter("SMS_SENT_" + message.getMessageCode()));
         //Retrieve the Android default smsManager
         SmsManager smsManager = SmsManager.getDefault();
         //Split the message in packets (multiple SMSs)
@@ -93,7 +106,7 @@ public class SMSController {
     /**
      * Method used by OnSMSReceived to send a packet
      *
-     * @param packet
+     * @param packet the sms content wrapped in a packet
      */
     static void onReceive(SMSPacket packet, String telephoneNumber) {
         //Use it only if it's for our application

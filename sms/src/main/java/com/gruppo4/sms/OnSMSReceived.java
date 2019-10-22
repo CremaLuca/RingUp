@@ -9,8 +9,8 @@ import android.os.Bundle;
 
 public class OnSMSReceived extends BroadcastReceiver {
 
-	private static final String TAG = "SMSReciever";
 	private static final String PDU_TYPE = "pdus";
+	private static final String FORMAT_KEY = "format";
 
 	/**
 	 * This method is subscribed to the intent of a message received, and will be called whenever a new message is received.
@@ -23,7 +23,7 @@ public class OnSMSReceived extends BroadcastReceiver {
 		// Get the SMS message.
 		Bundle bundle = intent.getExtras();
 		android.telephony.SmsMessage[] messages;
-		String format = bundle.getString("format");
+		String format = bundle.getString(FORMAT_KEY);
 		// Retrieve the SMS message received.
 		Object[] pdus = (Object[]) bundle.get(PDU_TYPE);
 		if (pdus != null) {
