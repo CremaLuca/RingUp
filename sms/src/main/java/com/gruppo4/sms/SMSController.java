@@ -5,16 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
 
+import java.util.ArrayList;
+
 public class SMSController {
 
-    enum SentStatus{
-
+    public enum SentStatus{
+        INVIATO,
+        ERRORE
     }
+
+    public static ArrayList<SMSReceivedListener> receivedListeners = new ArrayList<>();
 
     public SMSController(){}
 
     //Invio del messaggio
-    public void sendMessage(SMSMessage message, Context context) {
+    public static void sendMessage(SMSMessage message, Context context) {
 
         SmsManager sms = SmsManager.getDefault();
         String SENT = "SMS_SENT";
@@ -25,15 +30,13 @@ public class SMSController {
 
     }
 
-    public void onMessageReceived(SMSReceivedListener listener) {
-
-
+    public static void addOnReceivedListener(SMSReceivedListener smsReceivedListener){
+        receivedListeners.add(smsReceivedListener);
     }
 
-    public void onMessageSent(SMSSentListener listener){
-
-
-
+    public static void callReceivedListener(SMSMessage message){
+        for(SMSReceivedListener listener: receivedListeners) {
+            listener.onMessageReceived(message);
+        }
     }
-
 }

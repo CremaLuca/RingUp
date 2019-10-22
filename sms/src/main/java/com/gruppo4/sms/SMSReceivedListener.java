@@ -1,9 +1,7 @@
 package com.gruppo4.sms;
 
-public class SMSReceivedListener {
+public interface SMSReceivedListener {
 
-    public void onMessageReceived(SMSMessage message){
-
-    }
+    void onMessageReceived(SMSMessage message);
 
 }
