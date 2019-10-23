@@ -13,24 +13,29 @@ import com.gruppo4.sms.SMSMessage;
 
 public class MainActivity extends AppCompatActivity {
 
+    /*
+     *What happens when the app is opened
+     *@param a Bundle
+     *@return void
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Richiediamo il permesso di leggere e inviare i messaggi
+        //we ask for the permissions to send and receive sms
         requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
         requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
 
-        //invia un sms all'apertura dell'app
-        SMSController contr = new SMSController();
-        SMSMessage sms = new SMSMessage("3457090735", "prova sms con classe SMSMessage");
-        contr.sendMessage(sms);
+        //send a sms as the app is opened
+        SMSController controller = new SMSController();
+        SMSMessage sms = new SMSMessage("3457090735", "hello, this is a test sms");
+        controller.sendMessage(sms);
 
-        //toast per notificare l'invio del messaggio
+        //this is a toast to notify the message's sending
         Context context = getApplicationContext();
-        CharSequence text = "Messaggio inviato!";
+        CharSequence text = "Message sent!";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);

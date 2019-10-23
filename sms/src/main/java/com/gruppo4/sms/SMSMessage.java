@@ -2,22 +2,34 @@ package com.gruppo4.sms;
 
 public class SMSMessage {
 
-    private String numero = "";
-    private String testo = "";
+    private String number = "";
+    private String text = "";
 
-    //costruttore
-    public SMSMessage(String numTel, String txt){
-        numero = numTel;
-        testo = txt;
+    /*
+     *constructor
+     *@param a String as phone number to which we send the message and a String as the text of the message
+     *@return 
+     */
+    public SMSMessage(String phoneNum, String smsTxt){
+        number = phoneNum;
+        text = smsTxt;
     }
 
-    //restituisce il numero di telefono
-    public String getTelephoneNumber(){
-        return numero;
+    /*
+     *Returns the phone number to which we send the message
+     *@param no parameters
+     *@return the phone number
+     */
+    public String getPhoneNumber(){
+        return number;
     }
 
-    //restituisce il testo del messaggio
+    /*
+     *Returns the message text
+     *@param no parameters
+     *@return the message text
+     */
     public String getTextMessage(){
-        return testo;
+        return text;
     }
 }

@@ -12,37 +12,52 @@ public class SMSController {
     private static ArrayList<SMSReceivedListener> receivedListeners = new ArrayList<>();
     private static ArrayList<SMSSentListener> sentListeners = new ArrayList<>();
 
-    //costruttore
+
+    /*
+     *constructor
+     */
     public SMSController(){};
 
     /*
-     *invio messaggio
-     *@param un oggetto SMSMessage
+     *send a SMS message
+     *@param an object of SMSMessage class
      *@return void
      */
     public void sendMessage(SMSMessage message){
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(message.getTelephoneNumber(), null, message.getTextMessage(),null, null);
+        sms.sendTextMessage(message.getPhoneNumber(), null, message.getTextMessage(),null, null);
 
     }
 
-    //aggiunge alla lista di receivedListeners
+    /*
+     *add a listener to the list receivedListeners
+     *@param an object of SMSReceivedListener class
+     *@return void
+     */
     //NB: su Trello si chiama onMessageReceived(SMSReceivedListener listener)
     public static void addOnReceivedListeners(SMSReceivedListener listener){
         receivedListeners.add(listener);
     }
 
-    //aggiunge alla lista di sentListeners
+    /*
+     *add a listener to the list sentListeners
+     *@param an object of SMSSentListener class
+     *@return void
+     */
     //NB: su Trello si chiama onMessageSent(SMSSentListener listener)
     public static void addOnSentListeners(SMSSentListener listener){
         sentListeners.add(listener);
     }
 
-    //quando arriva un messaggio chiamo il receivedListener
-    public static void callReceivedListeners(SMSMessage messaggio){
+    /*
+     *When a message arrives, call the receivedListener
+     *@param a SMSMessage object
+     *@return void
+     */
+    public static void callReceivedListeners(SMSMessage message){
         for (SMSReceivedListener listener : receivedListeners){
-            listener.onMessageReceived(messaggio);
+            listener.onMessageReceived(message);
         }
     }
 
