@@ -9,7 +9,7 @@ import android.telephony.SmsMessage;
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
 
-public class SMSReceiver extends BroadcastReceiver {
+public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

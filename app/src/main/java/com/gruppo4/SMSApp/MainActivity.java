@@ -16,8 +16,8 @@ import com.gruppo4.sms.interfaces.SMSSentListener;
 public class MainActivity extends AppCompatActivity implements SMSReceivedListener, SMSSentListener {
 
     SMSMessage smsMessage;
-    TextView number, smileReceiver, textView;
-    Button smile_button;
+    TextView numberTextView, smileReceiver, textView;
+    Button smileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,37 +25,40 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        number = findViewById(R.id.number);
-        smile_button = findViewById(R.id.smile_button);
+        numberTextView = findViewById(R.id.number);
+        smileButton = findViewById(R.id.smile_button);
         smileReceiver = findViewById(R.id.smileReceiver);
         textView = findViewById(R.id.textView);
 
         SMSController.addOnReceivedListener(this);
 
-        smile_button.setOnClickListener(new View.OnClickListener() {
+        smileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                smsMessage = new SMSMessage(number.getText().toString(), "Sent you a smile :)");
-                //Simple check to see if there's a number
-                if (!(smsMessage.getTelephoneNumber().equals(""))) {
-                    SMSController.sendMessage(smsMessage, getBaseContext());
-                    textView.setText("Message sent to " + smsMessage.getTelephoneNumber());
-                } else
-                    Toast.makeText(MainActivity.this, "Enter the Number", Toast.LENGTH_SHORT).show();
+                String telephoneNumber = numberTextView.getText().toString();
+                if (!SMSMessage.checkTelephoneNumber(telephoneNumber)) {
+                    Toast.makeText(MainActivity.this, "Wrong telephone number", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                smsMessage = new SMSMessage(telephoneNumber, "Sent you a smile :)");
+                SMSController.sendMessage(smsMessage, getBaseContext(), MainActivity.this);
             }
         });
     }
 
     @Override
-    public void onSentReceived(SMSMessage message, SMSController.SentStatus status) {
-        switch (status) {
-            case ERROR:
-                Toast.makeText(this, "Message NOT Sent", Toast.LENGTH_SHORT).show();
+    public void onSentReceived(SMSMessage message) {
+        switch (message.getState()) {
+            case MESSAGE_SENT:
+                Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
+                textView.setText("Message sent to " + smsMessage.getTelephoneNumber());
                 break;
-            case SENT:
-                Toast.makeText(this, "Message Sent", Toast.LENGTH_SHORT).show();
+            default:
+                Toast.makeText(this, "Message not sent", Toast.LENGTH_SHORT).show();
+                textView.setText("Message not sent to " + smsMessage.getTelephoneNumber());
                 break;
         }
+
     }
 
     @Override
