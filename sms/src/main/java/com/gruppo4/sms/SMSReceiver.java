@@ -17,10 +17,10 @@ public class SMSReceiver extends BroadcastReceiver {
             SMSMessage message;
             for(int i=0;i<smsExtra.length;++i){
                 SmsMessage sms = SmsMessage.createFromPdu((byte[])smsExtra[i], format);
-                String testo = sms.getMessageBody();
-                String numero = sms.getOriginatingAddress();
+                String text = sms.getMessageBody();
+                String number = sms.getOriginatingAddress();
                 //Message building
-                message = new SMSMessage(numero, testo);
+                message = new SMSMessage(number, text);
 
                 SMSController.callReceivedListener(message);
             }

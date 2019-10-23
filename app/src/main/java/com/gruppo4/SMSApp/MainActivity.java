@@ -36,14 +36,14 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         smile_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                smsMessage = new SMSMessage(number.getText().toString(), "Ti ha inviato un sorriso :)");
+                smsMessage = new SMSMessage(number.getText().toString(), "Send you a smile :)");
                 //Simple check to see if there's a number
                 if(!(smsMessage.getTelephoneNumber().equals(""))) {
                     SMSController.sendMessage(smsMessage, getBaseContext());
                     textView.setText("Message sent to "+ smsMessage.getTelephoneNumber());
                 }
                 else
-                    Toast.makeText(MainActivity.this, "Inserire numero", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Enter the Number", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     public void onSentReceived(SMSMessage message, SMSController.SentStatus status) {
         switch (status) {
             case ERROR:
-                Toast.makeText(this, "Messaggio non inviato", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Message NOT Sent", Toast.LENGTH_SHORT).show();
                 break;
             case SENT:
-                Toast.makeText(this, "Messaggio inviato", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Message Sent", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
