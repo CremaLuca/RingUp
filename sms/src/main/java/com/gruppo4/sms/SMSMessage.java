@@ -9,7 +9,7 @@ public class SMSMessage {
         tel_number = numeroTelefono;
     }
 
-    public String getTelephonNumber(){
+    public String getTelephoneNumber(){
         return tel_number;
     }
 
