@@ -12,12 +12,12 @@ public class SMSMessage {
     }
 
     //restituisce il numero di telefono
-    public String getNumber(){
+    public String getTelephoneNumber(){
         return numero;
     }
 
     //restituisce il testo del messaggio
-    public String getText(){
+    public String getTextMessage(){
         return testo;
     }
 }
