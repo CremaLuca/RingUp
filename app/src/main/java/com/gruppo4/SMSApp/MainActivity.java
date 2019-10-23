@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         smile_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                smsMessage = new SMSMessage(number.getText().toString(), "Send you a smile :)");
+                smsMessage = new SMSMessage(number.getText().toString(), "Sent you a smile :)");
                 //Simple check to see if there's a number
                 if (!(smsMessage.getTelephoneNumber().equals(""))) {
                     SMSController.sendMessage(smsMessage, getBaseContext());
