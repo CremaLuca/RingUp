@@ -27,7 +27,7 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="120dp"
         android:layout_marginEnd="100dp"
-        android:hint="Thelephone Number"
+        android:hint="Telephone Number"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
