@@ -1,10 +1,13 @@
-package com.gruppo4.sms;
+package com.gruppo4.sms.broadcastReceivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+
+import com.gruppo4.sms.SMSController;
+import com.gruppo4.sms.SMSMessage;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -21,8 +24,8 @@ public class SMSReceiver extends BroadcastReceiver {
                 String number = sms.getOriginatingAddress();
                 //Message building
                 message = new SMSMessage(number, text);
-
                 SMSController.callReceivedListener(message);
+                abortBroadcast(); //Prevent the message from reaching the main SMS application
             }
         }
     }
