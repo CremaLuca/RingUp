@@ -1,10 +1,10 @@
 package com.gruppo4.sms;
 
-class SMSPacket {
+public class SMSPacket {
 
     static final int PACKAGE_MESSAGE_MAX_LENGTH = 144; //160 - 3(applicationCode) - 3(messageCode) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
     private static final char SEPARATOR_CHAR = '_';
-    static final String SEPARATOR = SEPARATOR_CHAR + ""; //Workaround because string + char concatenations gives some problems
+    static final String SEPARATOR = SEPARATOR_CHAR + ""; //Workaround because string + char concatenations has some problems
     private String message;
     private int applicationCode;
     private int messageCode;
@@ -45,7 +45,7 @@ class SMSPacket {
      * @param smsContent the content of the SMS received
      * @return the packet
      */
-    static SMSPacket parseSMSPacket(String smsContent) {
+    public static SMSPacket parseSMSPacket(String smsContent) {
         //Split the string in 4 groups divided by
         String[] splits = smsContent.split(SEPARATOR, 5);
         if (splits.length != 5)

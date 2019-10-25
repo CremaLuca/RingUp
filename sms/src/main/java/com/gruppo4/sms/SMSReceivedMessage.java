@@ -21,7 +21,7 @@ public class SMSReceivedMessage {
         this.telephoneNumber = telephoneNumber;
         //If we have all the packets for this message (1 in this case) we can notify the app that we received a message
         if (checkCompleted())
-            SMSController.callReceiveListeners(this);
+            SMSController.callOnReceivedListeners(this);
     }
 
     /**
@@ -32,8 +32,9 @@ public class SMSReceivedMessage {
             throw new IllegalStateException("There shouldn't be another packet at the position " + packet.getPacketNumber() + " for the message " + messageCode);
 
         packets[packet.getPacketNumber() - 1] = packet;
+        //If we have all the packets we call the listeners
         if (checkCompleted())
-            SMSController.callReceiveListeners(this);
+            SMSController.callOnReceivedListeners(this);
     }
 
     /**

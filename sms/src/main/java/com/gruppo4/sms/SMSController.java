@@ -12,6 +12,7 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+import com.gruppo4.sms.broadcastReceivers.SMSSentBroadcastReceiver;
 import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
@@ -26,7 +27,7 @@ public class SMSController {
     /**
      * List of receive listeners that are triggered on message received
      */
-    private ArrayList<SMSReceivedListener> onReceiveListeners;
+    private ArrayList<SMSReceivedListener> smsReceivedListeners;
     private int applicationCode;
     /**
      * List of incomplete messages received, when every packet of a message is arrived it gets removed from this list
@@ -37,11 +38,16 @@ public class SMSController {
 
 
     private SMSController(int applicationCode) {
-        onReceiveListeners = new ArrayList<>();
+        smsReceivedListeners = new ArrayList<>();
         receivedMessages = new ArrayList<>();
         this.applicationCode = applicationCode;
     }
 
+    /**
+     * @param context         is used to register the BroadcastReceiver
+     * @param applicationCode
+     * @return
+     */
     public static SMSController setup(Context context, int applicationCode) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED) {
             throw new SecurityException("Missing Manifest.permission.SEND_SMS permission, use requestPermissions() to be granted this permission runtime");
@@ -70,7 +76,7 @@ public class SMSController {
     public static void sendMessage(SMSMessage message, SMSSentListener listener) {
         //Create a PendingIntent, when the message will be sent from the android SMSManager a beacon of SMS_SENT will be intercepted by our OnSMSSent class
         PendingIntent sentPI = PendingIntent.getBroadcast(getInstance().context, 0, new Intent("SMS_SENT_" + message.getMessageCode()), 0);
-        BroadcastReceiver receiver = new OnSMSSent(message, listener);
+        BroadcastReceiver receiver = new SMSSentBroadcastReceiver(message, listener);
         //Set the new BroadcastReceiver to intercept intents with the right filter
         getInstance().context.registerReceiver(receiver, new IntentFilter("SMS_SENT_" + message.getMessageCode()));
         //Retrieve the Android default smsManager
@@ -91,12 +97,22 @@ public class SMSController {
         smsManager.sendMultipartTextMessage(message.getTelephoneNumber(), null, textMessages, onSentIntents, null);
     }
 
-    public static void addOnReceiveListener(SMSReceivedListener listener) {
+    /**
+     * Subscribes the listener to be called once a message with the right code is received
+     *
+     * @param listener    a class that implements SMSReceivedListener
+     * @param messageCode the identifier of the message
+     */
+    public static void addOnReceiveListener(SMSReceivedListener listener, int messageCode) {
         if (listener == null)
             throw new NullPointerException();
-        getInstance().onReceiveListeners.add(listener);
+        getInstance().smsReceivedListeners.add(listener);
     }
 
+    /**
+     * Returns the identifier of this application, used to avoid interfering with other application's messages
+     * @return the application code
+     */
     public static int getApplicationCode() {
         if (instance == null)
             throw new IllegalStateException("SMSController not initialized");
@@ -108,7 +124,7 @@ public class SMSController {
      *
      * @param packet the sms content wrapped in a packet
      */
-    static void onReceive(SMSPacket packet, String telephoneNumber) {
+    public static void onReceive(SMSPacket packet, String telephoneNumber) {
         //Use it only if it's for our application
         if (getInstance().applicationCode == packet.getApplicationCode()) {
             //Let's see if we already have the message stored
@@ -128,20 +144,18 @@ public class SMSController {
     }
 
     /**
-     * Call every listener once every packet of a message is arrived
-     *
-     * @param message
+     * Calls the specified listeners for the input message
+     * @param message a fully reconstructed received message
      */
-    static void callReceiveListeners(SMSReceivedMessage message) {
-        //Foreach listener call its method.
-        for (SMSReceivedListener listener : getInstance().onReceiveListeners) {
+    static void callOnReceivedListeners(SMSReceivedMessage message) {
+        for (SMSReceivedListener listener : getInstance().smsReceivedListeners) {
+            //if(listener.getMessageCode() == message.getMessageCode()){
             listener.onSMSReceived(message);
+            //}
         }
-        //Remove the message from the incomplete ones
-        getInstance().receivedMessages.remove(message);
     }
 
-    static SMSController getInstance() {
+    private static SMSController getInstance() {
         if (instance == null)
             throw new IllegalStateException("SMSController is not setup!");
         return instance;

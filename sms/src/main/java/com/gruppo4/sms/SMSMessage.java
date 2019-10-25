@@ -145,7 +145,7 @@ public class SMSMessage {
      * Setter for the sent state, should be called only by the message sender class
      * @param state
      */
-    void setSentState(SentState state) {
+    public void setSentState(SentState state) {
         //If the state is correct we can override it, if there is an error in a packet we keep the error
         if (this.sentState == SentState.NOT_SENT || this.sentState == SentState.MESSAGE_SENT)
             this.sentState = state;

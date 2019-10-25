@@ -7,9 +7,10 @@ import android.content.Intent;
 import android.telephony.SmsManager;
 
 import com.gruppo4.sms.SMSMessage;
-import com.gruppo4.sms.interfaces.SMSSentListener;
+import com.gruppo4.sms.listeners.SMSSentListener;
 
 public class SMSSentBroadcastReceiver extends BroadcastReceiver {
+
     private SMSMessage message;
     private SMSSentListener listener;
 
@@ -52,6 +53,6 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 break;
         }
         this.message.setSentState(state);
-        listener.onSentReceived(message);
+        listener.onSMSSent(message);
     }
 }

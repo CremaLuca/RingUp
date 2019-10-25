@@ -56,4 +56,3 @@
         app:layout_constraintTop_toBottomOf="@+id/sendSmileButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
