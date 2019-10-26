@@ -24,7 +24,7 @@ public class SMSMessage {
      * @throws InvalidTelephoneNumberException if the number is longer than MAX_TELEPHONE_NUMBER_LENGTH or shorter than
      *                                         MIN_TELEPHONE_NUMBER_LENGTH or misses country code or is not a number
      */
-    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public SMSMessage(String telephoneNumber, String messageText, int messageCode) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
 
         TelephoneNumberState telephoneNumberState = checkTelephoneNumber(telephoneNumber);
         if (telephoneNumberState == TelephoneNumberState.TELEPHONE_NUMBER_VALID)
@@ -38,7 +38,7 @@ public class SMSMessage {
         else
             throw new InvalidSMSMessageException("The message text is invalid, reason: " + messageTextState, messageTextState);
 
-        this.messageCode = (int) (Math.random() * 999);
+        this.messageCode = messageCode;
         this.sentState = SentState.NOT_SENT;
     }
 

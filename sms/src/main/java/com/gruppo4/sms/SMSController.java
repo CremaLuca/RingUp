@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.util.SparseArray;
 
 import androidx.core.content.ContextCompat;
 
@@ -27,7 +28,7 @@ public class SMSController {
     /**
      * List of receive listeners that are triggered on message received
      */
-    private ArrayList<SMSReceivedListener> smsReceivedListeners;
+    private SparseArray<ArrayList<SMSReceivedListener>> smsReceivedListeners;
     private int applicationCode;
     /**
      * List of incomplete messages received, when every packet of a message is arrived it gets removed from this list
@@ -38,13 +39,13 @@ public class SMSController {
 
 
     private SMSController(int applicationCode) {
-        smsReceivedListeners = new ArrayList<>();
+        smsReceivedListeners = new SparseArray<>();
         receivedMessages = new ArrayList<>();
         this.applicationCode = applicationCode;
     }
 
     /**
-     * @param context         is used to register the BroadcastReceiver
+     * @param context is used to register the BroadcastReceiver
      * @param applicationCode
      * @return
      */
@@ -104,9 +105,14 @@ public class SMSController {
      * @param messageCode the identifier of the message
      */
     public static void addOnReceiveListener(SMSReceivedListener listener, int messageCode) {
-        if (listener == null)
-            throw new NullPointerException();
-        getInstance().smsReceivedListeners.add(listener);
+        ArrayList<SMSReceivedListener> listeners = getInstance().smsReceivedListeners.get(messageCode);
+        //If the array  hasn't been initialized, create it
+        if (listeners == null)
+            listeners = new ArrayList<>();
+        //Add the listener to the list
+        listeners.add(listener);
+        //Put it back in the collection
+        getInstance().smsReceivedListeners.put(messageCode, listeners);
     }
 
     /**
@@ -148,10 +154,12 @@ public class SMSController {
      * @param message a fully reconstructed received message
      */
     static void callOnReceivedListeners(SMSReceivedMessage message) {
-        for (SMSReceivedListener listener : getInstance().smsReceivedListeners) {
-            //if(listener.getMessageCode() == message.getMessageCode()){
+        ArrayList<SMSReceivedListener> receivedListeners = getInstance().smsReceivedListeners.get(message.getMessageCode());
+        //If we have no listeners for that code, just ignore it
+        if (receivedListeners == null)
+            return;
+        for (SMSReceivedListener listener : receivedListeners) {
             listener.onSMSReceived(message);
-            //}
         }
     }
 

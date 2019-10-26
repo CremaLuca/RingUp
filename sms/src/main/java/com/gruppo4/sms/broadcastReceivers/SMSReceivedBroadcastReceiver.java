@@ -21,7 +21,7 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 SmsMessage sms = SmsMessage.createFromPdu((byte[])smsExtra[i], format);
                 String text = sms.getMessageBody();
                 String number = sms.getOriginatingAddress();
-                //Pakcet building
+                //Packet building
                 SMSPacket packet = SMSPacket.parseSMSPacket(text);
                 SMSController.onReceive(packet, number);
                 abortBroadcast(); //Prevent the message from reaching the main SMS application
