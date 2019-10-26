@@ -18,6 +18,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberTextView" />
 
+    <Button
+        android:id="@+id/sendExtraCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="Send wrong code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendSmileButton" />
+
     <AutoCompleteTextView
         android:id="@+id/phoneNumberTextView"
         android:layout_width="0dp"
@@ -49,10 +62,11 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="116dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendSmileButton" />
+        app:layout_constraintTop_toBottomOf="@+id/sendExtraCode" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,8 +38,15 @@ public class SMSMessage {
         else
             throw new InvalidSMSMessageException("The message text is invalid, reason: " + messageTextState, messageTextState);
 
+        if (!checkMessageCode(messageCode))
+            throw new IllegalArgumentException("Message code is out of bounds");
+
         this.messageCode = messageCode;
         this.sentState = SentState.NOT_SENT;
+    }
+
+    public static boolean checkMessageCode(int messageCode) {
+        return messageCode > -99 && messageCode < 1000;
     }
 
     /**

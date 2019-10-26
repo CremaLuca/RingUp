@@ -55,22 +55,30 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
         SMSController.addOnReceiveListener(this, 1);
 
-        sendSmileButton = findViewById(R.id.sendSmileButton);
-        sendSmileButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSendSmileButton();
             }
         });
+        findViewById(R.id.sendExtraCode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSendWrongCodeButton();
+            }
+        });
     }
 
     /**
-     * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
+     * Sends a message using the sms library
+     *
+     * @param text
+     * @param telephoneNumber
+     * @param messageCode
      */
-    public void onSendSmileButton() {
-        String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
+    private void sendMessage(String text, String telephoneNumber, int messageCode) {
         try {
-            SMSMessage message = new SMSMessage(phoneNumber, SMILE_COMMAND);
+            SMSMessage message = new SMSMessage(telephoneNumber, text, messageCode);
             SMSController.sendMessage(message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
@@ -93,6 +101,19 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
             Log.e("MainActivity", telephoneException.getMessage());
         }
+    }
+
+    public void onSendWrongCodeButton() {
+        String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
+        sendMessage(SMILE_COMMAND, phoneNumber, 543);
+    }
+
+    /**
+     * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
+     */
+    public void onSendSmileButton() {
+        String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
+        sendMessage(SMILE_COMMAND, phoneNumber,1);
     }
 
     @Override
