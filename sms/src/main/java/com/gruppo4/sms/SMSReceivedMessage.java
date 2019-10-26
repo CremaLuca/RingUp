@@ -28,7 +28,7 @@ public class SMSReceivedMessage {
      * @param packet
      */
     void addPacket(SMSPacket packet) {
-        if (packets[packet.getPacketNumber()] != null)
+        if (packets[packet.getPacketNumber() - 1] != null)
             throw new IllegalStateException("There shouldn't be another packet at the position " + packet.getPacketNumber() + " for the message " + messageCode);
 
         packets[packet.getPacketNumber() - 1] = packet;

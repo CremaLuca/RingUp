@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Richiediamo il permesso di leggere i messaggi
+        //Permission to receive messages
         requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1);
-        //Chiediamo il permesso di mandarli i messaggi
+        //Permission to send messages
         requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
 
         ArrayList<String> smiles = new ArrayList<>();

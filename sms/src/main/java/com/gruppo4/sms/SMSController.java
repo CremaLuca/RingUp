@@ -60,8 +60,8 @@ public class SMSController {
             //We can't have multiple application codes in the same app
             if (instance.applicationCode != applicationCode)
                 throw new IllegalStateException("The SMSController is already initalized!");
-
-        } else {
+        }
+        else {
             instance = new SMSController(applicationCode);
         }
         instance.context = context;
