@@ -130,9 +130,15 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     public void onSMSSent(SMSMessage message, SMSMessage.SentState state) {
         Log.d("MainActivity", "Message sent");
         if (state == SMSMessage.SentState.MESSAGE_SENT) {
-            Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
-            mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
-            mAdapter.notifyDataSetChanged();
+            if (message.getMessageCode() == SMILE_MESSAGE_ID) {
+                Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
+                mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
+                mAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
+                mAdapter.getSmiles().add("You sent a message to " + message.getTelephoneNumber());
+                mAdapter.notifyDataSetChanged();
+            }
         } else {
             Log.w("MainActivity", "Unable to send sms, reason: " + state);
             if (message.getMessageCode() == SMILE_MESSAGE_ID)
