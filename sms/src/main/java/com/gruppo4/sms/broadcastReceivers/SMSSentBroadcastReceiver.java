@@ -52,7 +52,6 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 state = SMSMessage.SentState.ERROR_LIMIT_EXCEEDED;
                 break;
         }
-        this.message.setSentState(state);
-        listener.onSMSSent(message);
+        listener.onSMSSent(message, state);
     }
 }

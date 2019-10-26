@@ -13,7 +13,6 @@ public class SMSMessage {
     private String telephoneNumber;
     private String messageText;
     private int messageCode;
-    private SentState sentState;
 
     /**
      * Wrap for a text message, used to check the parameters validity
@@ -42,7 +41,6 @@ public class SMSMessage {
             throw new IllegalArgumentException("Message code is out of bounds");
 
         this.messageCode = messageCode;
-        this.sentState = SentState.NOT_SENT;
     }
 
     public static boolean checkMessageCode(int messageCode) {
@@ -138,24 +136,6 @@ public class SMSMessage {
             packets[i] = new SMSPacket(applicationCode, messageCode, i + 1, packetsCount, subMessage);
         }
         return packets;
-    }
-
-    /**
-     * Sent State is the state for a message that has to be sent or that has been sent
-     * @return
-     */
-    public SentState getSentState() {
-        return sentState;
-    }
-
-    /**
-     * Setter for the sent state, should be called only by the message sender class
-     * @param state
-     */
-    public void setSentState(SentState state) {
-        //If the state is correct we can override it, if there is an error in a packet we keep the error
-        if (this.sentState == SentState.NOT_SENT || this.sentState == SentState.MESSAGE_SENT)
-            this.sentState = state;
     }
 
     /**

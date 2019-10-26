@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private SmileAdapter mAdapter;
 
     private static final String SMILE_COMMAND = "SMILE_COMMAND";
-    private Button sendSmileButton;
+    private static final int SMILE_MESSAGE_ID = 1;
+    private static final int EXTRA_MESSAGE_ID = 543;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
         SMSController.setup(this, 123);
 
-        SMSController.addOnReceiveListener(this, 1);
+        SMSController.addOnReceiveListener(this, SMILE_MESSAGE_ID);
 
         findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     public void onSendWrongCodeButton() {
         String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(SMILE_COMMAND, phoneNumber, 543);
+        sendMessage(SMILE_COMMAND, phoneNumber, EXTRA_MESSAGE_ID);
     }
 
     /**
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendSmileButton() {
         String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(SMILE_COMMAND, phoneNumber,1);
+        sendMessage(SMILE_COMMAND, phoneNumber, SMILE_MESSAGE_ID);
     }
 
     @Override
@@ -127,15 +127,18 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     @Override
-    public void onSMSSent(SMSMessage message) {
+    public void onSMSSent(SMSMessage message, SMSMessage.SentState state) {
         Log.d("MainActivity", "Message sent");
-        if (message.getSentState() == SMSMessage.SentState.MESSAGE_SENT) {
+        if (state == SMSMessage.SentState.MESSAGE_SENT) {
             Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
             mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
             mAdapter.notifyDataSetChanged();
         } else {
-            Log.w("MainActivity", "Unable to send sms, reason: " + message.getSentState());
-            Toast.makeText(this, "Unable to send smile :(", Toast.LENGTH_LONG).show();
+            Log.w("MainActivity", "Unable to send sms, reason: " + state);
+            if (message.getMessageCode() == SMILE_MESSAGE_ID)
+                Toast.makeText(this, "Unable to send smile :(", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(this, "Unable to send message, reason: " + state, Toast.LENGTH_LONG).show();
         }
     }
 }
