@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
-import com.gruppo4.sms.SMSReceivedMessage;
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.listeners.SMSReceivedListener;

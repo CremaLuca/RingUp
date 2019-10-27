@@ -1,6 +1,7 @@
 package com.gruppo4.sms.utils;
 
 import com.gruppo4.sms.SMSMessage;
+import com.gruppo4.sms.SMSPacket;
 
 public class SMSChecks {
 
@@ -55,9 +56,4 @@ public class SMSChecks {
         }
         return SMSMessage.MessageTextState.MESSAGE_TEXT_VALID;
     }
-
-    public static boolean checkMessageCode(int messageCode) {
-        return messageCode > -99 && messageCode < 1000;
-    }
-
 }
