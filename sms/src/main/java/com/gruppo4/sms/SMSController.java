@@ -43,7 +43,6 @@ public class SMSController {
     private ArrayList<SMSReceivedListener> receivedListeners;
     private ArrayList<ArrayList<SMSPacket>> receivedPackets; //these are partially constructed messages
     //each list has packets with the same messageID
-    private SMSReceivedBroadcastReceiver receivedReceiver;
 
     private SMSController(Context context, int applicationCode)
     {
@@ -59,7 +58,6 @@ public class SMSController {
         instance = this;
         next_id = 0;
         receivedPackets = new ArrayList<>();
-        receivedReceiver = new SMSReceivedBroadcastReceiver();
     }
 
     public static void init(Context context, int applicationCode){
