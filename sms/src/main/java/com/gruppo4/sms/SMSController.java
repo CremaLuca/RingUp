@@ -6,11 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.util.SparseArray;
-
 import androidx.core.content.ContextCompat;
 
 import com.gruppo4.sms.broadcastReceivers.SMSSentBroadcastReceiver;
@@ -21,6 +19,15 @@ import java.util.ArrayList;
 
 public class SMSController {
 
+    public enum SentState {
+        MESSAGE_SENT,
+        ERROR_GENERIC_FAILURE,
+        ERROR_RADIO_OFF,
+        ERROR_NULL_PDU,
+        ERROR_NO_SERVICE,
+        ERROR_LIMIT_EXCEEDED
+    }
+
     /**
      * SINGLETON
      */
@@ -30,6 +37,7 @@ public class SMSController {
      */
     private SparseArray<ArrayList<SMSReceivedListener>> smsReceivedListeners;
     private int applicationCode;
+    private int next_id;
     /**
      * List of incomplete messages received, when every packet of a message is arrived it gets removed from this list
      */
@@ -42,6 +50,7 @@ public class SMSController {
         smsReceivedListeners = new SparseArray<>();
         receivedMessages = new ArrayList<>();
         this.applicationCode = applicationCode;
+        next_id = 0;
     }
 
     /**
@@ -169,4 +178,30 @@ public class SMSController {
         return instance;
     }
 
+    private int getNewMsgId(){
+        return (++next_id)%1000; //we send messages with id not greater than 999;
+    }
+
+    /**
+     * Splits the message in packets that can be sent via SMS
+     * @return the array of packets to be sent via SMS
+     */
+    private SMSPacket[] getPacketsFromMsg(SMSMessage msg) {
+        //Calculate the number of packets we have to send in order to send the full message
+        String msgText = msg.getText();
+        int rem = msgText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
+        int packetsCount = msgText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
+        Log.d("SMSMessage", "I have to send " + packetsCount + " messages for a message " + msgText.length() + " characters long");
+        SMSPacket[] packets = new SMSPacket[packetsCount];
+        int applicationCode = getApplicationCode();
+        int msgId = getNewMsgId();
+        String subText;
+        for (int i = 0; i < packetsCount; i++) {
+            int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, msgText.length());
+            Log.d("SMSMessage", "Substring from " + i *  SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter);
+            subText = msgText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
+            packets[i] = new SMSPacket(applicationCode, msgId, msg.getCode(), i + 1, packetsCount, subText);
+        }
+        return packets;
+    }
 }

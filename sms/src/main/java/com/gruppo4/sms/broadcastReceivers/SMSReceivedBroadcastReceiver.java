@@ -24,7 +24,6 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 //Packet building
                 SMSPacket packet = SMSPacket.parseSMSPacket(text);
                 SMSController.onReceive(packet, number);
-                abortBroadcast(); //Prevent the message from reaching the main SMS application
             }
         }
     }
