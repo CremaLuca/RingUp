@@ -119,7 +119,7 @@ public class SMSController {
         //Let's see if we already have the message stored
         boolean found = false;
         for (SMSMessage message : getInstance().incompleteMessages) {
-            if (message.getTelephoneNumber() == telephoneNumber && message.getMessageId() == packet.getMessageId()) {
+            if (message.getTelephoneNumber().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
                 found = true;
                 message.addPacket(packet);
                 break;

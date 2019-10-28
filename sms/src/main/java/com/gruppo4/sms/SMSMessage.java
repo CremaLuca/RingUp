@@ -53,8 +53,8 @@ public class SMSMessage {
      *
      * @param telephoneNumber a valid telephone number to send the message to
      * @param messageText     a message
-     * @throws InvalidSMSMessageException      if Utils.checkMessageText return false
-     * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber return false
+     * @throws InvalidSMSMessageException      if Utils.checkMessageText returns false
+     * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber returns false
      */
     public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         //Checks on the telephone number
@@ -81,7 +81,7 @@ public class SMSMessage {
         packets[packet.getPacketNumber() - 1] = packet;
         if (isComplete()) {
             //Generate the message
-            this.message = generateMessageFromPackets();
+            this.message = getMessageFromPackets();
             SMSController.callOnReceivedListeners(this);
         }
     }
@@ -130,7 +130,7 @@ public class SMSMessage {
      *
      * @return
      */
-    private String generateMessageFromPackets() {
+    private String getMessageFromPackets() {
         String message = "";
         for (SMSPacket packet : packets) {
             message += packet.getMessage();
