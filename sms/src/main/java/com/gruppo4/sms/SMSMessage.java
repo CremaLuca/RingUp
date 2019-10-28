@@ -11,6 +11,7 @@ public class SMSMessage {
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
     private String telephoneNumber;
     private String message;
+    private int messageId;
 
     private SMSPacket[] packets;
 
@@ -19,13 +20,12 @@ public class SMSMessage {
      *
      * @param telephoneNumber a valid telephone number to send the message to
      * @param packets     array of packets from which we construct the message
-     * @throws InvalidSMSMessageException      if Utils.checkMessageText return false
-     * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber return false
      */
 
     public SMSMessage(String telephoneNumber, SMSPacket[] packets)
     {
         this.telephoneNumber = telephoneNumber;
+        this.messageId = packets[0].getMessageId();
         this.packets = packets;
         for (SMSPacket p: packets)
             message += p.getMessage();
@@ -35,10 +35,17 @@ public class SMSMessage {
      * Constructor for a received message, holds the packets until the message is completed
      *
      * @param telephoneNumber the telephone number
-     * @param packet
+     * @param packet the first packet received for this message, can be any packet of the message
      */
     SMSMessage(String telephoneNumber, SMSPacket packet) {
-
+        this.telephoneNumber = telephoneNumber;
+        this.messageId = packet.getMessageId();
+        this.packets = new SMSPacket[packet.getTotalNumber()];
+        packets[packet.getPacketNumber() - 1] = packet;
+        if (isComplete()) {
+            this.message = packet.getMessage();
+            SMSController.callOnReceivedListeners(this);
+        }
     }
 
     /**
@@ -66,6 +73,20 @@ public class SMSMessage {
     }
 
     /**
+     * Adds a packet to this message
+     *
+     * @param packet
+     */
+    public void addPacket(SMSPacket packet) {
+        packets[packet.getPacketNumber() - 1] = packet;
+        if (isComplete()) {
+            //Generate the message
+            this.message = generateMessageFromPackets();
+            SMSController.callOnReceivedListeners(this);
+        }
+    }
+
+    /**
      * Telephone Number is the number this message has to be sent to or has been already sent
      *
      * @return the telephone number
@@ -85,6 +106,36 @@ public class SMSMessage {
 
     public SMSPacket[] getPackets(){
         return packets;
+    }
+
+    public int getMessageId() {
+        return messageId;
+    }
+
+    /**
+     * Checks if the message has all the packets
+     *
+     * @return true if there are no missing packets, false otherwise
+     */
+    private boolean isComplete() {
+        for (SMSPacket packet : packets) {
+            if (packet == null)
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * MUST BE CALLED ONLY IF isComplete IS TRUE
+     *
+     * @return
+     */
+    private String generateMessageFromPackets() {
+        String message = "";
+        for (SMSPacket packet : packets) {
+            message += packet.getMessage();
+        }
+        return message;
     }
 
 }

@@ -37,7 +37,7 @@ public class SMSController {
 
     //list of listeners called when ALL packets of a SMS have been received
     private ArrayList<SMSReceivedListener> receivedListeners;
-    private ArrayList<ArrayList<SMSPacket>> receivedPackets; //these are partially constructed messages
+    private ArrayList<SMSMessage> incompleteMessages; //these are partially constructed messages
     //each list has packets with the same messageID
 
     private SMSController(Context context, int applicationCode)
@@ -52,7 +52,7 @@ public class SMSController {
         receivedListeners = new ArrayList<>();
         this.appCode = applicationCode;
         next_id = 0;
-        receivedPackets = new ArrayList<>();
+        incompleteMessages = new ArrayList<>();
     }
 
     public static void init(Context context, int applicationCode){
@@ -117,28 +117,18 @@ public class SMSController {
      */
     public static void onReceive(SMSPacket packet, String telephoneNumber) {
         //Let's see if we already have the message stored
-        ArrayList<ArrayList<SMSPacket>> receivedPackets = getInstance().receivedPackets;
         boolean found = false;
-        ArrayList<SMSPacket> completedList = null;
-        for (ArrayList<SMSPacket> p: receivedPackets){
-            if(p.get(0).getMessageId() == packet.getMessageId()){
+        for (SMSMessage message : getInstance().incompleteMessages) {
+            if (message.getMessageId() == packet.getMessageId()) {
                 found = true;
-                p.add(packet);
-                if(p.size() == packet.getTotalNumber())
-                    completedList = p;
+                message.addPacket(packet);
                 break;
             }
         }
         //If not found then create a list for all incoming packets with that id
         if (!found) {
-            ArrayList<SMSPacket> arr = new ArrayList<>();
-            arr.add(packet);
-            receivedPackets.add(arr);
-            if(packet.getTotalNumber() == 1) completedList = arr;
+            getInstance().incompleteMessages.add(new SMSMessage(telephoneNumber, packet));
         }
-        if(completedList != null)
-            callOnReceivedListeners(new SMSMessage(telephoneNumber, (SMSPacket[]) completedList.toArray()));
-
     }
 
     public static void callOnReceivedListeners(SMSMessage message) {
