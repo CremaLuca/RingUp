@@ -1,17 +1,10 @@
 package com.gruppo4.sms;
 
-import android.util.Log;
-import com.gruppo4.sms.utils.SMSChecks;
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
-import java.util.ArrayList;
+import com.gruppo4.sms.utils.SMSChecks;
 
 public class SMSMessage {
-
-    public enum MessageTextState {
-        MESSAGE_TEXT_VALID,
-        MESSAGE_TEXT_TOO_LONG
-    }
 
     //This is because package number cannot exceed three characters
     public static  final  int MAX_PACKETS = 999;
@@ -38,12 +31,37 @@ public class SMSMessage {
             message += p.getMessage();
     }
 
-    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException
-    {
+    /**
+     * Constructor for a received message, holds the packets until the message is completed
+     *
+     * @param telephoneNumber the telephone number
+     * @param packet
+     */
+    SMSMessage(String telephoneNumber, SMSPacket packet) {
+
+    }
+
+    /**
+     * Wrap for a text message, used to check the parameters validity
+     *
+     * @param telephoneNumber a valid telephone number to send the message to
+     * @param messageText     a message
+     * @throws InvalidSMSMessageException      if Utils.checkMessageText return false
+     * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber return false
+     */
+    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        //Checks on the telephone number
+        SMSChecks.TelephoneNumberState telephoneNumberState = SMSChecks.checkTelephoneNumber(telephoneNumber);
+        if (telephoneNumberState != SMSChecks.TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
+            throw new InvalidTelephoneNumberException("Telephone number not valid", telephoneNumberState);
+        }
         this.telephoneNumber = telephoneNumber;
-        if(messageText.length() > MAX_MSG_TEXT_LEN)
-            throw new InvalidSMSMessageException("text length exceeds maximum allowed", MessageTextState.MESSAGE_TEXT_TOO_LONG);
+        //Checks on the message text
+        SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
+        if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
+            throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
         this.message = messageText;
+
         packets = SMSController.getPacketsFromMessage(this);
     }
 

@@ -7,19 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.telephony.SmsMessage;
 import android.util.Log;
-import android.util.SparseArray;
+
 import androidx.core.content.ContextCompat;
 
-import com.gruppo4.sms.broadcastReceivers.SMSReceivedBroadcastReceiver;
 import com.gruppo4.sms.broadcastReceivers.SMSSentBroadcastReceiver;
 import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
-import java.sql.Array;
 import java.util.ArrayList;
 
 public class SMSController {
@@ -55,20 +51,19 @@ public class SMSController {
 
         receivedListeners = new ArrayList<>();
         this.appCode = applicationCode;
-        instance = this;
         next_id = 0;
         receivedPackets = new ArrayList<>();
     }
 
     public static void init(Context context, int applicationCode){
 
-        new SMSController(context, applicationCode);
+        instance = new SMSController(context, applicationCode);
     }
 
     public static SMSController getInstance()
     {
         if(instance == null)
-            throw new IllegalStateException("The SMSController must be created!");
+            throw new IllegalStateException("The SMSController must be initialized!");
         else return instance;
     }
 

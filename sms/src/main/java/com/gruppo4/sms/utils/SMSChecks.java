@@ -1,7 +1,6 @@
 package com.gruppo4.sms.utils;
 
 import com.gruppo4.sms.SMSMessage;
-import com.gruppo4.sms.SMSPacket;
 
 public class SMSChecks {
 
@@ -11,6 +10,19 @@ public class SMSChecks {
         TELEPHONE_NUMBER_TOO_LONG,
         TELEPHONE_NUMBER_NO_COUNTRY_CODE,
         TELEPHONE_NUMBER_NOT_A_NUMBER
+    }
+
+    /**
+     * Checks if the message is valid
+     *
+     * @param messageText the text to check
+     * @return The state of the message after the tests
+     */
+    public static MessageTextState checkMessageText(String messageText) {
+        if (messageText.length() > SMSMessage.MAX_MSG_TEXT_LEN) {
+            return MessageTextState.MESSAGE_TEXT_TOO_LONG;
+        }
+        return MessageTextState.MESSAGE_TEXT_VALID;
     }
 
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
@@ -44,16 +56,8 @@ public class SMSChecks {
         return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
     }
 
-    /**
-     * Checks if the message is valid
-     *
-     * @param messageText the text to check
-     * @return The state of the message after the tests
-     */
-    public static SMSMessage.MessageTextState checkMessageText(String messageText) {
-        if (messageText.length() > SMSMessage.MAX_MSG_TEXT_LEN) {
-            return SMSMessage.MessageTextState.MESSAGE_TEXT_TOO_LONG;
-        }
-        return SMSMessage.MessageTextState.MESSAGE_TEXT_VALID;
+    public enum MessageTextState {
+        MESSAGE_TEXT_VALID,
+        MESSAGE_TEXT_TOO_LONG
     }
 }
