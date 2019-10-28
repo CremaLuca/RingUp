@@ -12,6 +12,11 @@ public class SMSChecks {
         TELEPHONE_NUMBER_NOT_A_NUMBER
     }
 
+    public enum MessageTextState {
+        MESSAGE_TEXT_VALID,
+        MESSAGE_TEXT_TOO_LONG
+    }
+
     /**
      * Checks if the message is valid
      *
@@ -54,10 +59,5 @@ public class SMSChecks {
         }
         //If it passed all the tests we are sure the number is valid.
         return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
-    }
-
-    public enum MessageTextState {
-        MESSAGE_TEXT_VALID,
-        MESSAGE_TEXT_TOO_LONG
     }
 }

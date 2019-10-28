@@ -1,5 +1,7 @@
 package com.gruppo4.sms;
 
+import android.util.Log;
+
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.utils.SMSChecks;
@@ -37,7 +39,7 @@ public class SMSMessage {
      * @param telephoneNumber the telephone number
      * @param packet the first packet received for this message, can be any packet of the message
      */
-    SMSMessage(String telephoneNumber, SMSPacket packet) {
+    public SMSMessage(String telephoneNumber, SMSPacket packet) {
         this.telephoneNumber = telephoneNumber;
         this.messageId = packet.getMessageId();
         this.packets = new SMSPacket[packet.getTotalNumber()];
@@ -69,25 +71,26 @@ public class SMSMessage {
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
         this.message = messageText;
 
-        packets = SMSController.getPacketsFromMessage(this);
+        packets = getPacketsFromMessage(this);
     }
 
     /**
      * Adds a packet to this message
      *
-     * @param packet
+     * @param packet add packet to packets list
      */
     public void addPacket(SMSPacket packet) {
         packets[packet.getPacketNumber() - 1] = packet;
         if (isComplete()) {
             //Generate the message
             this.message = getMessageFromPackets();
+            Log.d("DEBUG/SMSMessage", "message is completed");
             SMSController.callOnReceivedListeners(this);
         }
     }
 
     /**
-     * Telephone Number is the number this message has to be sent to or has been already sent
+     * telephoneNumber is either the number from which the message comes from, or the number where to send the message
      *
      * @return the telephone number
      */
@@ -95,11 +98,6 @@ public class SMSMessage {
         return telephoneNumber;
     }
 
-    /**
-     * Message Text is the content of the message that can be sent via one or multiple SMS
-     *
-     * @return the message
-     */
     public String getMessage() {
         return message;
     }
@@ -128,14 +126,31 @@ public class SMSMessage {
     /**
      * MUST BE CALLED ONLY IF isComplete IS TRUE
      *
-     * @return
+     * @return the complete message
      */
-    private String getMessageFromPackets() {
+    public String getMessageFromPackets() {
         String message = "";
         for (SMSPacket packet : packets) {
             message += packet.getMessage();
         }
         return message;
+    }
+
+    public  SMSPacket[] getPacketsFromMessage(SMSMessage message){
+        String msgText = message.getMessage();
+        int rem = msgText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
+        int packetsCount = msgText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
+        Log.d("DEBUG/SMSMessage", "I have to send " + packetsCount + " messages for a message " + msgText.length() + " characters long");
+        SMSPacket[] packets = new SMSPacket[packetsCount];
+        int msgId = SMSController.getNewMessageId();
+        String subText;
+        for (int i = 0; i < packetsCount; i++) {
+            int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, msgText.length());
+            Log.d("DEBUG/SMSMessage", "Substring from " + i *  SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter);
+            subText =msgText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
+            packets[i] = new SMSPacket(SMSController.getApplicationCode(), msgId, i + 1, packetsCount, subText);
+        }
+        return packets;
     }
 
 }

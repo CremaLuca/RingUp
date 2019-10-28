@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSPacket;
@@ -13,6 +14,7 @@ import com.gruppo4.sms.utils.SMSChecks;
 public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
+        Log.d("DEBUG/SMSReceiver", "received message from broadcast");
         Bundle extras = intent.getExtras();
         if(extras != null){
             Object[] smsExtra = (Object[]) extras.get("pdus");

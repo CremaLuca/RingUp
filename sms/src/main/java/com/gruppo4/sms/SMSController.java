@@ -1,6 +1,8 @@
 package com.gruppo4.sms;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,7 +35,7 @@ public class SMSController {
     private static SMSController instance; //singleton
     private Context context;
     private int appCode;
-    private int next_id; //id chosen for the next message to send
+    private int nextID; //id chosen for the next message to send
 
     //list of listeners called when ALL packets of a SMS have been received
     private ArrayList<SMSReceivedListener> receivedListeners;
@@ -51,7 +53,7 @@ public class SMSController {
 
         receivedListeners = new ArrayList<>();
         this.appCode = applicationCode;
-        next_id = 0;
+        nextID = 0;
         incompleteMessages = new ArrayList<>();
     }
 
@@ -76,7 +78,7 @@ public class SMSController {
     public static void sendMessage(SMSMessage message, SMSSentListener listener)
     {
         PendingIntent sentPI = PendingIntent.getBroadcast(getInstance().context, 0, new Intent("SMS_SENT"), 0);
-        BroadcastReceiver receiver = new SMSSentBroadcastReceiver(listener);
+        BroadcastReceiver receiver = new SMSSentBroadcastReceiver(message, listener);
         //Set the new BroadcastReceiver to intercept intents with the right filter
         getInstance().context.registerReceiver(receiver, new IntentFilter("SMS_SENT"));
         //Retrieve the Android default smsManager
@@ -137,25 +139,9 @@ public class SMSController {
         }
     }
 
-    private int getNewMessageId(){
-        next_id = (next_id+1)%(SMSMessage.MAX_PACKETS+1);
-        return next_id; //we send messages with id not greater than 999;
-    }
-
-    public static SMSPacket[] getPacketsFromMessage(SMSMessage message){
-        String msgText = message.getMessage();
-        int rem = msgText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
-        int packetsCount = msgText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
-        Log.d("SMSMessage", "I have to send " + packetsCount + " messages for a message " + msgText.length() + " characters long");
-        SMSPacket[] packets = new SMSPacket[packetsCount];
-        int msgId = getInstance().getNewMessageId();
-        String subText;
-        for (int i = 0; i < packetsCount; i++) {
-            int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, msgText.length());
-            Log.d("SMSMessage", "Substring from " + i *  SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter);
-            subText =msgText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
-            packets[i] = new SMSPacket(getApplicationCode(), msgId, i + 1, packetsCount, subText);
-        }
-        return packets;
+    public static int getNewMessageId(){
+        SMSController inst = getInstance();
+        inst.nextID = (inst.nextID+1)%(SMSMessage.MAX_PACKETS+1);
+        return inst.nextID; //we send messages with id not greater than 999;
     }
 }

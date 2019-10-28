@@ -7,14 +7,17 @@ import android.content.Intent;
 import android.telephony.SmsManager;
 
 import com.gruppo4.sms.SMSController;
+import com.gruppo4.sms.SMSMessage;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 public class SMSSentBroadcastReceiver extends BroadcastReceiver {
 
     private SMSSentListener listener;
+    SMSMessage message;
 
-    public SMSSentBroadcastReceiver(SMSSentListener listener) {
+    public SMSSentBroadcastReceiver(SMSMessage  message, SMSSentListener listener) {
         this.listener = listener;
+        this.message = message;
     }
 
     /**
@@ -46,6 +49,6 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 state = SMSController.SentState.ERROR_LIMIT_EXCEEDED;
                 break;
         }
-        listener.onSMSSent(state);
+        listener.onSMSSent(message, state);
     }
 }

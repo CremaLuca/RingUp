@@ -22,12 +22,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SMSReceivedListener, SMSSentListener {
 
-    private RecyclerView recyclerView;
-    private SmileAdapter mAdapter;
+    private RecyclerView listView;
+    private ListAdapter adapter;
 
     private static final String SMILE_COMMAND = "SMILE_COMMAND";
-    private static final int SMILE_MESSAGE_ID = 1;
-    private static final int EXTRA_MESSAGE_ID = 543;
+    private static final String HEART_COMMAND = "HEART_COMMAND";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +38,20 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         //Chiediamo il permesso di mandarli i messaggi
         requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
 
-        ArrayList<String> smiles = new ArrayList<>();
+        ArrayList<String> events = new ArrayList<>();
 
-        recyclerView = findViewById(R.id.my_recycler_view);
+        listView = findViewById(R.id.my_recycler_view);
 
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        listView.setLayoutManager(layoutManager);
 
-        mAdapter = new SmileAdapter(smiles);
-        recyclerView.setAdapter(mAdapter);
+        adapter = new ListAdapter(events);
+        listView.setAdapter(adapter);
 
-        SMSController.setup(this, 123);
+        SMSController.init(getApplicationContext(), 123);
 
-        SMSController.addOnReceiveListener(this, SMILE_MESSAGE_ID);
+        SMSController.addOnReceiveListener(this);
 
         findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 onSendSmileButton();
             }
         });
-        findViewById(R.id.sendExtraCode).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.sendHeartButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendWrongCodeButton();
+                onSendHeartButton();
             }
         });
     }
@@ -73,11 +72,10 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      *
      * @param text
      * @param telephoneNumber
-     * @param messageCode
      */
-    private void sendMessage(String text, String telephoneNumber, int messageCode) {
+    private void sendMessage(String text, String telephoneNumber) {
         try {
-            SMSMessage message = new SMSMessage(telephoneNumber, text, messageCode);
+            SMSMessage message = new SMSMessage(telephoneNumber, text);
             SMSController.sendMessage(message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
@@ -102,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         }
     }
 
-    public void onSendWrongCodeButton() {
+    public void onSendHeartButton() {
         String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(SMILE_COMMAND, phoneNumber, EXTRA_MESSAGE_ID);
+        sendMessage(HEART_COMMAND, phoneNumber);
     }
 
     /**
@@ -112,38 +110,42 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendSmileButton() {
         String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(SMILE_COMMAND, phoneNumber, SMILE_MESSAGE_ID);
+        sendMessage(SMILE_COMMAND, phoneNumber);
     }
 
     @Override
-    public void onSMSReceived(SMSReceivedMessage message) {
+    public void onSMSReceived(SMSMessage message) {
+        Log.d("DEBUG/mainactivity", "Received message:" + message.getMessage());
         if (message.getMessage().equals(SMILE_COMMAND)) {
-            Log.d("MainActivity", "Received message:" + message.getMessage());
-            Toast.makeText(this, message.getTelephoneNumber() + " sent you a smile :)", Toast.LENGTH_LONG).show();
-            mAdapter.getSmiles().add(message.getTelephoneNumber() + " sent you a smile :)");
-            mAdapter.notifyDataSetChanged();
+            Log.d("DEBUG/mainactivity", "Received message:" + message.getMessage());
+            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
+            adapter.notifyDataSetChanged();
+        }
+        else if (message.getMessage().equals(HEART_COMMAND)) {
+            Log.d("DEBUG/mainactivity", "Received message:" + message.getMessage());
+            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
+            adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onSMSSent(SMSMessage message, SMSMessage.SentState state) {
-        Log.d("MainActivity", "Message sent");
-        if (state == SMSMessage.SentState.MESSAGE_SENT) {
-            if (message.getMessageCode() == SMILE_MESSAGE_ID) {
-                Toast.makeText(this, "Smile sent :)", Toast.LENGTH_SHORT).show();
-                mAdapter.getSmiles().add("You sent a smile to " + message.getTelephoneNumber());
-                mAdapter.notifyDataSetChanged();
-            } else {
+    public void onSMSSent(SMSMessage message, SMSController.SentState state) {
+        Log.d("DEBUG/mainactivity", "Message sent");
+        if (state == SMSController.SentState.MESSAGE_SENT) {
+            if (message.getMessage().equals(SMILE_COMMAND)) {
                 Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
-                mAdapter.getSmiles().add("You sent a message to " + message.getTelephoneNumber());
-                mAdapter.notifyDataSetChanged();
+                adapter.getEvents().add("You sent a :) to " + message.getTelephoneNumber());
+                adapter.notifyDataSetChanged();
             }
-        } else {
-            Log.w("MainActivity", "Unable to send sms, reason: " + state);
-            if (message.getMessageCode() == SMILE_MESSAGE_ID)
-                Toast.makeText(this, "Unable to send smile :(", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, "Unable to send message, reason: " + state, Toast.LENGTH_LONG).show();
+            else if (message.getMessage().equals(HEART_COMMAND)) {
+                Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
+                adapter.getEvents().add("You sent a <3 to " + message.getTelephoneNumber());
+                adapter.notifyDataSetChanged();
+            }
+        }
+        else {
+            Log.w("DEBUG/mainactivity", "Unable to send sms, reason: " + state);
+            Toast.makeText(this, "Unable to send message, reason: " + state, Toast.LENGTH_LONG).show();
         }
     }
 }

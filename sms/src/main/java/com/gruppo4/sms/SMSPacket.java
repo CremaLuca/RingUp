@@ -47,18 +47,18 @@ public class SMSPacket {
      *
      * @return A String that can be sent in a SMS
      */
-    String getText() {
+    public String getText() {
         return applicationCode + SEPARATOR + messageId +
                 SEPARATOR + packetNumber + SEPARATOR + totalNumber + SEPARATOR + message;
     }
 
-    int getTotalNumber() {
+    public int getTotalNumber() {
         return totalNumber;
     }
-    int getPacketNumber() {
+    public int getPacketNumber() {
         return packetNumber;
     }
-    int getMessageId() { return messageId; }
+    public int getMessageId() { return messageId; }
 
     public int getApplicationCode() {
         return applicationCode;
