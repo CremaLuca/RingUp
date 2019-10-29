@@ -1,6 +1,5 @@
 package com.gruppo4.sms;
 
-import android.app.Notification;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
