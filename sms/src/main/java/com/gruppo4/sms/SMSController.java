@@ -1,8 +1,6 @@
 package com.gruppo4.sms;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
-import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -37,10 +34,9 @@ public class SMSController {
     private int appCode;
     private int nextID; //id chosen for the next message to send
 
-    //list of listeners called when ALL packets of a SMS have been received
+    //list of listeners called when ALL packets of a message have been received
     private ArrayList<SMSReceivedListener> receivedListeners;
     private ArrayList<SMSMessage> incompleteMessages; //these are partially constructed messages
-    //each list has packets with the same messageID
 
     private SMSController(Context context, int applicationCode)
     {
@@ -127,7 +123,7 @@ public class SMSController {
                 break;
             }
         }
-        //If not found then create a list for all incoming packets with that id
+        //If not found then create a new Message
         if (!found) {
             getInstance().incompleteMessages.add(new SMSMessage(telephoneNumber, packet));
         }
