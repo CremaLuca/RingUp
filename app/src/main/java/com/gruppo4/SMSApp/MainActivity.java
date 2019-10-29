@@ -1,14 +1,18 @@
 package com.gruppo4.SMSApp;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +24,7 @@ import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements SMSReceivedListener, SMSSentListener {
 
@@ -34,13 +39,16 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(!isNotificationListenerEnabled(getApplicationContext())) {
+            openNotificationListenSettings();
+        }
+
         if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             setupSMSController();
         }
-
 
         ArrayList<String> events = new ArrayList<>();
 
@@ -164,6 +172,20 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 finish();
                 System.exit(0);
             }
+        }
+    }
+
+    public boolean isNotificationListenerEnabled(Context context) {
+        Set<String> packageNames = NotificationManagerCompat.getEnabledListenerPackages(this);
+        return packageNames.contains(context.getPackageName());
+    }
+
+    public void openNotificationListenSettings() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
