@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class SmileAdapter extends RecyclerView.Adapter<SmileAdapter.MyViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
 
-    private ArrayList<String> smiles;
+    private ArrayList<String> events;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -23,19 +23,19 @@ public class SmileAdapter extends RecyclerView.Adapter<SmileAdapter.MyViewHolder
         }
     }
 
-    public SmileAdapter(ArrayList<String> smiles){
-        this.smiles = smiles;
+    public ListAdapter(ArrayList<String> events){
+        this.events = events;
     }
 
-    public ArrayList<String> getSmiles() {
-        return smiles;
+    public ArrayList<String> getEvents() {
+        return events;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.smile_text_view, parent, false);
+        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.text_view_event, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
     }
@@ -45,11 +45,11 @@ public class SmileAdapter extends RecyclerView.Adapter<SmileAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textView.setText(smiles.get(position));
+        holder.textView.setText(events.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return smiles.size();
+        return events.size();
     }
 }

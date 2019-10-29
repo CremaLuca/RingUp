@@ -4,92 +4,93 @@ import android.util.Log;
 
 import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
+import com.gruppo4.sms.utils.SMSChecks;
 
 public class SMSMessage {
 
-    public static final int MAX_MESSAGE_LENGTH = SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH * 999; //This is because package number cannot exceed three characters
-    public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
-    public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
+    //This is because package number cannot exceed three characters
+    public static  final  int MAX_PACKETS = 999;
+    public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
     private String telephoneNumber;
-    private String messageText;
-    private int messageCode;
+    private String message;
+    private int messageId;
+
+    private SMSPacket[] packets;
 
     /**
      * Wrap for a text message, used to check the parameters validity
      *
      * @param telephoneNumber a valid telephone number to send the message to
-     * @param messageText     the text to be sent via one or multiple SMS depending on its length
-     * @throws InvalidSMSMessageException      if the message is longer than MAX_MESSAGE_LENGTH
-     * @throws InvalidTelephoneNumberException if the number is longer than MAX_TELEPHONE_NUMBER_LENGTH or shorter than
-     *                                         MIN_TELEPHONE_NUMBER_LENGTH or misses country code or is not a number
+     * @param packets     array of packets from which we construct the message
      */
-    public SMSMessage(String telephoneNumber, String messageText, int messageCode) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
 
-        TelephoneNumberState telephoneNumberState = checkTelephoneNumber(telephoneNumber);
-        if (telephoneNumberState == TelephoneNumberState.TELEPHONE_NUMBER_VALID)
-            this.telephoneNumber = telephoneNumber;
-        else
-            throw new InvalidTelephoneNumberException("Telephone number invalid, reason: " + telephoneNumberState, telephoneNumberState);
-
-        MessageTextState messageTextState = checkMessageText(messageText);
-        if (messageTextState == MessageTextState.MESSAGE_TEXT_VALID)
-            this.messageText = messageText;
-        else
-            throw new InvalidSMSMessageException("The message text is invalid, reason: " + messageTextState, messageTextState);
-
-        if (!checkMessageCode(messageCode))
-            throw new IllegalArgumentException("Message code is out of bounds");
-
-        this.messageCode = messageCode;
-    }
-
-    public static boolean checkMessageCode(int messageCode) {
-        return messageCode > -99 && messageCode < 1000;
+    public SMSMessage(String telephoneNumber, SMSPacket[] packets)
+    {
+        this.telephoneNumber = telephoneNumber;
+        this.messageId = packets[0].getMessageId();
+        this.packets = packets;
+        for (SMSPacket p: packets)
+            message += p.getMessage();
     }
 
     /**
-     * Checks if the message is valid
+     * Constructor for a received message, holds the packets until the message is completed
      *
-     * @param messageText the text to check
-     * @return The state of the message after the tests
+     * @param telephoneNumber the telephone number
+     * @param packet the first packet received for this message, can be any packet of the message
      */
-    public static MessageTextState checkMessageText(String messageText) {
-        if (messageText.length() > MAX_MESSAGE_LENGTH) {
-            return MessageTextState.MESSAGE_TEXT_TOO_LONG;
+    public SMSMessage(String telephoneNumber, SMSPacket packet) {
+        this.telephoneNumber = telephoneNumber;
+        this.messageId = packet.getMessageId();
+        this.packets = new SMSPacket[packet.getTotalNumber()];
+        packets[packet.getPacketNumber() - 1] = packet;
+        if (isComplete()) {
+            this.message = packet.getMessage();
+            SMSController.callOnReceivedListeners(this);
         }
-        return MessageTextState.MESSAGE_TEXT_VALID;
     }
 
     /**
-     * Checks if the phone number is valid
+     * Wrap for a text message, used to check the parameters validity
      *
-     * @param telephoneNumber the phone number to check
-     * @return The state of the telephone number after the tests
+     * @param telephoneNumber a valid telephone number to send the message to
+     * @param messageText     a message
+     * @throws InvalidSMSMessageException      if Utils.checkMessageText returns false
+     * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber returns false
      */
-    public static TelephoneNumberState checkTelephoneNumber(String telephoneNumber) {
-        //Check if the number is shorter than the MAX.
-        if (telephoneNumber.length() > MAX_TELEPHONE_NUMBER_LENGTH) {
-            return TelephoneNumberState.TELEPHONE_NUMBER_TOO_LONG;
+    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        //Checks on the telephone number
+        SMSChecks.TelephoneNumberState telephoneNumberState = SMSChecks.checkTelephoneNumber(telephoneNumber);
+        if (telephoneNumberState != SMSChecks.TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
+            throw new InvalidTelephoneNumberException("Telephone number not valid", telephoneNumberState);
         }
-        //Check if the number is longer than the MIN.
-        if (telephoneNumber.length() < MIN_TELEPHONE_NUMBER_LENGTH) {
-            return TelephoneNumberState.TELEPHONE_NUMBER_TOO_SHORT;
-        }
-        //Check if it's actually a number and doesn't contain anything else
-        //First we have to remove the "+"
-        if (!telephoneNumber.substring(1, telephoneNumber.length() - 1).matches("[0-9]+")) {
-            return TelephoneNumberState.TELEPHONE_NUMBER_NOT_A_NUMBER;
-        }
-        //Check if there is a country code.
-        if (!telephoneNumber.substring(0, 1).equals("+")) {
-            return TelephoneNumberState.TELEPHONE_NUMBER_NO_COUNTRY_CODE;
-        }
-        //If it passed all the tests we are sure the number is valid.
-        return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
+        this.telephoneNumber = telephoneNumber;
+        //Checks on the message text
+        SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
+        if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
+            throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
+        this.message = messageText;
+
+        packets = getPacketsFromMessage(this);
     }
 
     /**
-     * Telephone Number is the number this message has to be sent to or has been already sent
+     * Adds a packet to this message
+     *
+     * @param packet add packet to packets list
+     */
+    public void addPacket(SMSPacket packet) {
+        packets[packet.getPacketNumber() - 1] = packet;
+        if (isComplete()) {
+            //Generate the message
+            this.message = getMessageFromPackets();
+            Log.d("DEBUG/SMSMessage", "message is completed");
+            SMSController.callOnReceivedListeners(this);
+        }
+    }
+
+    /**
+     * telephoneNumber is either the number from which the message comes from, or the number where to send the message
      *
      * @return the telephone number
      */
@@ -97,77 +98,59 @@ public class SMSMessage {
         return telephoneNumber;
     }
 
-    /**
-     * Message Text is the content of the message that can be sent via one or multiple SMS
-     *
-     * @return the message
-     */
-    public String getMessageText() {
-        return messageText;
+    public String getMessage() {
+        return message;
     }
 
-    /**
-     * Message Code is an identifier for the service that will send or use the message content
-     * @return the message code
-     */
-    public int getMessageCode() {
-        return messageCode;
-    }
-
-    /**
-     * Splits the message in packets that can be sent via SMS
-     * @return the array of packets to be sent via SMS
-     */
-    SMSPacket[] getPackets() {
-        //Calculate the number of packets we have to send in order to send the full message
-        int packetsCount = (int) (Math.floor(messageText.length() / SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH) + 1);
-        Log.d("SMSMessage", "I have to send " + packetsCount + " messages fo a message " + messageText.length() + " characters long");
-        SMSPacket[] packets = new SMSPacket[packetsCount];
-        //The SMSController must be initialized (should already be, this method is for the send() method)
-        int applicationCode = SMSController.getApplicationCode();
-        String subMessage;
-        for (int i = 0; i < packetsCount; i++) {
-            //We either choose the maximum length for a message or the actual length of the text
-            //ES: "hello" substr will be from 0 to 5
-            //ES: a string of 180 characters will have i=0) substr(0,159), i=1)substr(160,180)
-            int finalCharacter = Math.min((((i + 1) * SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH) - 1), messageText.length());
-            Log.d("SMSMessage", "Substring from " + i * SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH + " to " + finalCharacter);
-            subMessage = messageText.substring(i * SMSPacket.PACKAGE_MESSAGE_MAX_LENGTH, finalCharacter);
-            packets[i] = new SMSPacket(applicationCode, messageCode, i + 1, packetsCount, subMessage);
-        }
+    public SMSPacket[] getPackets(){
         return packets;
     }
 
-    /**
-     * A set of states for the message validity tests
-     */
-    public enum MessageTextState {
-        MESSAGE_TEXT_VALID,
-        MESSAGE_TEXT_TOO_LONG
+    public int getMessageId() {
+        return messageId;
     }
 
     /**
-     * A set of states for the phone number validity tests
+     * Checks if the message has all the packets
+     *
+     * @return true if there are no missing packets, false otherwise
      */
-    public enum TelephoneNumberState {
-        TELEPHONE_NUMBER_VALID,
-        TELEPHONE_NUMBER_TOO_SHORT,
-        TELEPHONE_NUMBER_TOO_LONG,
-        TELEPHONE_NUMBER_NO_COUNTRY_CODE,
-        TELEPHONE_NUMBER_NOT_A_NUMBER
+    private boolean isComplete() {
+        for (SMSPacket packet : packets) {
+            if (packet == null)
+                return false;
+        }
+        return true;
     }
 
     /**
-     * A set of states for the message
+     * MUST BE CALLED ONLY IF isComplete IS TRUE
+     *
+     * @return the complete message
      */
-    public enum SentState {
-        NOT_SENT,
-        MESSAGE_SENT,
-        ERROR_GENERIC_FAILURE,
-        ERROR_RADIO_OFF,
-        ERROR_NULL_PDU,
-        ERROR_NO_SERVICE,
-        ERROR_LIMIT_EXCEEDED
+    public String getMessageFromPackets() {
+        String message = "";
+        for (SMSPacket packet : packets) {
+            message += packet.getMessage();
+        }
+        return message;
+    }
+
+    public  SMSPacket[] getPacketsFromMessage(SMSMessage message){
+        String msgText = message.getMessage();
+        int rem = msgText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
+        int packetsCount = msgText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
+        Log.d("DEBUG/SMSMessage", "I have to send " + packetsCount + " messages for a message " + msgText.length() + " characters long");
+        SMSPacket[] packets = new SMSPacket[packetsCount];
+        int msgId = SMSController.getNewMessageId();
+        String subText;
+        for (int i = 0; i < packetsCount; i++) {
+            int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, msgText.length());
+            Log.d("DEBUG/SMSMessage", "Substring from " + i *  SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter);
+            subText =msgText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
+            packets[i] = new SMSPacket(SMSController.getApplicationCode(), msgId, i + 1, packetsCount, subText);
+        }
+        return packets;
     }
 
 }

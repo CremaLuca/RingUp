@@ -6,20 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
 
+import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 public class SMSSentBroadcastReceiver extends BroadcastReceiver {
 
-    private SMSMessage message;
     private SMSSentListener listener;
+    SMSMessage message;
 
-    public SMSSentBroadcastReceiver(SMSMessage message, SMSSentListener listener) {
-        this.message = message;
+    public SMSSentBroadcastReceiver(SMSMessage  message, SMSSentListener listener) {
         this.listener = listener;
-    }
-
-    public void setMessage(SMSMessage message) {
         this.message = message;
     }
 
@@ -31,25 +28,25 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        SMSMessage.SentState state = SMSMessage.SentState.ERROR_GENERIC_FAILURE;
+        SMSController.SentState state = SMSController.SentState.ERROR_GENERIC_FAILURE;
         switch (getResultCode()) {
             case Activity.RESULT_OK:
-                state = SMSMessage.SentState.MESSAGE_SENT;
+                state = SMSController.SentState.MESSAGE_SENT;
                 break;
             case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                state = SMSMessage.SentState.ERROR_GENERIC_FAILURE;
+                state = SMSController.SentState.ERROR_GENERIC_FAILURE;
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF:
-                state = SMSMessage.SentState.ERROR_RADIO_OFF;
+                state = SMSController.SentState.ERROR_RADIO_OFF;
                 break;
             case SmsManager.RESULT_ERROR_NULL_PDU:
-                state = SMSMessage.SentState.ERROR_NULL_PDU;
+                state = SMSController.SentState.ERROR_NULL_PDU;
                 break;
             case SmsManager.RESULT_ERROR_NO_SERVICE:
-                state = SMSMessage.SentState.ERROR_NO_SERVICE;
+                state = SMSController.SentState.ERROR_NO_SERVICE;
                 break;
             case SmsManager.RESULT_ERROR_LIMIT_EXCEEDED:
-                state = SMSMessage.SentState.ERROR_LIMIT_EXCEEDED;
+                state = SMSController.SentState.ERROR_LIMIT_EXCEEDED;
                 break;
         }
         listener.onSMSSent(message, state);
