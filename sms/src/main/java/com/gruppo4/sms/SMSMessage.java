@@ -80,6 +80,9 @@ public class SMSMessage {
      * @param packet add packet to packets list
      */
     public void addPacket(SMSPacket packet) {
+        if (packets[packet.getPacketNumber() - 1] != null) {
+            throw new IllegalStateException("There shouldn't be a packet for this message");
+        }
         packets[packet.getPacketNumber() - 1] = packet;
         if (isComplete()) {
             //Generate the message

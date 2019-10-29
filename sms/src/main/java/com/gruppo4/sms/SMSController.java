@@ -133,6 +133,7 @@ public class SMSController {
         for (SMSReceivedListener listener : getInstance().receivedListeners) {
             listener.onSMSReceived(message);
         }
+
     }
 
     public static int getNewMessageId(){

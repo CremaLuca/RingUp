@@ -34,14 +34,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
-        //Permission to receive messages
-        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1);
-        //Permission to send messages
-        requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
-=======
->>>>>>> marcom
-
         if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
