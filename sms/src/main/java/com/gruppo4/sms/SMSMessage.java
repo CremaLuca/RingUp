@@ -9,30 +9,27 @@ import com.gruppo4.sms.utils.SMSChecks;
 public class SMSMessage {
 
     //This is because package number cannot exceed three characters
-    public static  final  int MAX_PACKETS = 999;
+    static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
     private String telephoneNumber;
     private StringBuilder message;
     private int messageId;
 
     private SMSPacket[] packets;
-    private int packetsMissing;
 
     /**
      * Wrap for a text message, used to check the parameters validity
      *
      * @param telephoneNumber a valid telephone number to send the message to
-     * @param packets     array of packets from which we construct the message
+     * @param packets         array of packets from which we construct the message
      */
 
-    SMSMessage(String telephoneNumber, SMSPacket[] packets)
-    {
+    SMSMessage(String telephoneNumber, SMSPacket[] packets) {
         this.telephoneNumber = telephoneNumber;
         this.messageId = packets[0].getMessageId();
         this.packets = packets;
-        for (SMSPacket p: packets)
-            message.append(p.getMessage());
-        packetsMissing = 0;
+        for (SMSPacket p : packets)
+            message.append(p.getMessageText());
     }
 
     /**
@@ -64,9 +61,10 @@ public class SMSMessage {
         SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
         if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
+
+        this.messageId = SMSController.getNewMessageId(); //Sequential code
         this.message = new StringBuilder(messageText);
         packets = getPacketsFromText(messageText);
-        packetsMissing = 0;
     }
 
     /**
@@ -74,18 +72,17 @@ public class SMSMessage {
      *
      * @param packet add packet to packets list
      */
-    public void addPacket(SMSPacket packet) {
-        if(packets == null){
+    void addPacket(SMSPacket packet) {
+        if (packets == null) {
+            Log.v("SMSMessage", "Creating a new array for an incoming packet");
             packets = new SMSPacket[packet.getTotalNumber()];
-            packetsMissing = packet.getTotalNumber();
             messageId = packet.getMessageId();
-        }
-        else if(packets[packet.getPacketNumber() - 1] != null) {
+        } else if (packets[packet.getPacketNumber() - 1] != null) {
+            Log.v("SMSMessage", "This message already has another packet in that position, could mean that the sender sent the same code twice?");
             throw new IllegalStateException("There shouldn't be a packet for this message");
         }
         packets[packet.getPacketNumber() - 1] = packet;
-        packetsMissing--;
-        if(packetsMissing == 0) constructMessage();
+        if (hasAllPackets()) constructMessage();
     }
 
     /**
@@ -97,20 +94,44 @@ public class SMSMessage {
         return telephoneNumber;
     }
 
-    private void constructMessage(){
+    private void constructMessage() {
         message = new StringBuilder();
         for (SMSPacket packet : packets)
-            message.append(packet.getMessage());
+            message.append(packet.getMessageText());
     }
 
+    /**
+     * @return the message
+     */
     public String getMessage() {
         return message.toString();
     }
 
-    public SMSPacket[] getPackets(){
+    /**
+     * @return a list of packets
+     */
+    SMSPacket[] getPackets() {
         return packets;
     }
 
+    /**
+     * Creates an array of strings that contain the SMSData for each packet
+     *
+     * @return an array of Strings containing SMSData for each packet
+     */
+    String[] getPacketsContent() {
+        String[] content = new String[packets.length];
+        for (int i = 0; i < packets.length; i++) {
+            content[i] = packets[i].getSMSData();
+        }
+        return content;
+    }
+
+    /**
+     * Returns a unique sequential code for this message
+     *
+     * @return the message id
+     */
     public int getMessageId() {
         return messageId;
     }
@@ -120,22 +141,26 @@ public class SMSMessage {
      *
      * @return true if there are no missing packets, false otherwise
      */
-    public boolean hasAllPackets() {
-        return packetsMissing == 0;
+    boolean hasAllPackets() {
+        for (SMSPacket packet : packets) {
+            if (packet == null)
+                return false;
+        }
+        Log.v("SMSMessage", "Message " + messageId + " is now complete");
+        return true;
     }
 
-    public  SMSPacket[] getPacketsFromText(String messageText){
-        int rem = messageText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
-        int packetsCount = messageText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
-        Log.d("DEBUG/SMSMessage", "I have to send " + packetsCount + " messages for a message " + messageText.length() + " characters long");
+    private SMSPacket[] getPacketsFromText(String messageText) {
+        int rem = messageText.length() % SMSPacket.MAX_PACKET_TEXT_LEN; //This is last message length
+        int packetsCount = messageText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1 : 0);
+        Log.v("SMSMessage", "We've got to send " + packetsCount + " messages for a message " + messageText.length() + " characters long");
         SMSPacket[] packets = new SMSPacket[packetsCount];
-        int msgId = SMSController.getNewMessageId();
         String subText;
         for (int i = 0; i < packetsCount; i++) {
             int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, messageText.length());
-            Log.d("DEBUG/SMSMessage", "Substring from " + i *  SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter);
+            Log.v("SMSMessage", "Substring from " + i * SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter + " for packet number: " + (i + 1));
             subText = messageText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
-            packets[i] = new SMSPacket(SMSController.getApplicationCode(), msgId, i + 1, packetsCount, subText);
+            packets[i] = new SMSPacket(SMSController.getApplicationCode(), messageId, i + 1, packetsCount, subText);
         }
         return packets;
     }
