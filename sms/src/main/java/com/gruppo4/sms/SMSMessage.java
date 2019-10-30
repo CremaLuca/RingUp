@@ -9,7 +9,7 @@ import com.gruppo4.sms.utils.SMSChecks;
 public class SMSMessage {
 
     //This is because package number cannot exceed three characters
-    public static final int MAX_PACKETS = 999;
+    static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
     private String telephoneNumber;
     private StringBuilder message;
@@ -61,6 +61,8 @@ public class SMSMessage {
         SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
         if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
+
+        this.messageId = SMSController.getNewMessageId(); //Sequential code
         this.message = new StringBuilder(messageText);
         packets = getPacketsFromText(messageText);
     }
@@ -98,10 +100,16 @@ public class SMSMessage {
             message.append(packet.getMessageText());
     }
 
+    /**
+     * @return the message
+     */
     public String getMessage() {
         return message.toString();
     }
 
+    /**
+     * @return a list of packets
+     */
     SMSPacket[] getPackets() {
         return packets;
     }
@@ -119,6 +127,11 @@ public class SMSMessage {
         return content;
     }
 
+    /**
+     * Returns a unique sequential code for this message
+     *
+     * @return the message id
+     */
     public int getMessageId() {
         return messageId;
     }
@@ -142,13 +155,12 @@ public class SMSMessage {
         int packetsCount = messageText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1 : 0);
         Log.v("SMSMessage", "We've got to send " + packetsCount + " messages for a message " + messageText.length() + " characters long");
         SMSPacket[] packets = new SMSPacket[packetsCount];
-        int newMessageId = SMSController.getNewMessageId();
         String subText;
         for (int i = 0; i < packetsCount; i++) {
             int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, messageText.length());
             Log.v("SMSMessage", "Substring from " + i * SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter + " for packet number: " + (i + 1));
             subText = messageText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
-            packets[i] = new SMSPacket(SMSController.getApplicationCode(), newMessageId, i + 1, packetsCount, subText);
+            packets[i] = new SMSPacket(SMSController.getApplicationCode(), messageId, i + 1, packetsCount, subText);
         }
         return packets;
     }
