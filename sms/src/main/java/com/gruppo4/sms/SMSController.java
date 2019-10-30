@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
+import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -31,6 +32,7 @@ public class SMSController {
 
     private static SMSController instance; //singleton
     private Context context;
+    SMSSentBroadcastReceiver onSentReceiver;
     private int appCode;
     private int nextID; //id chosen for the next message to send
 
@@ -51,6 +53,8 @@ public class SMSController {
         this.appCode = applicationCode;
         nextID = 0;
         incompleteMessages = new ArrayList<>();
+        onSentReceiver = new SMSSentBroadcastReceiver();
+        context.registerReceiver(onSentReceiver, new IntentFilter("SMS_SENT"));
     }
 
     public static void init(Context context, int applicationCode){
@@ -73,13 +77,7 @@ public class SMSController {
      */
     public static void sendMessage(SMSMessage message, SMSSentListener listener)
     {
-        PendingIntent sentPI = PendingIntent.getBroadcast(getInstance().context, 0, new Intent("SMS_SENT"), 0);
-        BroadcastReceiver receiver = new SMSSentBroadcastReceiver(message, listener);
-        //Set the new BroadcastReceiver to intercept intents with the right filter
-        getInstance().context.registerReceiver(receiver, new IntentFilter("SMS_SENT"));
-        //Retrieve the Android default smsManager
-        SmsManager smsManager = SmsManager.getDefault();
-
+        SMSController controller = getInstance();
         ArrayList<String> messages = new ArrayList<>();
         ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
 
@@ -88,7 +86,12 @@ public class SMSController {
             onSentIntents.add(null); //we set all but the last listener to null
         }
         //we call the listener when all the packets have been sent, so last listener is not null
+        PendingIntent sentPI = PendingIntent.getBroadcast(controller.context, 0, new Intent("SMS_SENT"), 0);
         onSentIntents.set(onSentIntents.size() - 1, sentPI);
+
+        SmsManager smsManager = SmsManager.getDefault();
+        controller.onSentReceiver.setListener(listener);
+        controller.onSentReceiver.setMessage(message);
         smsManager.sendMultipartTextMessage(message.getTelephoneNumber(), null, messages, onSentIntents, null);
     }
 
@@ -116,16 +119,23 @@ public class SMSController {
     public static void onReceive(SMSPacket packet, String telephoneNumber) {
         //Let's see if we already have the message stored
         boolean found = false;
-        for (SMSMessage message : getInstance().incompleteMessages) {
-            if (message.getTelephoneNumber().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
+        for (SMSMessage m : getInstance().incompleteMessages) {
+            if (m.getTelephoneNumber().equals(telephoneNumber) && m.getMessageId() == packet.getMessageId()) {
                 found = true;
-                message.addPacket(packet);
+                m.addPacket(packet);
+                if(m.hasAllPackets()) {
+                    callOnReceivedListeners(m);
+                }
                 break;
             }
         }
         //If not found then create a new Message
         if (!found) {
-            getInstance().incompleteMessages.add(new SMSMessage(telephoneNumber, packet));
+            SMSMessage m = new SMSMessage(telephoneNumber, packet);
+            getInstance().incompleteMessages.add(m);
+            if(m.hasAllPackets()) {
+                callOnReceivedListeners(m);
+            }
         }
     }
 

@@ -129,13 +129,12 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSReceived(SMSMessage message) {
-        Log.d("DEBUG/mainactivity", "Received message:" + message.getMessage());
+        Log.d("DEBUG/MAINACTIVITY", "Received message:" + message.getMessage());
         if (message.getMessage().equals(SMILE_COMMAND)) {
-            Log.d("DEBUG/mainactivity", "Received message:" + message.getMessage());
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
             adapter.notifyDataSetChanged();
         } else if (message.getMessage().equals(HEART_COMMAND)) {
-            Log.d("DEBUG/mainactivity", "Received message:" + message.getMessage());
+            Log.d("DEBUG/MAINACTIVITY", "Received message:" + message.getMessage());
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
             adapter.notifyDataSetChanged();
         }
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSSent(SMSMessage message, SMSController.SentState state) {
-        Log.d("MainActivity", "Message sent");
+        Log.d("DEBUG/MAINACTIVITY", "Message sent");
         if (state == SMSController.SentState.MESSAGE_SENT) {
             if (message.getMessage().equals(SMILE_COMMAND)) {
                 Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 adapter.notifyDataSetChanged();
             }
         } else {
-            Log.w("DEBUG/mainactivity", "Unable to send sms, reason: " + state);
+            Log.w("DEBUG/MAINACTIVITY", "Unable to send sms, reason: " + state);
             Toast.makeText(this, "Unable to send message, reason: " + state, Toast.LENGTH_LONG).show();
         }
     }
