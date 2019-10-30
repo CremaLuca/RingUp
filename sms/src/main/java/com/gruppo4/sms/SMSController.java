@@ -17,6 +17,7 @@ import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class SMSController {
 
@@ -30,7 +31,7 @@ public class SMSController {
     private ArrayList<SMSMessage> incompleteMessages; //these are partially constructed messages
 
     /**
-     * Constructor for the Controller, checks permissions and initalizes lists
+     * Constructor for the Controller, checks permissions and initializes lists
      *
      * @param context
      * @param applicationCode
@@ -45,11 +46,12 @@ public class SMSController {
 
         receivedListeners = new ArrayList<>();
         this.appCode = applicationCode;
-        nextID = 0;
+        nextID = (new Random()).nextInt(SMSMessage.MAX_ID + 1);
+        Log.v("SMSController", "current ID: " + nextID);
         incompleteMessages = new ArrayList<>();
         onSentReceiver = new SMSSentBroadcastReceiver();
         context.registerReceiver(onSentReceiver, new IntentFilter("SMS_SENT"));
-    }
+}
 
     /**
      * Initializes the controller by setting the application code for received and sent messages
@@ -158,9 +160,10 @@ public class SMSController {
      */
     static int getNewMessageId() {
         SMSController inst = getInstance();
+        int current = inst.nextID;
         inst.nextID = (inst.nextID + 1) % (SMSMessage.MAX_PACKETS + 1);
-        Log.v("SMSController", "Generating new packet id:" + instance.nextID);
-        return inst.nextID; //we send messages with id not greater than SMSMessage.MAX_PACKETS;
+        Log.v("SMSController", "Generating new packet id:" + inst.nextID);
+        return current; //we send messages with id not greater than SMSMessage.MAX_PACKETS;
     }
 
     private static ArrayList<PendingIntent> setupPendingIntents(int numberOfPackets) {

@@ -19,10 +19,10 @@ public class SMSPacket {
      * @param packetMsgText   the messageText to send
      */
     public SMSPacket(int applicationCode, int messageId, int packetNumber, int totalNumber, String packetMsgText) {
-        if (applicationCode > 999 || applicationCode < -99)
-            throw new IllegalArgumentException("Application code must be between -99 and +999");
-        if (messageId > 999 || messageId < -99)
-            throw new IllegalArgumentException("Message id must be between -99 and +999");
+        if (applicationCode > 999 || applicationCode < 0)
+            throw new IllegalArgumentException("Application code must be between 0 and 999");
+        if (messageId > 999 || messageId < 0)
+            throw new IllegalArgumentException("Message id must be between 0 and 999");
         if (packetNumber > 999 || packetNumber < 1)
             throw new IllegalArgumentException("Packet number must be between 1 and 999");
         if (totalNumber > 999 || totalNumber < 1)
