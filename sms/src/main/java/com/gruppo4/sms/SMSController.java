@@ -84,6 +84,9 @@ public class SMSController {
         controller.onSentReceiver.setMessage(message);
         for (String msg : messages) {
             Log.v("SMSController", "String to be sent, length: " + msg.length() + ", content: " + msg);
+            ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(msg);
+            if (dividedBySystem.size() > 1)
+                throw new IllegalStateException("The message is too long (???)");
         }
         SmsManager.getDefault().sendMultipartTextMessage(message.getTelephoneNumber(), null, messages, onSentIntents, null);
     }
