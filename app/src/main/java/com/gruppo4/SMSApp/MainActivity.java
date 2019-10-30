@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
             adapter.notifyDataSetChanged();
         } else if (message.getMessage().equals(HEART_COMMAND)) {
-            Log.d("DEBUG/MAINACTIVITY", "Received message:" + message.getMessage());
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
             adapter.notifyDataSetChanged();
         }
