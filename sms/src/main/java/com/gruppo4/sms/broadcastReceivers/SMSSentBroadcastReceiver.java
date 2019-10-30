@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
+import android.util.Log;
 
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
@@ -15,8 +16,12 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
     private SMSSentListener listener;
     SMSMessage message;
 
-    public SMSSentBroadcastReceiver(SMSMessage  message, SMSSentListener listener) {
+
+    public void setListener(SMSSentListener listener) {
         this.listener = listener;
+    }
+
+    public void setMessage(SMSMessage message){
         this.message = message;
     }
 
@@ -28,13 +33,10 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        SMSController.SentState state = SMSController.SentState.ERROR_GENERIC_FAILURE;
+        SMSController.SentState state;
         switch (getResultCode()) {
             case Activity.RESULT_OK:
                 state = SMSController.SentState.MESSAGE_SENT;
-                break;
-            case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                state = SMSController.SentState.ERROR_GENERIC_FAILURE;
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF:
                 state = SMSController.SentState.ERROR_RADIO_OFF;
@@ -48,6 +50,9 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
             case SmsManager.RESULT_ERROR_LIMIT_EXCEEDED:
                 state = SMSController.SentState.ERROR_LIMIT_EXCEEDED;
                 break;
+            default:
+                state = SMSController.SentState.ERROR_GENERIC_FAILURE;
+                Log.d("DEBUG/SMSSentReceiver", message.getMessage() + " " + message.getMessageId());
         }
         listener.onSMSSent(message, state);
     }

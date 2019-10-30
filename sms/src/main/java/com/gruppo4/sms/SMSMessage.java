@@ -98,11 +98,9 @@ public class SMSMessage {
     }
 
     private void constructMessage(){
-        StringBuilder msg = new StringBuilder();
-        for (SMSPacket packet : packets) {
-            msg.append(packet.getMessage());
-        }
-        message = msg;
+        message = new StringBuilder();
+        for (SMSPacket packet : packets)
+            message.append(packet.getMessage());
     }
 
     public String getMessage() {
