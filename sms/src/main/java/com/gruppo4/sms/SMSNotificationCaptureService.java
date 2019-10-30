@@ -7,18 +7,24 @@ import android.util.Log;
 
 public class SMSNotificationCaptureService extends NotificationListenerService {
 
-    //Cancel notifications from our application's messages
     @Override
     public void onNotificationPosted (StatusBarNotification sbn) {
-        String text = sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT).toString();
-        Log.d("1","++++++++++++++++++++++++++++++++"+text);
+        String text = "";
         String subText = "";
-        if(text!=null)
-            subText = text.substring(0,4);
+
+        if(sbn.getNotification()!=null) {
+            try {
+                text = sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT).toString();
+                Log.d("1","++++++++++++++++++++++++++++++++"+text);
+                subText = text.substring(0,4);
+            } catch (NullPointerException e) { }
+        }
+
         Log.d("1","++++++++++++++++++++++++++++++++"+subText);
+
+        //Cancel the notification
         if(subText.equals("123_")) {
             cancelNotification(sbn.getKey());
         }
     }
-
 }
