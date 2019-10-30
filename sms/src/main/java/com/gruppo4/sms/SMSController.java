@@ -16,7 +16,6 @@ import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SMSController {
 
@@ -76,11 +75,14 @@ public class SMSController {
      */
     public static void sendMessage(SMSMessage message, SMSSentListener listener) {
         SMSController controller = getInstance();
-        ArrayList<String> messages = new ArrayList<>(Arrays.asList(message.getPacketsContent()));
+        ArrayList<String> messages = message.getPacketsContent();
         ArrayList<PendingIntent> onSentIntents = setupPendingIntents(messages.size());
 
         controller.onSentReceiver.setListener(listener);
         controller.onSentReceiver.setMessage(message);
+        for (String msg : messages) {
+            Log.v("SMSController", "String to be sent, length: " + msg.length() + ", content: " + msg);
+        }
         SmsManager.getDefault().sendMultipartTextMessage(message.getTelephoneNumber(), null, messages, onSentIntents, null);
     }
 

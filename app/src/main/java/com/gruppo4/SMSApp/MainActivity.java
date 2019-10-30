@@ -5,7 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     private static final String SMILE_COMMAND = "SMILE_COMMAND";
     private static final String HEART_COMMAND = "HEART_COMMAND";
+    private static final String LONG_COMMAND_PREFIX = "LONG_COMMAND";
+    private static final String LONG_COMMAND = LONG_COMMAND_PREFIX + " This command is way too long to be sent in one single sms, this takes at least two or three sms to be completely sent. " +
+            "And to prove it i can just send you this";
     private static final int SMS_PERMISSION_CODE = 1;
     private RecyclerView listView;
     private ListAdapter adapter;
@@ -65,6 +68,13 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 onSendHeartButton();
             }
         });
+        findViewById(R.id.sendLongButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSendLongButton();
+            }
+        });
+
     }
 
     private void setupSMSController() {
@@ -107,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     public void onSendHeartButton() {
-        String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
+        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
         sendMessage(HEART_COMMAND, phoneNumber);
     }
 
@@ -115,8 +125,16 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendSmileButton() {
-        String phoneNumber = ((AutoCompleteTextView) findViewById(R.id.phoneNumberTextView)).getText().toString();
+        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
         sendMessage(SMILE_COMMAND, phoneNumber);
+    }
+
+    /**
+     * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
+     */
+    public void onSendLongButton() {
+        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+        sendMessage(LONG_COMMAND, phoneNumber);
     }
 
     @Override
@@ -128,20 +146,25 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         } else if (message.getMessage().equals(HEART_COMMAND)) {
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
             adapter.notifyDataSetChanged();
+        } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
+            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a looong command");
+            adapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onSMSSent(SMSMessage message, SMSController.SentState state) {
-        Log.d("MainActivity", "Message sent");
+        Log.d("MainActivity", "Message sent: " + message.getMessage());
         if (state == SMSController.SentState.MESSAGE_SENT) {
+            Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
             if (message.getMessage().equals(SMILE_COMMAND)) {
-                Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
                 adapter.getEvents().add("You sent a :) to " + message.getTelephoneNumber());
                 adapter.notifyDataSetChanged();
             } else if (message.getMessage().equals(HEART_COMMAND)) {
-                Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
                 adapter.getEvents().add("You sent a <3 to " + message.getTelephoneNumber());
+                adapter.notifyDataSetChanged();
+            } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
+                adapter.getEvents().add("You sent a looong command to " + message.getTelephoneNumber());
                 adapter.notifyDataSetChanged();
             }
         } else {
