@@ -8,7 +8,8 @@ public class SMSControllerUnitTest {
 
     @Before
     public void init() {
-        smsController = SMSController.setup(null, 1);
+        SMSController.init(null, 1);
+        smsController = SMSController.getInstance();
     }
 
 }
