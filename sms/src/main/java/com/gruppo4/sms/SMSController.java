@@ -81,6 +81,7 @@ public class SMSController {
 
         controller.onSentReceiver.setListener(listener);
         controller.onSentReceiver.setMessage(message);
+        Log.v("SMSController", "Trying to send message id: " + message.getMessageId());
         SmsManager.getDefault().sendMultipartTextMessage(message.getTelephoneNumber(), null, messages, onSentIntents, null);
     }
 
