@@ -84,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     /**
      * Sends a message using the sms library
      *
-     * @param text
-     * @param telephoneNumber
+     * @param text the content of the message
+     * @param telephoneNumber the target telephone number
      */
     private void sendMessage(String text, String telephoneNumber) {
         try {
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                     break;
             }
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
-            Log.e("MainActivity", telephoneException.getMessage());
+            Log.e("MainActivity", telephoneException.getMessage() + ", shown error: " + error);
         }
     }
 
@@ -129,12 +129,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSReceived(SMSMessage message) {
-        Log.d("DEBUG/MAINACTIVITY", "Received message:" + message.getMessage());
+        Log.d("MainActivity", "Received message:" + message.getMessage());
         if (message.getMessage().equals(SMILE_COMMAND)) {
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
             adapter.notifyDataSetChanged();
         } else if (message.getMessage().equals(HEART_COMMAND)) {
-            Log.d("DEBUG/MAINACTIVITY", "Received message:" + message.getMessage());
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
             adapter.notifyDataSetChanged();
         }
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSSent(SMSMessage message, SMSController.SentState state) {
-        Log.d("DEBUG/MAINACTIVITY", "Message sent");
+        Log.d("MainActivity", "Message sent");
         if (state == SMSController.SentState.MESSAGE_SENT) {
             if (message.getMessage().equals(SMILE_COMMAND)) {
                 Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 adapter.notifyDataSetChanged();
             }
         } else {
-            Log.w("DEBUG/MAINACTIVITY", "Unable to send sms, reason: " + state);
+            Log.w("MainActivity", "Unable to send sms, reason: " + state);
             Toast.makeText(this, "Unable to send message, reason: " + state, Toast.LENGTH_LONG).show();
         }
     }

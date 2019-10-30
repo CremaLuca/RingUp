@@ -17,11 +17,19 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
     SMSMessage message;
 
 
+    /**
+     * @param listener a listener to be called once the message is sent
+     */
     public void setListener(SMSSentListener listener) {
+        Log.v("SMSSentReceiver", "Changed listener to class:" + listener.getClass());
         this.listener = listener;
     }
 
-    public void setMessage(SMSMessage message){
+    /**
+     * @param message a message to pass to the listener once it is sent
+     */
+    public void setMessage(SMSMessage message) {
+        Log.v("SMSSentReceiver", "Changed message to id:" + message.getMessageId());
         this.message = message;
     }
 
@@ -52,8 +60,11 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 break;
             default:
                 state = SMSController.SentState.ERROR_GENERIC_FAILURE;
-                Log.d("DEBUG/SMSSentReceiver", message.getMessage() + " " + message.getMessageId());
+                Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageId());
+                break;
         }
-        listener.onSMSSent(message, state);
+        Log.v("SMSSentReceiver", "Sent a message with state: " + state + ", now calling the listener");
+        if (listener != null)
+            listener.onSMSSent(message, state);
     }
 }
