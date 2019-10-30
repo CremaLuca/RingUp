@@ -19,6 +19,7 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
         if(extras != null){
             Object[] smsExtra = (Object[]) extras.get("pdus");
             String format = (String) extras.get("format");
+            Log.d("DEBUG/SMSReceiver:", Integer.toString(smsExtra.length));
             for(int i = 0; i < smsExtra.length; ++i){
                 SmsMessage sms = SmsMessage.createFromPdu((byte[])smsExtra[i], format);
                 String smsContent = sms.getMessageBody();

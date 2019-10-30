@@ -116,16 +116,23 @@ public class SMSController {
     public static void onReceive(SMSPacket packet, String telephoneNumber) {
         //Let's see if we already have the message stored
         boolean found = false;
-        for (SMSMessage message : getInstance().incompleteMessages) {
-            if (message.getTelephoneNumber().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
+        for (SMSMessage m : getInstance().incompleteMessages) {
+            if (m.getTelephoneNumber().equals(telephoneNumber) && m.getMessageId() == packet.getMessageId()) {
                 found = true;
-                message.addPacket(packet);
+                m.addPacket(packet);
+                if(m.hasAllPackets()) {
+                    callOnReceivedListeners(m);
+                }
                 break;
             }
         }
         //If not found then create a new Message
         if (!found) {
-            getInstance().incompleteMessages.add(new SMSMessage(telephoneNumber, packet));
+            SMSMessage m = new SMSMessage(telephoneNumber, packet);
+            getInstance().incompleteMessages.add(m);
+            if(m.hasAllPackets()) {
+                callOnReceivedListeners(m);
+            }
         }
     }
 

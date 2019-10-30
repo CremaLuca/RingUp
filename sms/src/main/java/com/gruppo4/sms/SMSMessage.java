@@ -12,10 +12,11 @@ public class SMSMessage {
     public static  final  int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
     private String telephoneNumber;
-    private String message;
+    private StringBuilder message;
     private int messageId;
 
     private SMSPacket[] packets;
+    private int packetsMissing;
 
     /**
      * Wrap for a text message, used to check the parameters validity
@@ -24,30 +25,24 @@ public class SMSMessage {
      * @param packets     array of packets from which we construct the message
      */
 
-    public SMSMessage(String telephoneNumber, SMSPacket[] packets)
+    SMSMessage(String telephoneNumber, SMSPacket[] packets)
     {
         this.telephoneNumber = telephoneNumber;
         this.messageId = packets[0].getMessageId();
         this.packets = packets;
         for (SMSPacket p: packets)
-            message += p.getMessage();
+            message.append(p.getMessage());
+        packetsMissing = 0;
     }
 
     /**
      * Constructor for a received message, holds the packets until the message is completed
      *
      * @param telephoneNumber the telephone number
-     * @param packet the first packet received for this message, can be any packet of the message
      */
-    public SMSMessage(String telephoneNumber, SMSPacket packet) {
+    SMSMessage(String telephoneNumber, SMSPacket packet) {
         this.telephoneNumber = telephoneNumber;
-        this.messageId = packet.getMessageId();
-        this.packets = new SMSPacket[packet.getTotalNumber()];
-        packets[packet.getPacketNumber() - 1] = packet;
-        if (isComplete()) {
-            this.message = packet.getMessage();
-            SMSController.callOnReceivedListeners(this);
-        }
+        addPacket(packet);
     }
 
     /**
@@ -69,9 +64,9 @@ public class SMSMessage {
         SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
         if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
-        this.message = messageText;
-
-        packets = getPacketsFromMessage(this);
+        this.message = new StringBuilder(messageText);
+        packets = getPacketsFromText(messageText);
+        packetsMissing = 0;
     }
 
     /**
@@ -80,16 +75,17 @@ public class SMSMessage {
      * @param packet add packet to packets list
      */
     public void addPacket(SMSPacket packet) {
-        if (packets[packet.getPacketNumber() - 1] != null) {
+        if(packets == null){
+            packets = new SMSPacket[packet.getTotalNumber()];
+            packetsMissing = packet.getTotalNumber();
+            messageId = packet.getMessageId();
+        }
+        else if(packets[packet.getPacketNumber() - 1] != null) {
             throw new IllegalStateException("There shouldn't be a packet for this message");
         }
         packets[packet.getPacketNumber() - 1] = packet;
-        if (isComplete()) {
-            //Generate the message
-            this.message = getMessageFromPackets();
-            Log.d("DEBUG/SMSMessage", "message is completed");
-            SMSController.callOnReceivedListeners(this);
-        }
+        packetsMissing--;
+        if(packetsMissing == 0) constructMessage();
     }
 
     /**
@@ -101,8 +97,16 @@ public class SMSMessage {
         return telephoneNumber;
     }
 
+    private void constructMessage(){
+        StringBuilder msg = new StringBuilder();
+        for (SMSPacket packet : packets) {
+            msg.append(packet.getMessage());
+        }
+        message = msg;
+    }
+
     public String getMessage() {
-        return message;
+        return message.toString();
     }
 
     public SMSPacket[] getPackets(){
@@ -118,39 +122,21 @@ public class SMSMessage {
      *
      * @return true if there are no missing packets, false otherwise
      */
-    private boolean isComplete() {
-        for (SMSPacket packet : packets) {
-            if (packet == null)
-                return false;
-        }
-        return true;
+    public boolean hasAllPackets() {
+        return packetsMissing == 0;
     }
 
-    /**
-     * MUST BE CALLED ONLY IF isComplete IS TRUE
-     *
-     * @return the complete message
-     */
-    public String getMessageFromPackets() {
-        String message = "";
-        for (SMSPacket packet : packets) {
-            message += packet.getMessage();
-        }
-        return message;
-    }
-
-    public  SMSPacket[] getPacketsFromMessage(SMSMessage message){
-        String msgText = message.getMessage();
-        int rem = msgText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
-        int packetsCount = msgText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
-        Log.d("DEBUG/SMSMessage", "I have to send " + packetsCount + " messages for a message " + msgText.length() + " characters long");
+    public  SMSPacket[] getPacketsFromText(String messageText){
+        int rem = messageText.length() % SMSPacket.MAX_PACKET_TEXT_LEN;
+        int packetsCount = messageText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1:0);
+        Log.d("DEBUG/SMSMessage", "I have to send " + packetsCount + " messages for a message " + messageText.length() + " characters long");
         SMSPacket[] packets = new SMSPacket[packetsCount];
         int msgId = SMSController.getNewMessageId();
         String subText;
         for (int i = 0; i < packetsCount; i++) {
-            int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, msgText.length());
+            int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, messageText.length());
             Log.d("DEBUG/SMSMessage", "Substring from " + i *  SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter);
-            subText =msgText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
+            subText = messageText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
             packets[i] = new SMSPacket(SMSController.getApplicationCode(), msgId, i + 1, packetsCount, subText);
         }
         return packets;
