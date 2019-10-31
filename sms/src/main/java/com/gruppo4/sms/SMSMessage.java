@@ -6,11 +6,14 @@ import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.utils.SMSChecks;
 
+import java.util.ArrayList;
+
 public class SMSMessage {
 
     //This is because package number cannot exceed three characters
     static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
+    public static final int MAX_ID = 999;
     private String telephoneNumber;
     private StringBuilder message;
     private int messageId;
@@ -119,10 +122,10 @@ public class SMSMessage {
      *
      * @return an array of Strings containing SMSData for each packet
      */
-    String[] getPacketsContent() {
-        String[] content = new String[packets.length];
+    ArrayList<String> getPacketsContent() {
+        ArrayList<String> content = new ArrayList<>();
         for (int i = 0; i < packets.length; i++) {
-            content[i] = packets[i].getSMSData();
+            content.add(packets[i].getSMSData());
         }
         return content;
     }

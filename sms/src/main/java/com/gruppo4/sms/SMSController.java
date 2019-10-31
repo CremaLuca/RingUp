@@ -16,7 +16,7 @@ import com.gruppo4.sms.listeners.SMSReceivedListener;
 import com.gruppo4.sms.listeners.SMSSentListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Random;
 
 public class SMSController {
 
@@ -30,7 +30,7 @@ public class SMSController {
     private ArrayList<SMSMessage> incompleteMessages; //these are partially constructed messages
 
     /**
-     * Constructor for the Controller, checks permissions and initalizes lists
+     * Constructor for the Controller, checks permissions and initializes lists
      *
      * @param context
      * @param applicationCode
@@ -45,7 +45,8 @@ public class SMSController {
 
         receivedListeners = new ArrayList<>();
         this.appCode = applicationCode;
-        nextID = 0;
+        nextID = (new Random()).nextInt(SMSMessage.MAX_ID + 1);
+        Log.v("SMSController", "current ID: " + nextID);
         incompleteMessages = new ArrayList<>();
         onSentReceiver = new SMSSentBroadcastReceiver();
         context.registerReceiver(onSentReceiver, new IntentFilter("SMS_SENT"));
@@ -76,11 +77,17 @@ public class SMSController {
      */
     public static void sendMessage(SMSMessage message, SMSSentListener listener) {
         SMSController controller = getInstance();
-        ArrayList<String> messages = new ArrayList<>(Arrays.asList(message.getPacketsContent()));
+        ArrayList<String> messages = message.getPacketsContent();
         ArrayList<PendingIntent> onSentIntents = setupPendingIntents(messages.size());
 
         controller.onSentReceiver.setListener(listener);
         controller.onSentReceiver.setMessage(message);
+        for (String msg : messages) {
+            Log.v("SMSController", "String to be sent, length: " + msg.length() + ", content: " + msg);
+            ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(msg);
+            if (dividedBySystem.size() > 1)
+                throw new IllegalStateException("The message is too long (???)");
+        }
         SmsManager.getDefault().sendMultipartTextMessage(message.getTelephoneNumber(), null, messages, onSentIntents, null);
     }
 
@@ -158,9 +165,10 @@ public class SMSController {
      */
     static int getNewMessageId() {
         SMSController inst = getInstance();
+        int current = inst.nextID;
         inst.nextID = (inst.nextID + 1) % (SMSMessage.MAX_PACKETS + 1);
-        Log.v("SMSController", "Generating new packet id:" + instance.nextID);
-        return inst.nextID; //we send messages with id not greater than SMSMessage.MAX_PACKETS;
+        Log.v("SMSController", "Generating new packet id:" + inst.nextID);
+        return current; //we send messages with id not greater than SMSMessage.MAX_PACKETS;
     }
 
     private static ArrayList<PendingIntent> setupPendingIntents(int numberOfPackets) {

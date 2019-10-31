@@ -2,7 +2,7 @@ package com.gruppo4.sms;
 
 public class SMSPacket {
 
-    static final int MAX_PACKET_TEXT_LEN = 144; //160 - 3(applicationCode) - 3(messageId) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
+    static final int MAX_PACKET_TEXT_LEN = 140; //160 - 3(applicationCode) - 3(messageId) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
     public static final String SEPARATOR = "_";
     private String messageText;
     private int applicationCode;
@@ -19,10 +19,10 @@ public class SMSPacket {
      * @param packetMsgText   the messageText to send
      */
     public SMSPacket(int applicationCode, int messageId, int packetNumber, int totalNumber, String packetMsgText) {
-        if (applicationCode > 999 || applicationCode < -99)
-            throw new IllegalArgumentException("Application code must be between -99 and +999");
-        if (messageId > 999 || messageId < -99)
-            throw new IllegalArgumentException("Message id must be between -99 and +999");
+        if (applicationCode > 999 || applicationCode < 0)
+            throw new IllegalArgumentException("Application code must be between 0 and 999");
+        if (messageId > 999 || messageId < 0)
+            throw new IllegalArgumentException("Message id must be between 0 and 999");
         if (packetNumber > 999 || packetNumber < 1)
             throw new IllegalArgumentException("Packet number must be between 1 and 999");
         if (totalNumber > 999 || totalNumber < 1)
