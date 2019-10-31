@@ -12,12 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gruppo4.sms.SMSController;
-import com.gruppo4.sms.SMSMessage;
-import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
-import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.listeners.SMSReceivedListener;
-import com.gruppo4.sms.listeners.SMSSentListener;
+import com.gruppo4.sms.dataLink.SMSController;
+import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
+import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
+import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 import java.util.ArrayList;
 

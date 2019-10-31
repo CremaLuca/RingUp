@@ -1,4 +1,4 @@
-package com.gruppo4.sms;
+package com.gruppo4.sms.dataLink;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -11,9 +11,9 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
-import com.gruppo4.sms.broadcastReceivers.SMSSentBroadcastReceiver;
-import com.gruppo4.sms.listeners.SMSReceivedListener;
-import com.gruppo4.sms.listeners.SMSSentListener;
+import com.gruppo4.sms.dataLink.broadcastReceivers.SMSSentBroadcastReceiver;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
+import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 import java.util.ArrayList;
 import java.util.Random;
