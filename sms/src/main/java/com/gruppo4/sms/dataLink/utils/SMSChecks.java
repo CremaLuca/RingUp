@@ -1,6 +1,6 @@
-package com.gruppo4.sms.utils;
+package com.gruppo4.sms.dataLink.utils;
 
-import com.gruppo4.sms.SMSMessage;
+import com.gruppo4.sms.dataLink.SMSMessage;
 
 public class SMSChecks {
 

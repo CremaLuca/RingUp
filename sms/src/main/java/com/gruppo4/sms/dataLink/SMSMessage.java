@@ -1,10 +1,10 @@
-package com.gruppo4.sms;
+package com.gruppo4.sms.dataLink;
 
 import android.util.Log;
 
-import com.gruppo4.sms.exceptions.InvalidSMSMessageException;
-import com.gruppo4.sms.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.utils.SMSChecks;
+import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
+import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
+import com.gruppo4.sms.dataLink.utils.SMSChecks;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,6 @@
-package com.gruppo4.sms.exceptions;
+package com.gruppo4.sms.dataLink.exceptions;
 
-import com.gruppo4.sms.SMSMessage;
-import com.gruppo4.sms.utils.SMSChecks;
+import com.gruppo4.sms.dataLink.utils.SMSChecks;
 
 public class InvalidTelephoneNumberException extends Exception {
 
