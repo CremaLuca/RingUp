@@ -1,4 +1,4 @@
-package com.gruppo4.sms.dataLink;
+package com.gruppo_4.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
