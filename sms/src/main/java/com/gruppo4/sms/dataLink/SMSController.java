@@ -21,7 +21,7 @@ import java.util.Random;
 public class SMSController {
 
     private static SMSController instance; //singleton
-    SMSSentBroadcastReceiver onSentReceiver;
+    private SMSSentBroadcastReceiver onSentReceiver;
     private Context context;
     private int appCode;
     private int nextID; //id chosen for the next message to send
@@ -44,10 +44,10 @@ public class SMSController {
             throw new SecurityException("Missing Manifest.permission.RECEIVE_SMS permission, use requestPermissions() to be granted this permission runtime");
 
         receivedListeners = new ArrayList<>();
+        incompleteMessages = new ArrayList<>();
         this.appCode = applicationCode;
         nextID = (new Random()).nextInt(SMSMessage.MAX_ID + 1);
-        Log.v("SMSController", "current ID: " + nextID);
-        incompleteMessages = new ArrayList<>();
+        Log.v("SMSController", "current message ID: " + nextID);
         onSentReceiver = new SMSSentBroadcastReceiver();
         context.registerReceiver(onSentReceiver, new IntentFilter("SMS_SENT"));
     }
@@ -88,7 +88,7 @@ public class SMSController {
             if (dividedBySystem.size() > 1)
                 throw new IllegalStateException("The message is too long (???)");
         }
-        SmsManager.getDefault().sendMultipartTextMessage(message.getTelephoneNumber(), null, messages, onSentIntents, null);
+        SMSCore.sendMessages(messages, message.getTelephoneNumber(), onSentIntents);
     }
 
     /**
