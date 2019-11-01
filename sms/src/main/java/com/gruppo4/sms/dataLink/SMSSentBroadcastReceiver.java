@@ -1,4 +1,4 @@
-package com.gruppo4.sms.dataLink.broadcastReceivers;
+package com.gruppo4.sms.dataLink;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import com.gruppo4.sms.dataLink.SMSController;
-import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 public class SMSSentBroadcastReceiver extends BroadcastReceiver {

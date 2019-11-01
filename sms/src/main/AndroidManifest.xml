@@ -9,7 +9,7 @@
 
     <application>
         <receiver
-            android:name=".dataLink.broadcastReceivers.SMSReceivedBroadcastReceiver"
+            android:name=".dataLink.SMSReceivedBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BROADCAST_SMS">

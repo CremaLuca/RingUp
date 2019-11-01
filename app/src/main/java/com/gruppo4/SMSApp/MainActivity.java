@@ -1,6 +1,7 @@
 package com.gruppo4.SMSApp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private static final String SMILE_COMMAND = "SMILE_COMMAND";
     private static final String HEART_COMMAND = "HEART_COMMAND";
     private static final String LONG_COMMAND_PREFIX = "LONG_COMMAND";
+    private static final int APP_ID = 123;
     private static final String LONG_COMMAND = LONG_COMMAND_PREFIX + " This command is way too long to be sent in one single sms, this takes at least two or three sms to be completely sent. " +
             "And to prove it i can just send you this";
     private static final int SMS_PERMISSION_CODE = 1;
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
-            setupSMSController();
+            setupSMSController(getApplicationContext(), APP_ID);
         }
 
 
@@ -59,26 +62,26 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendSmileButton();
+                onSendSmileButton(getApplicationContext());
             }
         });
         findViewById(R.id.sendHeartButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendHeartButton();
+                onSendHeartButton(getApplicationContext());
             }
         });
         findViewById(R.id.sendLongButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendLongButton();
+                onSendLongButton(getApplicationContext());
             }
         });
 
     }
 
-    private void setupSMSController() {
-        SMSController.init(getApplicationContext(), 123);
+    private void setupSMSController(Context ctx, int appID) {
+        SMSController.setup(ctx, appID);
 
         SMSController.addOnReceiveListener(this);
     }
@@ -89,10 +92,10 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * @param text the content of the message
      * @param telephoneNumber the target telephone number
      */
-    private void sendMessage(String text, String telephoneNumber) {
+    private void sendMessage(Context context, String text, String telephoneNumber) {
         try {
-            SMSMessage message = new SMSMessage(telephoneNumber, text);
-            SMSController.sendMessage(message, this);
+            SMSMessage message = new SMSMessage(context, telephoneNumber, text);
+            SMSController.sendMessage(context, message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
         } catch (InvalidTelephoneNumberException telephoneException) {
@@ -116,25 +119,25 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         }
     }
 
-    public void onSendHeartButton() {
+    public void onSendHeartButton(Context ctx) {
         String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(HEART_COMMAND, phoneNumber);
+        sendMessage(ctx, HEART_COMMAND, phoneNumber);
     }
 
     /**
      * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
-    public void onSendSmileButton() {
+    public void onSendSmileButton(Context ctx) {
         String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(SMILE_COMMAND, phoneNumber);
+        sendMessage(ctx, SMILE_COMMAND, phoneNumber);
     }
 
     /**
      * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
-    public void onSendLongButton() {
+    public void onSendLongButton(Context ctx) {
         String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(LONG_COMMAND, phoneNumber);
+        sendMessage(ctx, LONG_COMMAND, phoneNumber);
     }
 
     @Override
@@ -174,11 +177,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == SMS_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
-                setupSMSController();
+                setupSMSController(getApplicationContext(), APP_ID);
             } else {
                 // permission denied, boo!
                 // close the app then

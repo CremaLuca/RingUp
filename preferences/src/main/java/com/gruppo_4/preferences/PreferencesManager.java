@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
  * Class used to write and read configurations in Android
  *
  * @author Luca Crema
- * @version 1.0
+ * @version 1.1
  */
 public class PreferencesManager {
 
@@ -97,6 +97,53 @@ public class PreferencesManager {
         SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
         editor.putBoolean(key, value);
         return editor.commit();
+    }
+
+    /**
+     * Sums the value to an integer
+     *
+     * @param ctx   context of an Activity or Service
+     * @param key   key for the resource
+     * @param value value to be summed to the current value
+     * @return if the value has been updated correctly
+     */
+    public static int updateInt(Context ctx, String key, int value) {
+        int currentValue = getInt(ctx, key);
+        if (currentValue == -1)
+            currentValue = 0;
+        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
+        editor.putInt(key, currentValue + value);
+        editor.commit();
+        return currentValue + value;
+    }
+
+    /**
+     * Sums the value to 1
+     *
+     * @param ctx context of an Activity or Service
+     * @param key key for the resource
+     * @return if the value has been updated correctly
+     */
+    public static int updateInt(Context ctx, String key) {
+        return updateInt(ctx, key, 1);
+    }
+
+    /**
+     * Sums 1 to the integer saved in memory and goes back to 1 if it exceeds the maxValue
+     *
+     * @param ctx
+     * @param key
+     * @return
+     */
+    public static int shiftInt(Context ctx, String key, int maxValue) {
+        int currentValue = getInt(ctx, key);
+        if (currentValue == -1)
+            currentValue = 0;
+        int nextValue = (currentValue + 1) % maxValue;
+        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
+        editor.putInt(key, nextValue);
+        editor.commit();
+        return nextValue;
     }
 
 }

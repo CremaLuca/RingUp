@@ -1,6 +1,6 @@
 package com.gruppo4.sms.dataLink;
 
-import android.util.Log;
+import android.content.Context;
 
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
@@ -47,13 +47,13 @@ public class SMSMessage {
 
     /**
      * Wrap for a text message, used to check the parameters validity
-     *
+     * @param ctx the current application/service context
      * @param telephoneNumber a valid telephone number to send the message to
      * @param messageText     a message
      * @throws InvalidSMSMessageException      if Utils.checkMessageText returns false
      * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber returns false
      */
-    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public SMSMessage(Context ctx, String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         //Checks on the telephone number
         TelephoneNumberState telephoneNumberState = checkTelephoneNumber(telephoneNumber);
         if (telephoneNumberState != TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
@@ -65,9 +65,9 @@ public class SMSMessage {
         if (messageTextState != MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
 
-        this.messageId = SMSController.getNewMessageId(); //Sequential code
+        this.messageId = SMSController.getNewMessageId(ctx); //Sequential code
         this.message = new StringBuilder(messageText);
-        packets = getPacketsFromText(messageText);
+        packets = getPacketsFromText(ctx, messageText);
     }
 
     /**
@@ -118,11 +118,9 @@ public class SMSMessage {
      */
     void addPacket(SMSPacket packet) {
         if (packets == null) {
-            Log.v("SMSMessage", "Creating a new array for an incoming packet");
             packets = new SMSPacket[packet.getTotalNumber()];
             messageId = packet.getMessageId();
         } else if (packets[packet.getPacketNumber() - 1] != null) {
-            Log.v("SMSMessage", "This message already has another packet in that position, could mean that the sender sent the same code twice?");
             throw new IllegalStateException("There shouldn't be a packet for this message");
         }
         packets[packet.getPacketNumber() - 1] = packet;
@@ -190,21 +188,18 @@ public class SMSMessage {
             if (packet == null)
                 return false;
         }
-        Log.v("SMSMessage", "Message " + messageId + " is now complete");
         return true;
     }
 
-    private SMSPacket[] getPacketsFromText(String messageText) {
+    private SMSPacket[] getPacketsFromText(Context ctx, String messageText) {
         int rem = messageText.length() % SMSPacket.MAX_PACKET_TEXT_LEN; //This is last message length
         int packetsCount = messageText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1 : 0);
-        Log.v("SMSMessage", "We've got to send " + packetsCount + " messages for a message " + messageText.length() + " characters long");
         SMSPacket[] packets = new SMSPacket[packetsCount];
         String subText;
         for (int i = 0; i < packetsCount; i++) {
             int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, messageText.length());
-            Log.v("SMSMessage", "Substring from " + i * SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter + " for packet number: " + (i + 1));
             subText = messageText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
-            packets[i] = new SMSPacket(SMSController.getApplicationCode(), messageId, i + 1, packetsCount, subText);
+            packets[i] = new SMSPacket(SMSController.getApplicationCode(ctx), messageId, i + 1, packetsCount, subText);
         }
         return packets;
     }
