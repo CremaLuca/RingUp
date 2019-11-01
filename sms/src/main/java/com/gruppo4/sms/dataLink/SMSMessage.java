@@ -4,20 +4,20 @@ import android.util.Log;
 
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.dataLink.utils.SMSChecks;
 
 import java.util.ArrayList;
 
 public class SMSMessage {
 
+    public static final int MAX_ID = 999;
+    public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
+    public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
     //This is because package number cannot exceed three characters
     static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
-    public static final int MAX_ID = 999;
     private String telephoneNumber;
     private StringBuilder message;
     private int messageId;
-
     private SMSPacket[] packets;
 
     /**
@@ -55,19 +55,60 @@ public class SMSMessage {
      */
     public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         //Checks on the telephone number
-        SMSChecks.TelephoneNumberState telephoneNumberState = SMSChecks.checkTelephoneNumber(telephoneNumber);
-        if (telephoneNumberState != SMSChecks.TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
+        TelephoneNumberState telephoneNumberState = checkTelephoneNumber(telephoneNumber);
+        if (telephoneNumberState != TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
             throw new InvalidTelephoneNumberException("Telephone number not valid", telephoneNumberState);
         }
         this.telephoneNumber = telephoneNumber;
         //Checks on the message text
-        SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
-        if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
+        MessageTextState messageTextState = checkMessageText(messageText);
+        if (messageTextState != MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
 
         this.messageId = SMSController.getNewMessageId(); //Sequential code
         this.message = new StringBuilder(messageText);
         packets = getPacketsFromText(messageText);
+    }
+
+    /**
+     * Checks if the message is valid
+     *
+     * @param messageText the text to check
+     * @return The state of the message after the tests
+     */
+    public static MessageTextState checkMessageText(String messageText) {
+        if (messageText.length() > SMSMessage.MAX_MSG_TEXT_LEN) {
+            return MessageTextState.MESSAGE_TEXT_TOO_LONG;
+        }
+        return MessageTextState.MESSAGE_TEXT_VALID;
+    }
+
+    /**
+     * Checks if the phone number is valid
+     *
+     * @param telephoneNumber the phone number to check
+     * @return The state of the telephone number after the tests
+     */
+    public static TelephoneNumberState checkTelephoneNumber(String telephoneNumber) {
+        //Check if the number is shorter than the MAX.
+        if (telephoneNumber.length() > MAX_TELEPHONE_NUMBER_LENGTH) {
+            return TelephoneNumberState.TELEPHONE_NUMBER_TOO_LONG;
+        }
+        //Check if the number is longer than the MIN.
+        if (telephoneNumber.length() < MIN_TELEPHONE_NUMBER_LENGTH) {
+            return TelephoneNumberState.TELEPHONE_NUMBER_TOO_SHORT;
+        }
+        //Check if it's actually a number and doesn't contain anything else
+        //First we have to remove the "+"
+        if (!telephoneNumber.substring(1, telephoneNumber.length() - 1).matches("[0-9]+")) {
+            return TelephoneNumberState.TELEPHONE_NUMBER_NOT_A_NUMBER;
+        }
+        //Check if there is a country code.
+        if (telephoneNumber.charAt(0) != '+') {
+            return TelephoneNumberState.TELEPHONE_NUMBER_NO_COUNTRY_CODE;
+        }
+        //If it passed all the tests we are sure the number is valid.
+        return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
     }
 
     /**
@@ -168,4 +209,16 @@ public class SMSMessage {
         return packets;
     }
 
+    public enum TelephoneNumberState {
+        TELEPHONE_NUMBER_VALID,
+        TELEPHONE_NUMBER_TOO_SHORT,
+        TELEPHONE_NUMBER_TOO_LONG,
+        TELEPHONE_NUMBER_NO_COUNTRY_CODE,
+        TELEPHONE_NUMBER_NOT_A_NUMBER
+    }
+
+    public enum MessageTextState {
+        MESSAGE_TEXT_VALID,
+        MESSAGE_TEXT_TOO_LONG
+    }
 }

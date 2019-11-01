@@ -171,6 +171,12 @@ public class SMSController {
         return current; //we send messages with id not greater than SMSMessage.MAX_PACKETS;
     }
 
+    /**
+     * Creates an empty array list of pending intents except for the last one
+     *
+     * @param numberOfPackets
+     * @return
+     */
     private static ArrayList<PendingIntent> setupPendingIntents(int numberOfPackets) {
         ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
         for (int i = 0; i < numberOfPackets; i++) {
