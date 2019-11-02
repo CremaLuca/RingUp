@@ -40,14 +40,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
-        } else {
-            setupSMSController(getApplicationContext(), APP_ID);
-        }
-
-
         ArrayList<String> events = new ArrayList<>();
 
         listView = findViewById(R.id.my_recycler_view);
@@ -58,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
         adapter = new ListAdapter(events);
         listView.setAdapter(adapter);
+
+        setupSMSController(getApplicationContext(), APP_ID);
 
         findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,24 +114,36 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     public void onSendHeartButton(Context ctx) {
-        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(ctx, HEART_COMMAND, phoneNumber);
+        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+        } else {
+            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+            sendMessage(ctx, HEART_COMMAND, phoneNumber);
+        }
     }
 
     /**
      * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendSmileButton(Context ctx) {
-        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(ctx, SMILE_COMMAND, phoneNumber);
+        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+        } else {
+            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+            sendMessage(ctx, SMILE_COMMAND, phoneNumber);
+        }
     }
 
     /**
      * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendLongButton(Context ctx) {
-        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-        sendMessage(ctx, LONG_COMMAND, phoneNumber);
+        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+        } else {
+            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+            sendMessage(ctx, LONG_COMMAND, phoneNumber);
+        }
     }
 
     @Override

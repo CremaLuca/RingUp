@@ -33,12 +33,6 @@ public class SMSController {
      * @param applicationCode an identifier for the current application
      */
     public static void setup(Context context, int applicationCode) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED)
-            throw new SecurityException("Missing Manifest.permission.SEND_SMS permission, use requestPermissions() to be granted this permission runtime");
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED)
-            throw new SecurityException("Missing Manifest.permission.RECEIVE_SMS permission, use requestPermissions() to be granted this permission runtime");
-
         if (!checkApplicationCode(applicationCode))
             throw new IllegalStateException("Application code not valid, check it with checkApplicationCode() first");
 
