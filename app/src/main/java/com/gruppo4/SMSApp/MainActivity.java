@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //If the application is given the permissions before sending the first message, the SMSController setup is immediately done.
+        if(checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+            setupSMSController(getApplicationContext(), APP_ID);
+        }
+
         ArrayList<String> events = new ArrayList<>();
 
         listView = findViewById(R.id.my_recycler_view);
@@ -50,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
         adapter = new ListAdapter(events);
         listView.setAdapter(adapter);
-
-        setupSMSController(getApplicationContext(), APP_ID);
 
         findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     private void setupSMSController(Context ctx, int appID) {
         SMSController.setup(ctx, appID);
-
         SMSController.addOnReceiveListener(this);
     }
 
