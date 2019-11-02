@@ -131,9 +131,9 @@ public class PreferencesManager {
     /**
      * Sums 1 to the integer saved in memory and goes back to 1 if it exceeds the maxValue
      *
-     * @param ctx
-     * @param key
-     * @return
+     * @param ctx context of an Activity or Service
+     * @param key key for the resource
+     * @return result of the shift
      */
     public static int shiftInt(Context ctx, String key, int maxValue) {
         int currentValue = getInt(ctx, key);

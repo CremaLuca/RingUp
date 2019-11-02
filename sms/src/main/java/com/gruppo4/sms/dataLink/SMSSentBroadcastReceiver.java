@@ -7,16 +7,31 @@ import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 public class SMSSentBroadcastReceiver extends BroadcastReceiver {
 
     private SMSSentListener listener;
-    SMSMessage message;
-
+    private SMSMessage message;
+    private SMSController.SentState sentState = SMSController.SentState.MESSAGE_SENT;
+    private int packetsCounter;
 
     /**
-     * @param listener a listener to be called once the message is sent
+     * Constructor for the BroadcastReceiver.
+     *
+     * @param message  message that will be sent.
+     * @param listener listener to be called when the operation is completed successfully or not.
+     */
+    public SMSSentBroadcastReceiver(@NonNull SMSMessage message, SMSSentListener listener) {
+        this.listener = listener;
+        this.message = message;
+        packetsCounter = 0;
+    }
+
+    /**
+     * @param listener a listener to be called once the message is sent.
      */
     public void setListener(SMSSentListener listener) {
         Log.v("SMSSentReceiver", "Changed listener to class:" + listener.getClass());
@@ -24,11 +39,12 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
     }
 
     /**
-     * @param message a message to pass to the listener once it is sent
+     * @param message a message to pass to the listener once it is sent.
      */
     public void setMessage(SMSMessage message) {
         Log.v("SMSSentReceiver", "Changed message to id:" + message.getMessageId());
         this.message = message;
+        packetsCounter = 0;
     }
 
     /**
@@ -61,8 +77,35 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageId());
                 break;
         }
-        Log.v("SMSSentReceiver", "Sent a message with state: " + state + ", now calling the listener");
-        if (listener != null)
-            listener.onSMSSent(message, state);
+        Log.v("SMSSentReceiver", "Sent a packet with state: " + state);
+
+        setSentState(state);
+        packetsCounter++;
+
+        if (checkCounter(packetsCounter)) {
+            if (listener != null)
+                listener.onSMSSent(message, sentState);
+        }
+    }
+
+    /**
+     * Updates the sent state to the current one
+     *
+     * @param sentState
+     */
+    private void setSentState(SMSController.SentState sentState) {
+        //The state is modified ONLY IF THE CURRENT STATE IS OK. If a single packet has given an error the state is error
+        if (this.sentState == SMSController.SentState.MESSAGE_SENT)
+            this.sentState = sentState;
+    }
+
+    /**
+     * Checks if the number of packets we sent is the same as the total number of packets
+     *
+     * @param packetsCounter
+     * @return
+     */
+    private boolean checkCounter(int packetsCounter) {
+        return packetsCounter >= message.getPackets().length;
     }
 }

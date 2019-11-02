@@ -47,6 +47,7 @@ public class SMSController {
 
     /**
      * Send a SMSMessage, multiple packets could be sent
+     * Requires Manifest.permission.SEND_SMS permission
      *
      * @param message  the message to be sent via SMS
      * @param listener called when the message is completely sent to the provider
@@ -58,9 +59,7 @@ public class SMSController {
         ArrayList<PendingIntent> onSentIntents = setupPendingIntents(context, messages.size(), intentAction);
 
         //Setup broadcast receiver
-        SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver();
-        onSentReceiver.setListener(listener);
-        onSentReceiver.setMessage(message);
+        SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver(message, listener);
         context.registerReceiver(onSentReceiver, new IntentFilter(intentAction));
 
         //Check on packets
@@ -75,6 +74,7 @@ public class SMSController {
 
     /**
      * Subscribes the listener to be called once a message is completely received
+     * Requires Manifest.permission.RECEIVE_SMS permission
      *
      * @param listener a class that implements SMSReceivedListener
      */
@@ -146,13 +146,11 @@ public class SMSController {
      * @return
      */
     private static ArrayList<PendingIntent> setupPendingIntents(Context context, int numberOfPackets, String intentAction) {
+        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(intentAction), 0);
         ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
         for (int i = 0; i < numberOfPackets; i++) {
-            onSentIntents.add(null); //we set all but the last listener to null
+            onSentIntents.add(sentPI);
         }
-        //we call the listener when all the packets have been sent, so last listener is not null
-        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(intentAction), 0);
-        onSentIntents.set(onSentIntents.size() - 1, sentPI);
         return onSentIntents;
     }
 
@@ -183,7 +181,7 @@ public class SMSController {
     public static int getApplicationCode(Context ctx) {
         int appCode = PreferencesManager.getInt(ctx, APPLICATION_CODE_PREFERENCES_KEY);
         if (appCode < 0)
-            throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup");
+            throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup, call the setup() method at least once");
         return appCode;
     }
 

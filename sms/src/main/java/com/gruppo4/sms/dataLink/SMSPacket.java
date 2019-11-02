@@ -1,5 +1,8 @@
 package com.gruppo4.sms.dataLink;
 
+/**
+ * Represents a single SMS as a part of a bigger message
+ */
 class SMSPacket {
 
     static final int MAX_PACKET_TEXT_LEN = 140; //160 - 3(applicationCode) - 3(messageId) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
@@ -65,7 +68,7 @@ class SMSPacket {
         return applicationCode;
     }
 
-    public String getMessageText() {
+    String getMessageText() {
         return messageText;
     }
 }
