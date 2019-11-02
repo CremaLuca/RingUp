@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         listView.setLayoutManager(layoutManager);
 
-        System.out.println("prova");
-
         adapter = new ListAdapter(events);
         listView.setAdapter(adapter);
 
