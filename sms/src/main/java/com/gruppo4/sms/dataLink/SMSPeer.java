@@ -1,37 +1,16 @@
-package com.gruppo4.sms.dataLink.utils;
+package com.gruppo4.sms.dataLink;
 
-import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.communication.Peer;
 
-public class SMSChecks {
+public class SMSPeer extends Peer {
 
-    public enum TelephoneNumberState {
-        TELEPHONE_NUMBER_VALID,
-        TELEPHONE_NUMBER_TOO_SHORT,
-        TELEPHONE_NUMBER_TOO_LONG,
-        TELEPHONE_NUMBER_NO_COUNTRY_CODE,
-        TELEPHONE_NUMBER_NOT_A_NUMBER
-    }
-
-    public enum MessageTextState {
-        MESSAGE_TEXT_VALID,
-        MESSAGE_TEXT_TOO_LONG
-    }
-
-    /**
-     * Checks if the message is valid
-     *
-     * @param messageText the text to check
-     * @return The state of the message after the tests
-     */
-    public static MessageTextState checkMessageText(String messageText) {
-        if (messageText.length() > SMSMessage.MAX_MSG_TEXT_LEN) {
-            return MessageTextState.MESSAGE_TEXT_TOO_LONG;
-        }
-        return MessageTextState.MESSAGE_TEXT_VALID;
-    }
 
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
     public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
+
+    public SMSPeer(String telephoneNumber) {
+        super(telephoneNumber);
+    }
 
     /**
      * Checks if the phone number is valid
@@ -39,7 +18,7 @@ public class SMSChecks {
      * @param telephoneNumber the phone number to check
      * @return The state of the telephone number after the tests
      */
-    public static TelephoneNumberState checkTelephoneNumber(String telephoneNumber) {
+    public static TelephoneNumberState checkPhoneNumber(String telephoneNumber) {
         //Check if the number is shorter than the MAX.
         if (telephoneNumber.length() > MAX_TELEPHONE_NUMBER_LENGTH) {
             return TelephoneNumberState.TELEPHONE_NUMBER_TOO_LONG;
@@ -60,4 +39,22 @@ public class SMSChecks {
         //If it passed all the tests we are sure the number is valid.
         return TelephoneNumberState.TELEPHONE_NUMBER_VALID;
     }
+
+    /**
+     * Checks if the phone number is valid
+     *
+     * @return The state of the telephone number after the tests
+     */
+    public TelephoneNumberState checkPhoneNumber() {
+        return checkPhoneNumber(this.getAddress());
+    }
+
+    public enum TelephoneNumberState {
+        TELEPHONE_NUMBER_VALID,
+        TELEPHONE_NUMBER_TOO_SHORT,
+        TELEPHONE_NUMBER_TOO_LONG,
+        TELEPHONE_NUMBER_NO_COUNTRY_CODE,
+        TELEPHONE_NUMBER_NOT_A_NUMBER
+    }
+
 }

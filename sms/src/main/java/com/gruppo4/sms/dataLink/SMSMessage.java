@@ -1,34 +1,34 @@
 package com.gruppo4.sms.dataLink;
 
-import android.util.Log;
+import android.content.Context;
 
+import com.gruppo4.communication.Message;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.dataLink.utils.SMSChecks;
 
 import java.util.ArrayList;
 
-public class SMSMessage {
+public class SMSMessage implements Message {
+
+    public static final int MAX_ID = 999;
 
     //This is because package number cannot exceed three characters
     static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
-    public static final int MAX_ID = 999;
-    private String telephoneNumber;
+    private SMSPeer peer;
     private StringBuilder message;
     private int messageId;
-
     private SMSPacket[] packets;
 
     /**
      * Wrap for a text message, used to check the parameters validity
      *
-     * @param telephoneNumber a valid telephone number to send the message to
-     * @param packets         array of packets from which we construct the message
+     * @param destination a valid destination peer
+     * @param packets     array of packets from which we construct the message
      */
 
-    SMSMessage(String telephoneNumber, SMSPacket[] packets) {
-        this.telephoneNumber = telephoneNumber;
+    SMSMessage(SMSPeer destination, SMSPacket[] packets) {
+        this.peer = destination;
         this.messageId = packets[0].getMessageId();
         this.packets = packets;
         for (SMSPacket p : packets)
@@ -38,37 +38,52 @@ public class SMSMessage {
     /**
      * Constructor for a received message, holds the packets until the message is completed
      *
-     * @param telephoneNumber the telephone number
+     * @param destination the destination peer
      */
-    SMSMessage(String telephoneNumber, SMSPacket packet) {
-        this.telephoneNumber = telephoneNumber;
+    SMSMessage(SMSPeer destination, SMSPacket packet) {
+        this.peer = destination;
         addPacket(packet);
     }
 
     /**
      * Wrap for a text message, used to check the parameters validity
      *
-     * @param telephoneNumber a valid telephone number to send the message to
-     * @param messageText     a message
+     * @param ctx         the current application/service context
+     * @param destination a valid peer
+     * @param messageText a message
      * @throws InvalidSMSMessageException      if Utils.checkMessageText returns false
      * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber returns false
      */
-    public SMSMessage(String telephoneNumber, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public SMSMessage(Context ctx, SMSPeer destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         //Checks on the telephone number
-        SMSChecks.TelephoneNumberState telephoneNumberState = SMSChecks.checkTelephoneNumber(telephoneNumber);
-        if (telephoneNumberState != SMSChecks.TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
+        SMSPeer.TelephoneNumberState telephoneNumberState = destination.checkPhoneNumber();
+        if (telephoneNumberState != SMSPeer.TelephoneNumberState.TELEPHONE_NUMBER_VALID) {
             throw new InvalidTelephoneNumberException("Telephone number not valid", telephoneNumberState);
         }
-        this.telephoneNumber = telephoneNumber;
+        this.peer = destination;
         //Checks on the message text
-        SMSChecks.MessageTextState messageTextState = SMSChecks.checkMessageText(messageText);
-        if (messageTextState != SMSChecks.MessageTextState.MESSAGE_TEXT_VALID)
+        MessageTextState messageTextState = checkMessageText(messageText);
+        if (messageTextState != MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
 
-        this.messageId = SMSController.getNewMessageId(); //Sequential code
+        this.messageId = SMSHandler.getNewMessageId(ctx); //Sequential code
         this.message = new StringBuilder(messageText);
-        packets = getPacketsFromText(messageText);
+        packets = getPacketsFromText(ctx, messageText);
     }
+
+    /**
+     * Checks if the message is valid
+     *
+     * @param messageText the text to check
+     * @return The state of the message after the tests
+     */
+    public static MessageTextState checkMessageText(String messageText) {
+        if (messageText.length() > SMSMessage.MAX_MSG_TEXT_LEN) {
+            return MessageTextState.MESSAGE_TEXT_TOO_LONG;
+        }
+        return MessageTextState.MESSAGE_TEXT_VALID;
+    }
+
 
     /**
      * Adds a packet to this message
@@ -77,11 +92,9 @@ public class SMSMessage {
      */
     void addPacket(SMSPacket packet) {
         if (packets == null) {
-            Log.v("SMSMessage", "Creating a new array for an incoming packet");
             packets = new SMSPacket[packet.getTotalNumber()];
             messageId = packet.getMessageId();
         } else if (packets[packet.getPacketNumber() - 1] != null) {
-            Log.v("SMSMessage", "This message already has another packet in that position, could mean that the sender sent the same code twice?");
             throw new IllegalStateException("There shouldn't be a packet for this message");
         }
         packets[packet.getPacketNumber() - 1] = packet;
@@ -93,8 +106,9 @@ public class SMSMessage {
      *
      * @return the telephone number
      */
-    public String getTelephoneNumber() {
-        return telephoneNumber;
+    @Override
+    public SMSPeer getPeer() {
+        return peer;
     }
 
     private void constructMessage() {
@@ -106,7 +120,8 @@ public class SMSMessage {
     /**
      * @return the message
      */
-    public String getMessage() {
+    @Override
+    public String getData() {
         return message.toString();
     }
 
@@ -149,23 +164,24 @@ public class SMSMessage {
             if (packet == null)
                 return false;
         }
-        Log.v("SMSMessage", "Message " + messageId + " is now complete");
         return true;
     }
 
-    private SMSPacket[] getPacketsFromText(String messageText) {
+    private SMSPacket[] getPacketsFromText(Context ctx, String messageText) {
         int rem = messageText.length() % SMSPacket.MAX_PACKET_TEXT_LEN; //This is last message length
         int packetsCount = messageText.length() / SMSPacket.MAX_PACKET_TEXT_LEN + (rem != 0 ? 1 : 0);
-        Log.v("SMSMessage", "We've got to send " + packetsCount + " messages for a message " + messageText.length() + " characters long");
         SMSPacket[] packets = new SMSPacket[packetsCount];
         String subText;
         for (int i = 0; i < packetsCount; i++) {
             int finalCharacter = Math.min((i + 1) * SMSPacket.MAX_PACKET_TEXT_LEN, messageText.length());
-            Log.v("SMSMessage", "Substring from " + i * SMSPacket.MAX_PACKET_TEXT_LEN + " to " + finalCharacter + " for packet number: " + (i + 1));
             subText = messageText.substring(i * SMSPacket.MAX_PACKET_TEXT_LEN, finalCharacter);
-            packets[i] = new SMSPacket(SMSController.getApplicationCode(), messageId, i + 1, packetsCount, subText);
+            packets[i] = new SMSPacket(SMSHandler.getApplicationCode(ctx), messageId, i + 1, packetsCount, subText);
         }
         return packets;
     }
 
+    public enum MessageTextState {
+        MESSAGE_TEXT_VALID,
+        MESSAGE_TEXT_TOO_LONG
+    }
 }
