@@ -1,9 +1,9 @@
 package com.gruppo4.communication;
 
-public interface Message {
+public interface Message<D, P extends Peer> {
 
-    String getData();
+    D getData();
 
-    Peer getPeer();
+    P getPeer();
 
 }
