@@ -15,7 +15,7 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
 
     private SMSSentListener listener;
     private SMSMessage message;
-    private SMSController.SentState sentState = SMSController.SentState.MESSAGE_SENT;
+    private SMSHandler.SentState sentState = SMSHandler.SentState.MESSAGE_SENT;
     private int packetsCounter;
 
     /**
@@ -55,25 +55,25 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        SMSController.SentState state;
+        SMSHandler.SentState state;
         switch (getResultCode()) {
             case Activity.RESULT_OK:
-                state = SMSController.SentState.MESSAGE_SENT;
+                state = SMSHandler.SentState.MESSAGE_SENT;
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF:
-                state = SMSController.SentState.ERROR_RADIO_OFF;
+                state = SMSHandler.SentState.ERROR_RADIO_OFF;
                 break;
             case SmsManager.RESULT_ERROR_NULL_PDU:
-                state = SMSController.SentState.ERROR_NULL_PDU;
+                state = SMSHandler.SentState.ERROR_NULL_PDU;
                 break;
             case SmsManager.RESULT_ERROR_NO_SERVICE:
-                state = SMSController.SentState.ERROR_NO_SERVICE;
+                state = SMSHandler.SentState.ERROR_NO_SERVICE;
                 break;
             case SmsManager.RESULT_ERROR_LIMIT_EXCEEDED:
-                state = SMSController.SentState.ERROR_LIMIT_EXCEEDED;
+                state = SMSHandler.SentState.ERROR_LIMIT_EXCEEDED;
                 break;
             default:
-                state = SMSController.SentState.ERROR_GENERIC_FAILURE;
+                state = SMSHandler.SentState.ERROR_GENERIC_FAILURE;
                 Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageId());
                 break;
         }
@@ -91,19 +91,19 @@ public class SMSSentBroadcastReceiver extends BroadcastReceiver {
     /**
      * Updates the sent state to the current one
      *
-     * @param sentState
+     * @param sentState state for the current packet
      */
-    private void setSentState(SMSController.SentState sentState) {
+    private void setSentState(SMSHandler.SentState sentState) {
         //The state is modified ONLY IF THE CURRENT STATE IS OK. If a single packet has given an error the state is error
-        if (this.sentState == SMSController.SentState.MESSAGE_SENT)
+        if (this.sentState == SMSHandler.SentState.MESSAGE_SENT)
             this.sentState = sentState;
     }
 
     /**
      * Checks if the number of packets we sent is the same as the total number of packets
      *
-     * @param packetsCounter
-     * @return
+     * @param packetsCounter number of packets sent as of now
+     * @return if we have sent all the packets we had to send and if we can call the listener
      */
     private boolean checkCounter(int packetsCounter) {
         return packetsCounter >= message.getPackets().length;

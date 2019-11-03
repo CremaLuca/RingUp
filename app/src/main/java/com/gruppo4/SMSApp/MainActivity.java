@@ -14,8 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gruppo4.sms.dataLink.SMSController;
+import com.gruppo4.sms.dataLink.SMSHandler;
+import com.gruppo4.sms.dataLink.SMSManager;
 import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
         //If the application is given the permissions before sending the first message, the SMSController setup is immediately done.
         if(checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
-            setupSMSController(getApplicationContext(), APP_ID);
+            setupSMSManager(getApplicationContext());
         }
 
         ArrayList<String> events = new ArrayList<>();
@@ -78,9 +80,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     }
 
-    private void setupSMSController(Context ctx, int appID) {
-        SMSController.setup(ctx, appID);
-        SMSController.addOnReceiveListener(this);
+    private void setupSMSManager(Context ctx) {
+        if (!SMSManager.getInstance(ctx).isSetup()) {
+            SMSManager.getInstance(ctx).setup(APP_ID);
+        }
+        SMSManager.getInstance(ctx).addReceivedMessageListener(this);
     }
 
     /**
@@ -91,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     private void sendMessage(Context context, String text, String telephoneNumber) {
         try {
-            SMSMessage message = new SMSMessage(context, telephoneNumber, text);
-            SMSController.sendMessage(context, message, this);
+            SMSMessage message = new SMSMessage(context, new SMSPeer(telephoneNumber), text);
+            SMSHandler.sendMessage(context, message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
         } catch (InvalidTelephoneNumberException telephoneException) {
@@ -123,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendSmileButton(Context ctx) {
         mark = 1;
-        if (!SMSController.checkPermissions(ctx)) {
+        if (!SMSHandler.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendHeartButton(Context ctx) {
         mark = 2;
-        if (!SMSController.checkPermissions(ctx)) {
+        if (!SMSHandler.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendLongButton(Context ctx) {
         mark = 3;
-        if (!SMSController.checkPermissions(ctx)) {
+        if (!SMSHandler.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -159,30 +163,30 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     @Override
-    public void onSMSReceived(SMSMessage message) {
-        Log.d("MainActivity", "Received message:" + message.getMessage());
-        if (message.getMessage().equals(SMILE_COMMAND)) {
-            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
+    public void onMessageReceived(SMSMessage message) {
+        Log.d("MainActivity", "Received message:" + message.getData());
+        if (message.getData().equals(SMILE_COMMAND)) {
+            adapter.getEvents().add(message.getPeer().getAddress() + " sent you a smile :)");
 
-        } else if (message.getMessage().equals(HEART_COMMAND)) {
-            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
-        } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
-            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a looong command");
+        } else if (message.getData().equals(HEART_COMMAND)) {
+            adapter.getEvents().add(message.getPeer().getAddress() + " sent you a heart <3");
+        } else if (message.getData().startsWith(LONG_COMMAND_PREFIX)) {
+            adapter.getEvents().add(message.getPeer().getAddress() + " sent you a looong command");
         }
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onSMSSent(SMSMessage message, SMSController.SentState state) {
-        Log.d("MainActivity", "Message sent: " + message.getMessage());
-        if (state == SMSController.SentState.MESSAGE_SENT) {
+    public void onSMSSent(SMSMessage message, SMSHandler.SentState state) {
+        Log.d("MainActivity", "Message sent: " + message.getData());
+        if (state == SMSHandler.SentState.MESSAGE_SENT) {
             Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
-            if (message.getMessage().equals(SMILE_COMMAND)) {
-                adapter.getEvents().add("You sent a :) to " + message.getTelephoneNumber());
-            } else if (message.getMessage().equals(HEART_COMMAND)) {
-                adapter.getEvents().add("You sent a <3 to " + message.getTelephoneNumber());
-            } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
-                adapter.getEvents().add("You sent a looong command to " + message.getTelephoneNumber());
+            if (message.getData().equals(SMILE_COMMAND)) {
+                adapter.getEvents().add("You sent a :) to " + message.getPeer().getAddress());
+            } else if (message.getData().equals(HEART_COMMAND)) {
+                adapter.getEvents().add("You sent a <3 to " + message.getPeer().getAddress());
+            } else if (message.getData().startsWith(LONG_COMMAND_PREFIX)) {
+                adapter.getEvents().add("You sent a looong command to " + message.getPeer().getAddress());
             }
             adapter.notifyDataSetChanged();
         } else {
@@ -197,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         if (requestCode == SMS_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
-                setupSMSController(ctx, APP_ID);
+                setupSMSManager(ctx);
                 if(mark == 1){
                     String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                     sendMessage(ctx, SMILE_COMMAND, phoneNumber);
@@ -210,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                     String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                     sendMessage(ctx, LONG_COMMAND, phoneNumber);
                 }
+                setupSMSManager(getApplicationContext());
             } else {
                 // permission denied, boo!
                 // close the app then
