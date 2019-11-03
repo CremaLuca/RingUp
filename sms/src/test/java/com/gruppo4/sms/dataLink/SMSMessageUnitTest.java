@@ -7,27 +7,24 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class SMSMessageUnitTest {
 
-    private static final String TEST_MESSAGE = "This is a test message";
-    private static final String TEST_NUMBER = "+391111111111";
-
-    private SMSMessage message;
+    SMSMessage message;
 
     @Before
     public void init() {
-        SMSController.init(null, 1);
         try {
-            message = new SMSMessage(TEST_NUMBER, TEST_MESSAGE);
+            message = new SMSMessage("+391111111111", "Test message", 1);
         } catch (Exception e) {
-            Assert.fail("Should not have thrown an exception: " + e.getMessage());
+            Assert.fail("Should not have thrown an exception");
         }
     }
 
     @Test
-    public void constructor_numberTooShort() {
+    public void phone_number_isLongEnough(){
         try {
-            message = new SMSMessage("+39111", "Test message");
+            message = new SMSMessage("+39111", "Test message", 1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -37,9 +34,9 @@ public class SMSMessageUnitTest {
     }
 
     @Test
-    public void constructor_numberTooLong() {
+    public void phone_number_isShortEnough(){
         try {
-            message = new SMSMessage("+39111111111111111111111111", "Test message");
+            message = new SMSMessage("+39111111111111111111111111", "Test message", 1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -49,9 +46,9 @@ public class SMSMessageUnitTest {
     }
 
     @Test
-    public void constructor_hasCountryCode() {
+    public void phone_number_hasCountryCode(){
         try {
-            message = new SMSMessage("111111111", "Test message");
+            message = new SMSMessage("111111111", "Test message", 1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -61,9 +58,9 @@ public class SMSMessageUnitTest {
     }
 
     @Test
-    public void constructor_phoneNumberIsOnlyNumbers() {
+    public void phone_number_hasNoLetters(){
         try {
-            message = new SMSMessage("+11a1b11c1", "Test message");
+            message = new SMSMessage("+11a1b11c1", "Test message", 1);
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -73,13 +70,13 @@ public class SMSMessageUnitTest {
     }
 
     @Test
-    public void constructor_messageIsNotTooLong() {
+    public void message_text_isShortEnough(){
         String messageTooLong = "";
         for(int i=0;i<2500;i++){
             messageTooLong += "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         }
         try {
-            message = new SMSMessage(TEST_NUMBER, messageTooLong);
+            message = new SMSMessage("+391111111111", messageTooLong, 1);
             Assert.fail("Should have thrown InvalidSMSMessageException exception");
         }catch(InvalidSMSMessageException e){
             //Success
@@ -92,22 +89,32 @@ public class SMSMessageUnitTest {
      * Checks whether a normal message would send an exception or not
      */
     @Test
-    public void constructor_typicalData() {
+    public void sms_isNormalMessageOk(){
         try {
-            message = new SMSMessage(TEST_NUMBER, TEST_MESSAGE);
+            message = new SMSMessage("+391111111111", "This is a test message", 1);
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }
     }
 
     @Test
-    public void getTelephoneNumber_hasSameTelephoneNumber() {
-        Assert.assertEquals(message.getTelephoneNumber(), TEST_NUMBER);
+    public void sms_hasSameTelephoneNumber(){
+        try {
+            message = new SMSMessage("+391111111111", "This is a test message", 1);
+        }catch(Exception e){
+            Assert.fail("Should not have thrown an exception");
+        }
+        Assert.assertEquals(message.getPeer(),"+391111111111");
     }
 
     @Test
-    public void getMessage_hasSameMessage() {
-        Assert.assertEquals(message.getMessage(), TEST_MESSAGE);
+    public void sms_hasSameText(){
+        try {
+            message = new SMSMessage("+391111111111", "This is a test message", 1);
+        }catch(Exception e){
+            Assert.fail("Should not have thrown an exception");
+        }
+        Assert.assertEquals(message.getData(),"This is a test message");
     }
 
 }

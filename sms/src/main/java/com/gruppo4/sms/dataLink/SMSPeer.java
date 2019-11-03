@@ -2,12 +2,14 @@ package com.gruppo4.sms.dataLink;
 
 import com.gruppo4.communication.Peer;
 
-public class SMSPeer extends Peer {
-
+public class SMSPeer extends Peer<String> {
 
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
     public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
 
+    /**
+     * @param telephoneNumber a valid telephone number (checkTelephoneNumber state must be TELEPHONE_NUMBER_VALID)
+     */
     public SMSPeer(String telephoneNumber) {
         super(telephoneNumber);
     }
