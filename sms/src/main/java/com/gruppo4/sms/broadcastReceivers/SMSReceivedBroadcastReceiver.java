@@ -27,6 +27,13 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
                 Toast.makeText(context, "Messaggio da " + phoneNumber, Toast.LENGTH_SHORT).show();
 
+                try {
+                    SMSController.getInstance();
+                } catch(IllegalStateException e) {
+                    Log.v("SMSReceiver", "SMSController is not instantiated, calling init()");
+                    SMSController.init(context.getApplicationContext(), 123);
+                }
+
                 SMSPacket packet = parsePacket(smsContent);
                 if(packet != null)
                     SMSController.onReceive(packet, phoneNumber);
