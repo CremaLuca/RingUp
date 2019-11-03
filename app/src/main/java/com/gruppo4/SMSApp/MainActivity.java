@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private static final int SMS_PERMISSION_CODE = 1;
     private RecyclerView listView;
     private ListAdapter adapter;
+    private static int mark = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +116,28 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         }
     }
 
+
+
+    /**
+     * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
+     */
+    public void onSendSmileButton(Context ctx) {
+        mark = 1;
+        if (!SMSController.checkPermissions(ctx)) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+        } else {
+            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+            sendMessage(ctx, SMILE_COMMAND, phoneNumber);
+        }
+
+    }
+
+    /**
+     * Callback for send heart button pressed. Sends a message to the number specified in the phoneNumberTextView
+     */
     public void onSendHeartButton(Context ctx) {
-        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        mark = 2;
+        if (!SMSController.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -125,22 +146,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     /**
-     * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
-     */
-    public void onSendSmileButton(Context ctx) {
-        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
-        } else {
-            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-            sendMessage(ctx, SMILE_COMMAND, phoneNumber);
-        }
-    }
-
-    /**
      * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendLongButton(Context ctx) {
-        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        mark = 3;
+        if (!SMSController.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -182,11 +192,24 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public synchronized void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Context ctx = getApplicationContext();
         if (requestCode == SMS_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
-                setupSMSController(getApplicationContext(), APP_ID);
+                setupSMSController(ctx, APP_ID);
+                if(mark == 1){
+                    String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+                    sendMessage(ctx, SMILE_COMMAND, phoneNumber);
+                }
+                if(mark == 2){
+                    String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+                    sendMessage(ctx, HEART_COMMAND, phoneNumber);
+                }
+                if(mark == 3){
+                    String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+                    sendMessage(ctx, LONG_COMMAND, phoneNumber);
+                }
             } else {
                 // permission denied, boo!
                 // close the app then
