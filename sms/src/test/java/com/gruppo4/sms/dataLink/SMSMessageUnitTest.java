@@ -104,7 +104,7 @@ public class SMSMessageUnitTest {
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }
-        Assert.assertEquals(message.getTelephoneNumber(),"+391111111111");
+        Assert.assertEquals(message.getPeer(),"+391111111111");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class SMSMessageUnitTest {
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }
-        Assert.assertEquals(message.getMessageText(),"This is a test message");
+        Assert.assertEquals(message.getData(),"This is a test message");
     }
 
 }
