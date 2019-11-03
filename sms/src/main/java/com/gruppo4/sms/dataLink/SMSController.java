@@ -9,8 +9,6 @@ import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import androidx.core.content.ContextCompat;
-
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
@@ -177,6 +175,36 @@ public class SMSController {
         if (appCode < 0)
             throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup, call the setup() method at least once");
         return appCode;
+    }
+
+    /**
+     * Checks if SEND_SMS permission is granted
+     *
+     * @param ctx a valid context
+     * @return true if permission is granted
+     */
+    public static boolean checkSendPermission(Context ctx) {
+        return ctx.checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Checks if RECEIVE_SMS permission is granted
+     *
+     * @param ctx a valid context
+     * @return true if permission is granted
+     */
+    public static boolean checkReceivePermission(Context ctx) {
+        return ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Checks if both SEND_SMS & RECEIVE_SMS permissions are granted
+     *
+     * @param ctx a valid context
+     * @return true if both permissions are granted
+     */
+    public static boolean checkPermissions(Context ctx) {
+        return checkSendPermission(ctx) && checkReceivePermission(ctx);
     }
 
     public enum SentState {

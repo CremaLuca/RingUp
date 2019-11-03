@@ -153,14 +153,13 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         Log.d("MainActivity", "Received message:" + message.getMessage());
         if (message.getMessage().equals(SMILE_COMMAND)) {
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
-            adapter.notifyDataSetChanged();
+
         } else if (message.getMessage().equals(HEART_COMMAND)) {
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
-            adapter.notifyDataSetChanged();
         } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
             adapter.getEvents().add(message.getTelephoneNumber() + " sent you a looong command");
-            adapter.notifyDataSetChanged();
         }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -170,14 +169,12 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
             Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
             if (message.getMessage().equals(SMILE_COMMAND)) {
                 adapter.getEvents().add("You sent a :) to " + message.getTelephoneNumber());
-                adapter.notifyDataSetChanged();
             } else if (message.getMessage().equals(HEART_COMMAND)) {
                 adapter.getEvents().add("You sent a <3 to " + message.getTelephoneNumber());
-                adapter.notifyDataSetChanged();
             } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
                 adapter.getEvents().add("You sent a looong command to " + message.getTelephoneNumber());
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyDataSetChanged();
         } else {
             Log.w("MainActivity", "Unable to send sms, reason: " + state);
             Toast.makeText(this, "Unable to send message, reason: " + state, Toast.LENGTH_LONG).show();
