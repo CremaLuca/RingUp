@@ -9,8 +9,6 @@ import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import androidx.core.content.ContextCompat;
-
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
@@ -31,16 +29,10 @@ public class SMSHandler {
      * @param applicationCode an identifier for the current application
      */
     public static void setup(Context context, int applicationCode) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED)
-            throw new SecurityException("Missing Manifest.permission.SEND_SMS permission, use requestPermissions() to be granted this permission runtime");
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED)
-            throw new SecurityException("Missing Manifest.permission.RECEIVE_SMS permission, use requestPermissions() to be granted this permission runtime");
-
-        if (!SMSHandler.checkApplicationCode(applicationCode))
+        if (!checkApplicationCode(applicationCode))
             throw new IllegalStateException("Application code not valid, check it with checkApplicationCode() first");
 
-        SMSHandler.setApplicationCode(context, applicationCode);
+        setApplicationCode(context, applicationCode);
     }
 
     /**
@@ -159,6 +151,40 @@ public class SMSHandler {
         if (appCode < 0)
             throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup, call the setup() method at least once");
         return appCode;
+    }
+
+    /**
+     * Checks if SEND_SMS permission is granted
+     *
+     * @param ctx a valid context
+     * @return true if permission is granted
+     */
+    public static boolean checkSendPermission(Context ctx) {
+        boolean result = ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+        Log.d("1","return del metodo checkSendPermission: "+ result);
+        return result;
+    }
+
+    /**
+     * Checks if RECEIVE_SMS permission is granted
+     *
+     * @param ctx a valid context
+     * @return true if permission is granted
+     */
+    public static boolean checkReceivePermission(Context ctx) {
+        boolean result = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+        Log.d("1","return del metodo checkSendPermission: "+ result);
+        return result;
+    }
+
+    /**
+     * Checks if both SEND_SMS & RECEIVE_SMS permissions are granted
+     *
+     * @param ctx a valid context
+     * @return true if both permissions are granted
+     */
+    public static boolean checkPermissions(Context ctx) {
+        return checkSendPermission(ctx) && checkReceivePermission(ctx);
     }
 
     public enum SentState {
