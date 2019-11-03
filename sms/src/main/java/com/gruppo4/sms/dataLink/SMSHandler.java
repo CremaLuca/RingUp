@@ -11,7 +11,6 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
@@ -19,17 +18,16 @@ import java.util.ArrayList;
 
 public class SMSHandler {
 
-    private static final String APPLICATION_CODE_PREFERENCES_KEY = "ApplicationCode";
+
     private static final String MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY = "MessageSequentialCode";
+    private static final String APPLICATION_CODE_PREFERENCES_KEY = "ApplicationCode";
     private static final String SENT_MESSAGE_INTENT_ACTION_PREFIX = "SENT_SMS";
-    //list of listeners called when ALL packets of a message have been received
-    private static ArrayList<SMSReceivedListener> receivedListeners = new ArrayList<>();
     private static ArrayList<SMSMessage> incompleteMessages = new ArrayList<>(); //these are partially constructed messages
 
+
     /**
-     * Setup the controller, checks permissions and sets the application code
+     * Setup the handler, checks permissions and sets the application code
      *
-     * @param context current app/service context
      * @param applicationCode an identifier for the current application
      */
     public static void setup(Context context, int applicationCode) {
@@ -39,10 +37,10 @@ public class SMSHandler {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED)
             throw new SecurityException("Missing Manifest.permission.RECEIVE_SMS permission, use requestPermissions() to be granted this permission runtime");
 
-        if (!checkApplicationCode(applicationCode))
+        if (!SMSHandler.checkApplicationCode(applicationCode))
             throw new IllegalStateException("Application code not valid, check it with checkApplicationCode() first");
 
-        setApplicationCode(context, applicationCode);
+        SMSHandler.setApplicationCode(context, applicationCode);
     }
 
     /**
@@ -52,7 +50,7 @@ public class SMSHandler {
      * @param message  the message to be sent via SMS
      * @param listener called when the message is completely sent to the provider
      */
-    public static void sendMessage(Context context, SMSMessage message, SMSSentListener listener) {
+    public static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
         ArrayList<String> messages = message.getPacketsContent();
 
         String intentAction = SENT_MESSAGE_INTENT_ACTION_PREFIX + "_" + message.getMessageId();
@@ -72,35 +70,25 @@ public class SMSHandler {
         SMSCore.sendMessages(messages, message.getPeer().getAddress(), onSentIntents);
     }
 
-    /**
-     * Subscribes the listener to be called once a message is completely received
-     * Requires Manifest.permission.RECEIVE_SMS permission
-     *
-     * @param listener a class that implements SMSReceivedListener
-     */
-    public static void addOnReceiveListener(SMSReceivedListener listener) {
-        Log.v("SMSHandler", "addOnReceiveListener called for " + listener.getClass());
-        receivedListeners.add(listener);
-    }
 
     /**
      * Method used by SMSReceivedBroadcastReceiver to store a packet
      *
      * @param packet the sms content wrapped in a packet
      */
-    public static void onReceive(SMSPacket packet, String telephoneNumber) {
+    public static void onReceive(Context ctx, SMSPacket packet, String telephoneNumber) {
         Log.v("SMSHandler", "Packet received, id:" + packet.getMessageId() + " number:" + packet.getPacketNumber() + " total:" + packet.getTotalNumber() + " from:" + telephoneNumber + " content:" + packet.getMessageText());
         //Let's see if we already have the message stored
         boolean found = false;
-        for (SMSMessage m : incompleteMessages) {
-            if (m.getPeer().getAddress().equals(telephoneNumber) && m.getMessageId() == packet.getMessageId()) {
+        for (SMSMessage message : incompleteMessages) {
+            if (message.getPeer().getAddress().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
                 Log.v("SMSHandler", "Message for the id: " + packet.getMessageId() + " was already in the incomplete messages list");
                 found = true;
-                m.addPacket(packet);
-                if (m.hasAllPackets()) {
-                    Log.v("SMSHandler", "Message id:" + m.getMessageId() + " is now complete");
-                    callOnReceivedListeners(m);
-                    incompleteMessages.remove(m);
+                message.addPacket(packet);
+                if (message.hasAllPackets()) {
+                    Log.v("SMSHandler", "Message id:" + message.getMessageId() + " is now complete");
+                    SMSManager.getInstance(ctx).callReceivedMessageListener(message);
+                    incompleteMessages.remove(message);
                 }
                 break;
             }
@@ -108,25 +96,13 @@ public class SMSHandler {
         //If not found then create a new Message
         if (!found) {
             Log.v("SMSHandler", "Creating a new incomplete messages for id:" + packet.getMessageId());
-            SMSMessage m = new SMSMessage(new SMSPeer(telephoneNumber), packet);
-            incompleteMessages.add(m);
-            if (m.hasAllPackets()) {
-                Log.v("SMController", "The message id:" + m.getMessageId() + " is complete with one packet");
-                callOnReceivedListeners(m);
-                incompleteMessages.remove(m);
+            SMSMessage message = new SMSMessage(new SMSPeer(telephoneNumber), packet);
+            incompleteMessages.add(message);
+            if (message.hasAllPackets()) {
+                Log.v("SMController", "The message id:" + message.getMessageId() + " is complete with one packet");
+                SMSManager.getInstance(ctx).callReceivedMessageListener(message);
+                incompleteMessages.remove(message);
             }
-        }
-    }
-
-    /**
-     * Calls every listener subscribed for the reception of a message
-     *
-     * @param message a complete message
-     */
-    private static void callOnReceivedListeners(SMSMessage message) {
-        Log.v("SMController", "Calling all listener for message " + message.getMessageId());
-        for (SMSReceivedListener listener : receivedListeners) {
-            listener.onSMSReceived(message);
         }
     }
 
@@ -156,7 +132,7 @@ public class SMSHandler {
 
     /**
      * @param applicationCode a integer code.
-     * @return true if the application code is valid.
+     * @return true if the parameter application code is valid.
      */
     public static boolean checkApplicationCode(int applicationCode) {
         return applicationCode > 0 && applicationCode < 1000;

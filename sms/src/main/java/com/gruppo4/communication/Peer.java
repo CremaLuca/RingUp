@@ -2,26 +2,26 @@ package com.gruppo4.communication;
 
 import androidx.annotation.NonNull;
 
-public class Peer {
+public abstract class Peer<A> {
 
-    private String address;
+    private A address;
 
-    public Peer(String address) {
+    public Peer(A address) {
         this.address = address;
     }
 
-    public String getAddress() {
+    public A getAddress() {
         return address;
     }
 
-    protected void setAddress(String address) {
+    protected void setAddress(A address) {
         this.address = address;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return address;
+        return address.toString();
     }
 
 }

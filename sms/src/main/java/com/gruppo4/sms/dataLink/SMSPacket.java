@@ -52,6 +52,11 @@ class SMSPacket {
                 SEPARATOR + packetNumber + SEPARATOR + totalNumber + SEPARATOR + messageText;
     }
 
+    /**
+     * The total number of packets that compose the message
+     *
+     * @return the number of packets for the message
+     */
     int getTotalNumber() {
         return totalNumber;
     }

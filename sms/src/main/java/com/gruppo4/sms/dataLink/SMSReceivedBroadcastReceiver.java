@@ -26,7 +26,7 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
                 SMSPacket packet = parsePacket(context, smsContent);
                 if(packet != null)
-                    SMSHandler.onReceive(packet, phoneNumber);
+                    SMSHandler.onReceive(context, packet, phoneNumber);
             }
         }
     }

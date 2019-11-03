@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gruppo4.sms.dataLink.SMSHandler;
+import com.gruppo4.sms.dataLink.SMSManager;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
-            setupSMSController(getApplicationContext(), APP_ID);
+            setupSMSManager(getApplicationContext());
         }
 
 
@@ -81,10 +82,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     }
 
-    private void setupSMSController(Context ctx, int appID) {
-        SMSHandler.setup(ctx, appID);
-
-        SMSHandler.addOnReceiveListener(this);
+    private void setupSMSManager(Context ctx) {
+        if (!SMSManager.getInstance(ctx).isSetup()) {
+            SMSManager.getInstance(ctx).setup(APP_ID);
+        }
+        SMSManager.getInstance(ctx).addReceivedMessageListener(this);
     }
 
     /**
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     @Override
-    public void onSMSReceived(SMSMessage message) {
+    public void onMessageReceived(SMSMessage message) {
         Log.d("MainActivity", "Received message:" + message.getData());
         if (message.getData().equals(SMILE_COMMAND)) {
             adapter.getEvents().add(message.getPeer() + " sent you a smile :)");
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         if (requestCode == SMS_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
-                setupSMSController(getApplicationContext(), APP_ID);
+                setupSMSManager(getApplicationContext());
             } else {
                 // permission denied, boo!
                 // close the app then
