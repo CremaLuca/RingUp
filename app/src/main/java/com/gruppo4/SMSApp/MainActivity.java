@@ -14,8 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gruppo4.sms.dataLink.SMSController;
+import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
@@ -81,9 +82,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     private void setupSMSController(Context ctx, int appID) {
-        SMSController.setup(ctx, appID);
+        SMSHandler.setup(ctx, appID);
 
-        SMSController.addOnReceiveListener(this);
+        SMSHandler.addOnReceiveListener(this);
     }
 
     /**
@@ -94,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     private void sendMessage(Context context, String text, String telephoneNumber) {
         try {
-            SMSMessage message = new SMSMessage(context, telephoneNumber, text);
-            SMSController.sendMessage(context, message, this);
+            SMSMessage message = new SMSMessage(context, new SMSPeer(telephoneNumber), text);
+            SMSHandler.sendMessage(context, message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
         } catch (InvalidTelephoneNumberException telephoneException) {
@@ -142,32 +143,32 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     @Override
     public void onSMSReceived(SMSMessage message) {
-        Log.d("MainActivity", "Received message:" + message.getMessage());
-        if (message.getMessage().equals(SMILE_COMMAND)) {
-            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a smile :)");
+        Log.d("MainActivity", "Received message:" + message.getData());
+        if (message.getData().equals(SMILE_COMMAND)) {
+            adapter.getEvents().add(message.getPeer() + " sent you a smile :)");
             adapter.notifyDataSetChanged();
-        } else if (message.getMessage().equals(HEART_COMMAND)) {
-            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a heart <3");
+        } else if (message.getData().equals(HEART_COMMAND)) {
+            adapter.getEvents().add(message.getPeer() + " sent you a heart <3");
             adapter.notifyDataSetChanged();
-        } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
-            adapter.getEvents().add(message.getTelephoneNumber() + " sent you a looong command");
+        } else if (message.getData().startsWith(LONG_COMMAND_PREFIX)) {
+            adapter.getEvents().add(message.getPeer() + " sent you a looong command");
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onSMSSent(SMSMessage message, SMSController.SentState state) {
-        Log.d("MainActivity", "Message sent: " + message.getMessage());
-        if (state == SMSController.SentState.MESSAGE_SENT) {
+    public void onSMSSent(SMSMessage message, SMSHandler.SentState state) {
+        Log.d("MainActivity", "Message sent: " + message.getData());
+        if (state == SMSHandler.SentState.MESSAGE_SENT) {
             Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
-            if (message.getMessage().equals(SMILE_COMMAND)) {
-                adapter.getEvents().add("You sent a :) to " + message.getTelephoneNumber());
+            if (message.getData().equals(SMILE_COMMAND)) {
+                adapter.getEvents().add("You sent a :) to " + message.getPeer());
                 adapter.notifyDataSetChanged();
-            } else if (message.getMessage().equals(HEART_COMMAND)) {
-                adapter.getEvents().add("You sent a <3 to " + message.getTelephoneNumber());
+            } else if (message.getData().equals(HEART_COMMAND)) {
+                adapter.getEvents().add("You sent a <3 to " + message.getPeer());
                 adapter.notifyDataSetChanged();
-            } else if (message.getMessage().startsWith(LONG_COMMAND_PREFIX)) {
-                adapter.getEvents().add("You sent a looong command to " + message.getTelephoneNumber());
+            } else if (message.getData().startsWith(LONG_COMMAND_PREFIX)) {
+                adapter.getEvents().add("You sent a looong command to " + message.getPeer());
                 adapter.notifyDataSetChanged();
             }
         } else {

@@ -17,7 +17,7 @@ import com.gruppo_4.preferences.PreferencesManager;
 
 import java.util.ArrayList;
 
-public class SMSController {
+public class SMSHandler {
 
     private static final String APPLICATION_CODE_PREFERENCES_KEY = "ApplicationCode";
     private static final String MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY = "MessageSequentialCode";
@@ -64,12 +64,12 @@ public class SMSController {
 
         //Check on packets
         for (String msg : messages) {
-            Log.v("SMSController", "String to be sent, length: " + msg.length() + ", content: " + msg);
+            Log.v("SMSHandler", "String to be sent, length: " + msg.length() + ", content: " + msg);
             ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(msg);
             if (dividedBySystem.size() > 1)
                 throw new IllegalStateException("The message is too long (???)");
         }
-        SMSCore.sendMessages(messages, message.getTelephoneNumber(), onSentIntents);
+        SMSCore.sendMessages(messages, message.getPeer().getAddress(), onSentIntents);
     }
 
     /**
@@ -79,7 +79,7 @@ public class SMSController {
      * @param listener a class that implements SMSReceivedListener
      */
     public static void addOnReceiveListener(SMSReceivedListener listener) {
-        Log.v("SMSController", "addOnReceiveListener called for " + listener.getClass());
+        Log.v("SMSHandler", "addOnReceiveListener called for " + listener.getClass());
         receivedListeners.add(listener);
     }
 
@@ -89,16 +89,16 @@ public class SMSController {
      * @param packet the sms content wrapped in a packet
      */
     public static void onReceive(SMSPacket packet, String telephoneNumber) {
-        Log.v("SMSController", "Packet received, id:" + packet.getMessageId() + " number:" + packet.getPacketNumber() + " total:" + packet.getTotalNumber() + " from:" + telephoneNumber + " content:" + packet.getMessageText());
+        Log.v("SMSHandler", "Packet received, id:" + packet.getMessageId() + " number:" + packet.getPacketNumber() + " total:" + packet.getTotalNumber() + " from:" + telephoneNumber + " content:" + packet.getMessageText());
         //Let's see if we already have the message stored
         boolean found = false;
         for (SMSMessage m : incompleteMessages) {
-            if (m.getTelephoneNumber().equals(telephoneNumber) && m.getMessageId() == packet.getMessageId()) {
-                Log.v("SMSController", "Message for the id: " + packet.getMessageId() + " was already in the incomplete messages list");
+            if (m.getPeer().getAddress().equals(telephoneNumber) && m.getMessageId() == packet.getMessageId()) {
+                Log.v("SMSHandler", "Message for the id: " + packet.getMessageId() + " was already in the incomplete messages list");
                 found = true;
                 m.addPacket(packet);
                 if (m.hasAllPackets()) {
-                    Log.v("SMSController", "Message id:" + m.getMessageId() + " is now complete");
+                    Log.v("SMSHandler", "Message id:" + m.getMessageId() + " is now complete");
                     callOnReceivedListeners(m);
                     incompleteMessages.remove(m);
                 }
@@ -107,8 +107,8 @@ public class SMSController {
         }
         //If not found then create a new Message
         if (!found) {
-            Log.v("SMSController", "Creating a new incomplete messages for id:" + packet.getMessageId());
-            SMSMessage m = new SMSMessage(telephoneNumber, packet);
+            Log.v("SMSHandler", "Creating a new incomplete messages for id:" + packet.getMessageId());
+            SMSMessage m = new SMSMessage(new SMSPeer(telephoneNumber), packet);
             incompleteMessages.add(m);
             if (m.hasAllPackets()) {
                 Log.v("SMController", "The message id:" + m.getMessageId() + " is complete with one packet");
