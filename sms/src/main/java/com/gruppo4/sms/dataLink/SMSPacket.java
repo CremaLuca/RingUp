@@ -1,6 +1,9 @@
-package com.gruppo4.sms;
+package com.gruppo4.sms.dataLink;
 
-public class SMSPacket {
+/**
+ * Represents a single SMS as a part of a bigger message
+ */
+class SMSPacket {
 
     static final int MAX_PACKET_TEXT_LEN = 140; //160 - 3(applicationCode) - 3(messageId) - 3(packetNumber) - 3(totalNumber) - 4(SEPARATOR)
     public static final String SEPARATOR = "_";
@@ -18,7 +21,7 @@ public class SMSPacket {
      * @param totalNumber     number of packets for the whole messageText
      * @param packetMsgText   the messageText to send
      */
-    public SMSPacket(int applicationCode, int messageId, int packetNumber, int totalNumber, String packetMsgText) {
+    SMSPacket(int applicationCode, int messageId, int packetNumber, int totalNumber, String packetMsgText) {
         if (applicationCode > 999 || applicationCode < 0)
             throw new IllegalArgumentException("Application code must be between 0 and 999");
         if (messageId > 999 || messageId < 0)
@@ -49,6 +52,11 @@ public class SMSPacket {
                 SEPARATOR + packetNumber + SEPARATOR + totalNumber + SEPARATOR + messageText;
     }
 
+    /**
+     * The total number of packets that compose the message
+     *
+     * @return the number of packets for the message
+     */
     int getTotalNumber() {
         return totalNumber;
     }
@@ -65,7 +73,7 @@ public class SMSPacket {
         return applicationCode;
     }
 
-    public String getMessageText() {
+    String getMessageText() {
         return messageText;
     }
 }
