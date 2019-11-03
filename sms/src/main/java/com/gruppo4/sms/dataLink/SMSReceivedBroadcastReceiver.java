@@ -26,7 +26,7 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
                 SMSPacket packet = parsePacket(context, smsContent);
                 if(packet != null)
-                    SMSController.onReceive(packet, phoneNumber);
+                    SMSHandler.onReceive(packet, phoneNumber);
             }
         }
     }
@@ -41,10 +41,10 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 int packetNumber = Integer.parseInt(splits[2]);
                 int totalNumber = Integer.parseInt(splits[3]);
                 String text = splits[4];
-                if (applicationCode == SMSController.getApplicationCode(context)) {
+                if (applicationCode == SMSHandler.getApplicationCode(context)) {
                     packet = new SMSPacket(applicationCode, messageId, packetNumber, totalNumber, text);
                 } else {
-                    Log.v("SMSReceiver", "Received a message sent from this library, but not for this app id:" + SMSController.getApplicationCode(context));
+                    Log.v("SMSReceiver", "Received a message sent from this library, but not for this app id:" + SMSHandler.getApplicationCode(context));
                 }
             } catch (NumberFormatException e) {
                 Log.v("SMSReceiver", "Received a SMS, but not for this app");
