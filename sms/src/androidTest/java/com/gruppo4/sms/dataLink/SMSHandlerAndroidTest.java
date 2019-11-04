@@ -1,14 +1,8 @@
-package com.gruppo4.sms;
+package com.gruppo4.sms.dataLink;
 
-import android.Manifest;
 import android.content.Context;
-
-import androidx.core.widget.TextViewCompat;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import com.gruppo4.sms.dataLink.SMSHandler;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

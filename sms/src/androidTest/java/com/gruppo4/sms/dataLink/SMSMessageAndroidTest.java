@@ -2,6 +2,8 @@ package com.gruppo4.sms.dataLink;
 
 import android.content.Context;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.gruppo4.communication.Peer;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
@@ -11,9 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class SMSMessageUnitTest {
+public class SMSMessageAndroidTest {
 
-    Context context = null;
+    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     SMSPeer peer = new SMSPeer("+391111111111"); //A right number
     SMSMessage message = null;
 
@@ -53,7 +55,7 @@ public class SMSMessageUnitTest {
     @Test
     public void phone_number_hasCountryCode(){
         try {
-            message = new SMSMessage(context, new SMSPeer("+111111111"), "Test message");
+            message = new SMSMessage(context, new SMSPeer("111111111"), "Test message");
             Assert.fail("Should have thrown InvalidTelephoneNumberException exception");
         }catch(InvalidTelephoneNumberException e){
             //Success
@@ -109,7 +111,7 @@ public class SMSMessageUnitTest {
         }catch(Exception e){
             Assert.fail("Should not have thrown an exception");
         }
-        Assert.assertEquals(message.getPeer(),"+391111111111");
+        Assert.assertEquals(message.getPeer().toString(),"+391111111111");
     }
 
     @Test
