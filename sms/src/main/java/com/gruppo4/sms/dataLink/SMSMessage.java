@@ -197,4 +197,13 @@ public class SMSMessage implements Message<String, SMSPeer> {
         MESSAGE_TEXT_VALID,
         MESSAGE_TEXT_TOO_LONG
     }
+
+    public enum SentState {
+        MESSAGE_SENT,
+        ERROR_GENERIC_FAILURE,
+        ERROR_RADIO_OFF,
+        ERROR_NULL_PDU,
+        ERROR_NO_SERVICE,
+        ERROR_LIMIT_EXCEEDED
+    }
 }

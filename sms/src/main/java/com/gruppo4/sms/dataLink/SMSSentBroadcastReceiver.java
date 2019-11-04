@@ -19,7 +19,7 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
 
     private SMSSentListener listener;
     private SMSMessage message;
-    private SMSHandler.SentState sentState = SMSHandler.SentState.MESSAGE_SENT;
+    private SMSMessage.SentState sentState = SMSMessage.SentState.MESSAGE_SENT;
     private int packetsCounter;
 
     /**
@@ -56,25 +56,25 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        SMSHandler.SentState state;
+        SMSMessage.SentState state;
         switch (getResultCode()) {
             case Activity.RESULT_OK:
-                state = SMSHandler.SentState.MESSAGE_SENT;
+                state = SMSMessage.SentState.MESSAGE_SENT;
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF:
-                state = SMSHandler.SentState.ERROR_RADIO_OFF;
+                state = SMSMessage.SentState.ERROR_RADIO_OFF;
                 break;
             case SmsManager.RESULT_ERROR_NULL_PDU:
-                state = SMSHandler.SentState.ERROR_NULL_PDU;
+                state = SMSMessage.SentState.ERROR_NULL_PDU;
                 break;
             case SmsManager.RESULT_ERROR_NO_SERVICE:
-                state = SMSHandler.SentState.ERROR_NO_SERVICE;
+                state = SMSMessage.SentState.ERROR_NO_SERVICE;
                 break;
             case SmsManager.RESULT_ERROR_LIMIT_EXCEEDED:
-                state = SMSHandler.SentState.ERROR_LIMIT_EXCEEDED;
+                state = SMSMessage.SentState.ERROR_LIMIT_EXCEEDED;
                 break;
             default:
-                state = SMSHandler.SentState.ERROR_GENERIC_FAILURE;
+                state = SMSMessage.SentState.ERROR_GENERIC_FAILURE;
                 Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageId());
                 break;
         }
@@ -94,9 +94,9 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
      *
      * @param sentState state for the current packet
      */
-    private void setSentState(SMSHandler.SentState sentState) {
+    private void setSentState(SMSMessage.SentState sentState) {
         //The state is modified ONLY IF THE CURRENT STATE IS OK. If a single packet has given an error the state is error
-        if (this.sentState == SMSHandler.SentState.MESSAGE_SENT)
+        if (this.sentState == SMSMessage.SentState.MESSAGE_SENT)
             this.sentState = sentState;
     }
 

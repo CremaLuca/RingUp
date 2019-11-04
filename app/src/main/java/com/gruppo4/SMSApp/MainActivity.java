@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSManager;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private void sendMessage(Context context, String text, String telephoneNumber) {
         try {
             SMSMessage message = new SMSMessage(context, new SMSPeer(telephoneNumber), text);
-            SMSHandler.sendMessage(context, message, this);
+            SMSManager.getInstance(context).sendMessage(message, this);
         } catch (InvalidSMSMessageException messageException) {
             Log.e("MainActivity", messageException.getMessage());
         } catch (InvalidTelephoneNumberException telephoneException) {
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendSmileButton(Context ctx) {
         mark = 1;
-        if (!SMSHandler.checkPermissions(ctx)) {
+        if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendHeartButton(Context ctx) {
         mark = 2;
-        if (!SMSHandler.checkPermissions(ctx)) {
+        if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      */
     public void onSendLongButton(Context ctx) {
         mark = 3;
-        if (!SMSHandler.checkPermissions(ctx)) {
+        if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
@@ -177,9 +176,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     }
 
     @Override
-    public void onSMSSent(SMSMessage message, SMSHandler.SentState state) {
+    public void onSMSSent(SMSMessage message, SMSMessage.SentState state) {
         Log.d("MainActivity", "Message sent: " + message.getData());
-        if (state == SMSHandler.SentState.MESSAGE_SENT) {
+        if (state == SMSMessage.SentState.MESSAGE_SENT) {
             Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
             if (message.getData().equals(SMILE_COMMAND)) {
                 adapter.getEvents().add("You sent a :) to " + message.getPeer().getAddress());

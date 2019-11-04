@@ -18,6 +18,22 @@ public class SMSManager extends CommunicationHandler<SMSMessage> {
         return instance;
     }
 
+    public static boolean checkApplicationCodeIsValid(int appCode) {
+        return SMSHandler.checkApplicationCodeIsValid(appCode);
+    }
+
+    public static boolean checkSendPermission(Context ctx) {
+        return SMSHandler.checkSendPermission(ctx);
+    }
+
+    public static boolean checkReceivePermission(Context ctx) {
+        return SMSHandler.checkReceivePermission(ctx);
+    }
+
+    public static boolean checkPermissions(Context ctx) {
+        return SMSHandler.checkPermissions(ctx);
+    }
+
     @Override
     public void sendMessage(SMSMessage message) {
         this.sendMessage(message, null);
