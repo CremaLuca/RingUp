@@ -14,7 +14,7 @@ import com.gruppo_4.preferences.PreferencesManager;
 
 import java.util.ArrayList;
 
-public class SMSHandler {
+class SMSHandler {
 
 
     private static final String MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY = "MessageSequentialCode";
@@ -28,9 +28,9 @@ public class SMSHandler {
      *
      * @param applicationCode an identifier for the current application
      */
-    public static void setup(Context context, int applicationCode) {
-        if (!checkApplicationCode(applicationCode))
-            throw new IllegalStateException("Application code not valid, check it with checkApplicationCode() first");
+    static void setup(Context context, int applicationCode) {
+        if (!checkApplicationCodeIsValid(applicationCode))
+            throw new IllegalStateException("Application code not valid, check it with checkApplicationCodeIsValid() first");
 
         setApplicationCode(context, applicationCode);
     }
@@ -42,7 +42,7 @@ public class SMSHandler {
      * @param message  the message to be sent via SMS
      * @param listener called when the message is completely sent to the provider
      */
-    public static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
+    static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
         ArrayList<String> messages = message.getPacketsContent();
 
         String intentAction = SENT_MESSAGE_INTENT_ACTION_PREFIX + "_" + message.getMessageId();
@@ -68,7 +68,7 @@ public class SMSHandler {
      *
      * @param packet the sms content wrapped in a packet
      */
-    public static void onReceive(Context ctx, SMSPacket packet, String telephoneNumber) {
+    static void onReceive(Context ctx, SMSPacket packet, String telephoneNumber) {
         Log.v("SMSHandler", "Packet received, id:" + packet.getMessageId() + " number:" + packet.getPacketNumber() + " total:" + packet.getTotalNumber() + " from:" + telephoneNumber + " content:" + packet.getMessageText());
         //Let's see if we already have the message stored
         boolean found = false;
@@ -126,7 +126,7 @@ public class SMSHandler {
      * @param applicationCode a integer code.
      * @return true if the parameter application code is valid.
      */
-    public static boolean checkApplicationCode(int applicationCode) {
+    static boolean checkApplicationCodeIsValid(int applicationCode) {
         return applicationCode > 0 && applicationCode < 1000;
     }
 
@@ -134,7 +134,7 @@ public class SMSHandler {
      * Writes in the memory the application code.
      *
      * @param ctx             current app or service context.
-     * @param applicationCode a valid application code, checked with checkApplicationCode.
+     * @param applicationCode a valid application code, checked with checkApplicationCodeIsValid.
      */
     private static void setApplicationCode(Context ctx, int applicationCode) {
         PreferencesManager.setInt(ctx, APPLICATION_CODE_PREFERENCES_KEY, applicationCode);
@@ -146,7 +146,7 @@ public class SMSHandler {
      * @param ctx current app or service context.
      * @return the current application code
      */
-    public static int getApplicationCode(Context ctx) {
+    static int getApplicationCode(Context ctx) {
         int appCode = PreferencesManager.getInt(ctx, APPLICATION_CODE_PREFERENCES_KEY);
         if (appCode < 0)
             throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup, call the setup() method at least once");
@@ -159,7 +159,7 @@ public class SMSHandler {
      * @param ctx a valid context
      * @return true if permission is granted
      */
-    public static boolean checkSendPermission(Context ctx) {
+    static boolean checkSendPermission(Context ctx) {
         boolean result = ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
         Log.d("1","return del metodo checkSendPermission: "+ result);
         return result;
@@ -171,7 +171,7 @@ public class SMSHandler {
      * @param ctx a valid context
      * @return true if permission is granted
      */
-    public static boolean checkReceivePermission(Context ctx) {
+    static boolean checkReceivePermission(Context ctx) {
         boolean result = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
         Log.d("1","return del metodo checkSendPermission: "+ result);
         return result;
@@ -183,16 +183,8 @@ public class SMSHandler {
      * @param ctx a valid context
      * @return true if both permissions are granted
      */
-    public static boolean checkPermissions(Context ctx) {
+    static boolean checkPermissions(Context ctx) {
         return checkSendPermission(ctx) && checkReceivePermission(ctx);
     }
 
-    public enum SentState {
-        MESSAGE_SENT,
-        ERROR_GENERIC_FAILURE,
-        ERROR_RADIO_OFF,
-        ERROR_NULL_PDU,
-        ERROR_NO_SERVICE,
-        ERROR_LIMIT_EXCEEDED
-    }
 }
