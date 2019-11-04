@@ -86,6 +86,7 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
         if (checkCounter()) { //Call the listener if the message is completely sent
             if (listener != null)
                 listener.onSMSSent(message, sentState);
+            context.unregisterReceiver(this);
         }
     }
 
