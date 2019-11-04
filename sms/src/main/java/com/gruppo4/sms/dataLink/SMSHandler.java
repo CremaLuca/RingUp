@@ -29,8 +29,8 @@ public class SMSHandler {
      * @param applicationCode an identifier for the current application
      */
     public static void setup(Context context, int applicationCode) {
-        if (!checkApplicationCode(applicationCode))
-            throw new IllegalStateException("Application code not valid, check it with checkApplicationCode() first");
+        if (!checkApplicationCodeIsValid(applicationCode))
+            throw new IllegalStateException("Application code not valid, check it with checkApplicationCodeIsValid() first");
 
         setApplicationCode(context, applicationCode);
     }
@@ -126,7 +126,7 @@ public class SMSHandler {
      * @param applicationCode a integer code.
      * @return true if the parameter application code is valid.
      */
-    public static boolean checkApplicationCode(int applicationCode) {
+    public static boolean checkApplicationCodeIsValid(int applicationCode) {
         return applicationCode > 0 && applicationCode < 1000;
     }
 
@@ -134,7 +134,7 @@ public class SMSHandler {
      * Writes in the memory the application code.
      *
      * @param ctx             current app or service context.
-     * @param applicationCode a valid application code, checked with checkApplicationCode.
+     * @param applicationCode a valid application code, checked with checkApplicationCodeIsValid.
      */
     private static void setApplicationCode(Context ctx, int applicationCode) {
         PreferencesManager.setInt(ctx, APPLICATION_CODE_PREFERENCES_KEY, applicationCode);

@@ -50,9 +50,9 @@ public class SMSMessage implements Message<String, SMSPeer> {
      *
      * @param ctx         the current application/service context
      * @param destination a valid peer
-     * @param messageText a message
-     * @throws InvalidSMSMessageException      if Utils.checkMessageText returns false
-     * @throws InvalidTelephoneNumberException if Utils.checkTelephoneNumber returns false
+     * @param messageText message
+     * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
+     * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
      */
     public SMSMessage(Context ctx, SMSPeer destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         //Checks on the telephone number
@@ -69,6 +69,19 @@ public class SMSMessage implements Message<String, SMSPeer> {
         this.messageId = SMSHandler.getNewMessageId(ctx); //Sequential code
         this.message = new StringBuilder(messageText);
         packets = getPacketsFromText(ctx, messageText);
+    }
+
+    /**
+     * Overload for constructor
+     *
+     * @param ctx         the current application/service context
+     * @param destination a valid peer address
+     * @param messageText the message
+     * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
+     * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
+     */
+    public SMSMessage(Context ctx, String destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        this(ctx, new SMSPeer(destination), messageText);
     }
 
     /**
