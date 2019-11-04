@@ -160,9 +160,7 @@ public class SMSHandler {
      * @return true if permission is granted
      */
     public static boolean checkSendPermission(Context ctx) {
-        boolean result = ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
-        Log.d("1","return del metodo checkSendPermission: "+ result);
-        return result;
+        return ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
@@ -172,9 +170,7 @@ public class SMSHandler {
      * @return true if permission is granted
      */
     public static boolean checkReceivePermission(Context ctx) {
-        boolean result = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
-        Log.d("1","return del metodo checkSendPermission: "+ result);
-        return result;
+        return ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
