@@ -38,4 +38,8 @@ public class SMSNotificationCaptureService extends NotificationListenerService {
         String[] parts = notificationText.split("_", 5);
         return parts.length >= 5;
     }
+
+    public static void openNotificationListenSettings() {
+
+    }
 }
