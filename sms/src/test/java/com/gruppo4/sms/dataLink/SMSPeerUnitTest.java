@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class SMSPeerUnitTest {
 
-    private static SMSPeer peer;
+    private static SMSPeer peer = null;
     private static final String TOO_SHORT_TELEPHON_NUMBER = "+39111";
     private static final String TOO_LONG_TELEPHON_NUMBER = "+39111111111111111111";
     private static final String NO_COUNTRY_CODE_TELEPHON_NUMBER = "1111111111";

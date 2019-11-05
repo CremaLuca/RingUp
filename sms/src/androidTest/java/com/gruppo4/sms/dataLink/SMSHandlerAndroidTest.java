@@ -14,31 +14,26 @@ public class SMSHandlerAndroidTest {
     private static final int VALID_TEST_APP_ID = 69;
     private static final int INVALID_TEST_APP_ID_SMALL = -56;
     private static final int INVALID_TEST_APP_ID_BIG = 1136;
-    Context context = null;
-
-    @Before
-    public void init() {
-        this.context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    }
+    private static final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
     @Test
-    public void setup_applicationCode_isEquals() {
+    public void setup_getApplicationCode_isEquals() {
         SMSHandler.setup(context, VALID_TEST_APP_ID);
         Assert.assertEquals(SMSHandler.getApplicationCode(context), VALID_TEST_APP_ID);
     }
 
     @Test
-    public void checkApplicationCode_applicationCode_isValid() {
-        Assert.assertTrue(SMSHandler.checkApplicationCode(VALID_TEST_APP_ID));
+    public void checkApplicationCodeIsValid_applicationCode_isValid() {
+        Assert.assertTrue(SMSHandler.checkApplicationCodeIsValid(VALID_TEST_APP_ID));
     }
 
     @Test
-    public void checkApplicationCode_applicationCode_isTooSmall() {
-        Assert.assertFalse(SMSHandler.checkApplicationCode(INVALID_TEST_APP_ID_SMALL));
+    public void checkApplicationCodeIsValid_applicationCode_isTooSmall() {
+        Assert.assertFalse(SMSHandler.checkApplicationCodeIsValid(INVALID_TEST_APP_ID_SMALL));
     }
 
     @Test
-    public void checkApplicationCode_applicationCode_isTooBig() {
-        Assert.assertFalse(SMSHandler.checkApplicationCode(INVALID_TEST_APP_ID_BIG));
+    public void checkApplicationCodeIsValid_applicationCode_isTooBig() {
+        Assert.assertFalse(SMSHandler.checkApplicationCodeIsValid(INVALID_TEST_APP_ID_BIG));
     }
 }
