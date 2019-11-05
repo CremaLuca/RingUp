@@ -8,7 +8,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
-public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
+class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
         Log.v("SMSReceiver", "received message from android broadcaster");
