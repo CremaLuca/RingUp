@@ -5,8 +5,6 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import com.gruppo4.sms.SMSPacket;
-
 public class SMSNotificationCaptureService extends NotificationListenerService {
 
     /**
@@ -37,7 +35,7 @@ public class SMSNotificationCaptureService extends NotificationListenerService {
      * @return if the notification of category msg is suitable to be canceled
      */
     private boolean checkNotificationText(String notificationText) {
-        String[] parts = notificationText.split(SMSPacket.SEPARATOR, 5);
+        String[] parts = notificationText.split("_", 5);
         return parts.length >= 5;
     }
 }
