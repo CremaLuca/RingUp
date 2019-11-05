@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private static final int SMS_PERMISSION_CODE = 1;
     private RecyclerView listView;
     private ListAdapter adapter;
-    private static final int markSendSmileButton = 0;
-    private static final int markSendHeartButton = 1;
-    private static final int markSendLongMessage = 2;
+    private static final int MARK_SEND_SMILE_BUTTON = 0;
+    private static final int MARK_SEND_HEART_BUTTON = 1;
+    private static final int MARK_SEND_LONG_BUTTON = 2;
     private static int mark;
 
     @Override
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendSmileButton(Context ctx) {
-        mark = markSendSmileButton;
+        mark = MARK_SEND_SMILE_BUTTON;
         if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send heart button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendHeartButton(Context ctx) {
-        mark = markSendHeartButton;
+        mark = MARK_SEND_HEART_BUTTON;
         if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendLongButton(Context ctx) {
-        mark = markSendLongMessage;
+        mark = MARK_SEND_LONG_BUTTON;
         if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
@@ -211,15 +211,15 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
                 //Sending the message after giving the permissions
                 String phoneNumber;
                 switch(mark){
-                    case markSendSmileButton:
+                    case MARK_SEND_SMILE_BUTTON:
                         phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                         sendMessage(ctx, SMILE_COMMAND, phoneNumber);
                         break;
-                    case markSendHeartButton:
+                    case MARK_SEND_HEART_BUTTON:
                         phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                         sendMessage(ctx, HEART_COMMAND, phoneNumber);
                         break;
-                    case markSendLongMessage:
+                    case MARK_SEND_LONG_BUTTON:
                         phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                         sendMessage(ctx, LONG_COMMAND, phoneNumber);
                         break;
