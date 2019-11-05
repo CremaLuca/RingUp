@@ -7,33 +7,24 @@ public class SMSMessageUnitTest {
 
     SMSMessage smsMessage;
     private static final String NORMAL_TEXT_MESSAGE = "Test message";
-    private final int MAX_LENGTH_TEXT_MESSAGE_EXPECTED = smsMessage.MAX_MSG_TEXT_LEN;
+    private static final int MAX_LENGTH_TEXT_MESSAGE = 139860; //smsMessage.MAX_MSG_TEXT_LEN
+    private static final String TOO_LONG_TEXT_MESSAGE = new String(new char[MAX_LENGTH_TEXT_MESSAGE * 2]).replace('\0', ' ');
+    private static final String MAX_SIZE_TEXT_MESSAGE_P1 = new String(new char[MAX_LENGTH_TEXT_MESSAGE + 1]).replace('\0', ' ');
+    private static final String MAX_SIZE_TEXT_MESSAGE_M1 = new String(new char[MAX_LENGTH_TEXT_MESSAGE - 1]).replace('\0', ' ');
 
     @Test
-    public void checkMessageText_smsText_isTooLong(){
-        String textMessage = "";
-        for(int i=0;i<MAX_LENGTH_TEXT_MESSAGE_EXPECTED*2;i++){
-            textMessage += "a";
-        }
-        Assert.assertEquals(smsMessage.checkMessageText(textMessage), SMSMessage.MessageTextState.MESSAGE_TEXT_TOO_LONG);
+    public void checkMessageText_smsText_isTooLong() {
+        Assert.assertEquals(smsMessage.checkMessageText(TOO_LONG_TEXT_MESSAGE), SMSMessage.MessageTextState.MESSAGE_TEXT_TOO_LONG);
     }
 
     @Test
     public void checkMessageText_smsText_isTooLongForOne() {
-        String textMessage = "";
-        for(int i=0;i<MAX_LENGTH_TEXT_MESSAGE_EXPECTED + 1;i++){
-            textMessage += "a";
-        }
-        Assert.assertEquals(smsMessage.checkMessageText(textMessage), SMSMessage.MessageTextState.MESSAGE_TEXT_TOO_LONG);
+        Assert.assertEquals(smsMessage.checkMessageText(MAX_SIZE_TEXT_MESSAGE_P1), SMSMessage.MessageTextState.MESSAGE_TEXT_TOO_LONG);
     }
 
     @Test
     public void checkMessageText_smsText_isShortEnoughForOne() {
-        String textMessage = "";
-        for(int i=0;i<MAX_LENGTH_TEXT_MESSAGE_EXPECTED - 1;i++){
-            textMessage += "a";
-        }
-        Assert.assertEquals(smsMessage.checkMessageText(textMessage), SMSMessage.MessageTextState.MESSAGE_TEXT_VALID);
+        Assert.assertEquals(smsMessage.checkMessageText(MAX_SIZE_TEXT_MESSAGE_M1), SMSMessage.MessageTextState.MESSAGE_TEXT_VALID);
     }
 
     @Test
