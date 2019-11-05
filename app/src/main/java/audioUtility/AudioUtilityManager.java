@@ -1,8 +1,6 @@
-package com.gruppo4.SMSApp;
-
+package audioUtility;
 import android.Manifest;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -11,12 +9,25 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import com.gruppo4.SMSApp.R;
 
 
+public class AudioUtilityManager extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        // Get the application context
+        mContext = getApplicationContext();
+        mActivity = this;
+
+        // Get the audio manager instance
+        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+
+        //Setup the volume.
+        setupVolumeManager();
+    }
 
     //private static final int AUDIO_SETTINGS_PERMISSION_CODE = 1;
 
@@ -28,28 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView listView;
 
 
-    private NotificationManager mNotificationManager;
     private AudioManager mAudioManager;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(com.gruppo4.SMSApp.R.layout.activity_main);
-
-        // Get the application context
-        mContext = getApplicationContext();
-        mActivity = MainActivity.this;
-
-        // Get the notification manager instance
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        // Get the audio manager instance
-        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-
-        //Setup the volume.
-        setupVolumeManager();
-    }
-
 
     /*
     private boolean checkVolumePermission() {
