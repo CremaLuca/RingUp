@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">SMSApp</string>
+    <string name="app_name">SMSRingtonePlayer</string>
+    <string name="edit_number">Enter lost phone number</string>
+    <string name="button_ring">Ring!</string>
 </resources>
