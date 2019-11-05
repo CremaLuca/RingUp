@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class SMSMessage implements Message<String, SMSPeer> {
 
     public static final int MAX_ID = 999;
-
     //This is because package number cannot exceed three characters
     static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
