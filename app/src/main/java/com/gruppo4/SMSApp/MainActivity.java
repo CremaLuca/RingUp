@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         Context ctx = getApplicationContext();
         if (requestCode == SMS_RECEIVE_PERMISSION_CODE) {
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setupSMSManager();
                 Toast.makeText(ctx, "Grazie per i permessi :)", Toast.LENGTH_SHORT).show();
             } else {
                 //Close the app, can't work without permission
@@ -190,7 +191,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         if (requestCode == SMS_SEND_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
-                setupSMSManager();
                 String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                 switch (mark) {
                     case 1:
