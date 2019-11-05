@@ -35,7 +35,10 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private static final int SMS_PERMISSION_CODE = 1;
     private RecyclerView listView;
     private ListAdapter adapter;
-    private static int mark = 0;
+    private static final int markSendSmileButton = 0;
+    private static final int markSendHeartButton = 1;
+    private static final int markSendLongMessage = 2;
+    private static int mark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendSmileButton(Context ctx) {
-        mark = 1;
+        mark = markSendSmileButton;
         if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
@@ -139,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send heart button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendHeartButton(Context ctx) {
-        mark = 2;
+        mark = markSendHeartButton;
         if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
      * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
      */
     public void onSendLongButton(Context ctx) {
-        mark = 3;
+        mark = markSendLongMessage;
         if (!SMSManager.checkPermissions(ctx)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
         } else {
@@ -201,17 +204,23 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
                 setupSMSManager(ctx);
-                if(mark == 1){
-                    String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-                    sendMessage(ctx, SMILE_COMMAND, phoneNumber);
-                }
-                if(mark == 2){
-                    String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-                    sendMessage(ctx, HEART_COMMAND, phoneNumber);
-                }
-                if(mark == 3){
-                    String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-                    sendMessage(ctx, LONG_COMMAND, phoneNumber);
+                //Sending the message after giving the permissions
+                String phoneNumber;
+                switch(mark){
+                    case markSendSmileButton:
+                        phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+                        sendMessage(ctx, SMILE_COMMAND, phoneNumber);
+                        break;
+                    case markSendHeartButton:
+                        phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+                        sendMessage(ctx, HEART_COMMAND, phoneNumber);
+                        break;
+                    case markSendLongMessage:
+                        phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+                        sendMessage(ctx, LONG_COMMAND, phoneNumber);
+                        break;
+                    default:
+                        throw new IllegalStateException("Impossible to send the message for some reasons");
                 }
                 setupSMSManager(getApplicationContext());
             } else {
