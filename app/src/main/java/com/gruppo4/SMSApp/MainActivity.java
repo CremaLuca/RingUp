@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private static final int APP_ID = 123;
     private static final String LONG_COMMAND = LONG_COMMAND_PREFIX + " This command is way too long to be sent in one single sms, this takes at least two or three sms to be completely sent. " +
             "And to prove it i can just send you this";
-    private static final int SMS_PERMISSION_CODE = 1;
+    private static final int SMS_RECEIVE_PERMISSION_CODE = 1;
+    private static final int SMS_SEND_PERMISSION_CODE = 2;
     private RecyclerView listView;
     private ListAdapter adapter;
     private static final int MARK_SEND_SMILE_BUTTON = 0;
@@ -49,9 +50,12 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //If the application is given the permissions before sending the first message, the SMSController setup is immediately done.
-        if(checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
-            setupSMSManager(getApplicationContext());
+        //We need receive message permission, if we don't have it, we can't send messages
+        if (!checkRecevieSMSPermission()) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, SMS_RECEIVE_PERMISSION_CODE);
+        } else {
+            //We can be setup for reception
+            setupSMSManager();
         }
 
         ArrayList<String> events = new ArrayList<>();
@@ -68,25 +72,34 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         findViewById(R.id.sendSmileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendSmileButton(getApplicationContext());
+                onButtonSendMessage(getApplicationContext(), SMILE_COMMAND, 1);
             }
         });
         findViewById(R.id.sendHeartButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendHeartButton(getApplicationContext());
+                onButtonSendMessage(getApplicationContext(), HEART_COMMAND, 2);
             }
         });
         findViewById(R.id.sendLongButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSendLongButton(getApplicationContext());
+                onButtonSendMessage(getApplicationContext(), LONG_COMMAND, 3);
             }
         });
 
     }
 
-    private void setupSMSManager(Context ctx) {
+    private boolean checkRecevieSMSPermission() {
+        return SMSManager.checkReceivePermission(getApplicationContext());
+    }
+
+    private boolean checkSendSMSPermission() {
+        return SMSManager.checkSendPermission(getApplicationContext());
+    }
+
+    private void setupSMSManager() {
+        Context ctx = getApplicationContext();
         if (!SMSManager.getInstance(ctx).isSetup()) {
             SMSManager.getInstance(ctx).setup(APP_ID);
         }
@@ -126,45 +139,13 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         }
     }
 
-
-
-    /**
-     * Callback for send smile button pressed. Sends a message to the number specified in the phoneNumberTextView
-     */
-    public void onSendSmileButton(Context ctx) {
-        mark = MARK_SEND_SMILE_BUTTON;
+    void onButtonSendMessage(Context ctx, String message, int internalCode) {
+        mark = internalCode;
         if (!SMSManager.checkPermissions(ctx)) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS}, SMS_RECEIVE_PERMISSION_CODE);
         } else {
             String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-            sendMessage(ctx, SMILE_COMMAND, phoneNumber);
-        }
-
-    }
-
-    /**
-     * Callback for send heart button pressed. Sends a message to the number specified in the phoneNumberTextView
-     */
-    public void onSendHeartButton(Context ctx) {
-        mark = MARK_SEND_HEART_BUTTON;
-        if (!SMSManager.checkPermissions(ctx)) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
-        } else {
-            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-            sendMessage(ctx, HEART_COMMAND, phoneNumber);
-        }
-    }
-
-    /**
-     * Callback for send long message button pressed. Sends a message to the number specified in the phoneNumberTextView
-     */
-    public void onSendLongButton(Context ctx) {
-        mark = MARK_SEND_LONG_BUTTON;
-        if (!SMSManager.checkPermissions(ctx)) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
-        } else {
-            String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
-            sendMessage(ctx, LONG_COMMAND, phoneNumber);
+            sendMessage(ctx, message, phoneNumber);
         }
     }
 
@@ -204,34 +185,40 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     @Override
     public synchronized void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Context ctx = getApplicationContext();
-        if (requestCode == SMS_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
+        if (requestCode == SMS_RECEIVE_PERMISSION_CODE) {
+            if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setupSMSManager();
+                Toast.makeText(ctx, "Grazie per i permessi :)", Toast.LENGTH_SHORT).show();
+            } else {
+                //Close the app, can't work without permission
+                finish();
+                System.exit(0);
+            }
+        }
+        if (requestCode == SMS_SEND_PERMISSION_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
-                setupSMSManager(ctx);
+                setupSMSManager();
                 //Sending the message after giving the permissions
                 String phoneNumber;
+                phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                 switch(mark){
                     case MARK_SEND_SMILE_BUTTON:
-                        phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
+
                         sendMessage(ctx, SMILE_COMMAND, phoneNumber);
                         break;
                     case MARK_SEND_HEART_BUTTON:
-                        phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                         sendMessage(ctx, HEART_COMMAND, phoneNumber);
                         break;
                     case MARK_SEND_LONG_BUTTON:
-                        phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                         sendMessage(ctx, LONG_COMMAND, phoneNumber);
                         break;
                     default:
                         throw new IllegalStateException("Impossible to send the message for some reasons");
                 }
-                setupSMSManager(getApplicationContext());
             } else {
-                // permission denied, boo!
-                // close the app then
-                finish();
-                System.exit(0);
+                //Nothing, we just won't send the message
+                Toast.makeText(ctx, "Unable to send the message, missing permissions :(", Toast.LENGTH_LONG).show();
             }
         }
     }
