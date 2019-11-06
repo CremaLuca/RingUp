@@ -1,14 +1,15 @@
 package com.gruppo4.sms.dataLink;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 public class SMSMessageTest extends Variables {
 
-    @Test
-    public void constructorOnePacket_parameters_areValid() {
+    @Before
+    public void init_onePacket() {
         try {
             smsMessage = new SMSMessage(new SMSPeer(VALID_TELEPHONE_NUMBER), SMS_PACKET);
         } catch (Exception e) {
@@ -16,8 +17,8 @@ public class SMSMessageTest extends Variables {
         }
     }
 
-    @Test
-    public void constructorMorePackets_parameters_areValid() {
+    @Before
+    public void init_morePackets() {
         SMSPacket[] smsPackets = {SMS_PACKET, SMS_PACKET_2};
         try {
             smsMessage = new SMSMessage(new SMSPeer(VALID_TELEPHONE_NUMBER), smsPackets);

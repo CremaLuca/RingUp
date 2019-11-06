@@ -1,7 +1,5 @@
 package com.gruppo4.sms.dataLink;
 
-import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
-
 public class Variables {
 
     /**
