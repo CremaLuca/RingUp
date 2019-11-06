@@ -18,7 +18,7 @@ class SMSCore {
      * @param phoneNumber destination address
      * @param sentPI      pending intent for a broadcast
      */
-    protected static void sendMessage(String message, String phoneNumber, PendingIntent sentPI) {
+    static void sendMessage(String message, String phoneNumber, PendingIntent sentPI) {
         SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, sentPI, null);
     }
 
@@ -29,7 +29,7 @@ class SMSCore {
      * @param phoneNumber destination address
      * @param sentPIs     arrayList of pending intents for a broadcast
      */
-    protected static void sendMessages(ArrayList<String> messages, String phoneNumber, ArrayList<PendingIntent> sentPIs) {
+    static void sendMessages(ArrayList<String> messages, String phoneNumber, ArrayList<PendingIntent> sentPIs) {
         SmsManager.getDefault().sendMultipartTextMessage(phoneNumber, null, messages, sentPIs, null);
     }
 
