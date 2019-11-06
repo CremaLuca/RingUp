@@ -3,7 +3,7 @@ package audioUtility;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.widget.Toast;
+import android.util.Log;
 import static android.content.Context.AUDIO_SERVICE;
 
 
@@ -14,12 +14,9 @@ public class AudioUtilityManager {
      * @param context
      * Method to get the current volume, shown on a Toast.
      */
-    public static void getCurrentVolume(Context context){
+    public static int getCurrentVolume(Context context){
         // Get the ringer current volume level
-        int current_volume_level = getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
-
-        // Show it on the Toast
-        Toast.makeText(context, "CURRENT RINGTONE VOLUME: "+current_volume_level, Toast.LENGTH_SHORT).show();
+        return getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
     }
 
 
@@ -36,25 +33,33 @@ public class AudioUtilityManager {
     /**
      *
      * @param context
-     * Sets up the Ringtone Volume at 50%, and shows a Toast, telling the user about the change of that setting.
+     * Sets up the Ringtone Volume a certain percentage.
      */
-    public static void setupVolumeManager(Context context) {
+    public static void setRingtoneVolume(Context context, int percentage) {
         // If do not disturb mode on, then off it first
         // turnOffDoNotDisturbMode();
         // NON FUNZIONA. SERVE METODO ALTERNATIVO PER BYPASSARE IL DND.
 
+        if(percentage<0)
+            Log.d("AudioUtilityManager",percentage+" %. A percentage cannot be below 0%. Considering its absolute value");
+        else if(percentage>100) {
+            Log.d("AudioUtilityManager", +percentage+" %. This percentage is too high. Considering 100%.");
+            percentage = 100;
+        }
+        percentage = Math.abs(percentage);
         // Get the ringer maximum volume
-        int max_volume_level = getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
+        int maxVolume = getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
 
-        // calculate approx. 50% of the volume
-        int half_volume = max_volume_level/2;
+        // calculate the new volume
+        int newVolume = maxVolume*percentage;
+        newVolume = Math.round(newVolume/100);
+
         // Set the ringer volume
         getAudioManager(context).setStreamVolume(
                 AudioManager.STREAM_RING,
-                half_volume,
+                newVolume,
                 AudioManager.FLAG_SHOW_UI
         );
-        Toast.makeText(context, "RINGTONE AUDIO IS SET TO 50%.", Toast.LENGTH_SHORT).show();
 
     }
 
