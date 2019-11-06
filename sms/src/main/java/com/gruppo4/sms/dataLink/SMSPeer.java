@@ -1,6 +1,6 @@
 package com.gruppo4.sms.dataLink;
 
-import com.gruppo4.communication.Peer;
+import com.gruppo4.communication.dataLink.Peer;
 
 public class SMSPeer extends Peer<String> {
 

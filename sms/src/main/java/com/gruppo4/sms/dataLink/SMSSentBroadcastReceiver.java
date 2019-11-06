@@ -46,7 +46,7 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
      * @param message a message to pass to the listener once it is sent.
      */
     void setMessage(@NonNull final SMSMessage message) {
-        Log.v("SMSSentReceiver", "Changed message to id:" + message.getMessageId());
+        Log.v("SMSSentReceiver", "Changed message to id:" + message.getMessageID());
         this.message = message;
         packetsCounter = 0;
     }
@@ -75,7 +75,7 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 break;
             default:
                 state = SMSMessage.SentState.ERROR_GENERIC_FAILURE;
-                Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageId());
+                Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageID());
                 break;
         }
         Log.v("SMSSentReceiver", "Sent a packet with state: " + state);

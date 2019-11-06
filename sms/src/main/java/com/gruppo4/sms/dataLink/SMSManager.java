@@ -2,7 +2,7 @@ package com.gruppo4.sms.dataLink;
 
 import android.content.Context;
 
-import com.gruppo4.communication.CommunicationHandler;
+import com.gruppo4.communication.dataLink.CommunicationHandler;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 /**

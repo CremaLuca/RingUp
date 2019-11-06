@@ -1,4 +1,4 @@
-package com.gruppo4.communication;
+package com.gruppo4.communication.dataLink;
 
 import androidx.annotation.NonNull;
 

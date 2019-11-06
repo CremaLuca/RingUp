@@ -45,7 +45,7 @@ class SMSHandler {
     static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
         ArrayList<String> messages = message.getPacketsContent();
 
-        String intentAction = SENT_MESSAGE_INTENT_ACTION_PREFIX + "_" + message.getMessageId();
+        String intentAction = SENT_MESSAGE_INTENT_ACTION_PREFIX + "_" + message.getMessageID();
         ArrayList<PendingIntent> onSentIntents = setupPendingIntents(context, messages.size(), intentAction);
 
         //Setup broadcast receiver
@@ -73,12 +73,12 @@ class SMSHandler {
         //Let's see if we already have the message stored
         boolean found = false;
         for (SMSMessage message : incompleteMessages) {
-            if (message.getPeer().getAddress().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
+            if (message.getPeer().getAddress().equals(telephoneNumber) && message.getMessageID() == packet.getMessageId()) {
                 Log.v("SMSHandler", "Message for the id: " + packet.getMessageId() + " was already in the incomplete messages list");
                 found = true;
                 message.addPacket(packet);
                 if (message.hasAllPackets()) {
-                    Log.v("SMSHandler", "Message id:" + message.getMessageId() + " is now complete");
+                    Log.v("SMSHandler", "Message id:" + message.getMessageID() + " is now complete");
                     SMSManager.getInstance(ctx).callReceivedMessageListener(message);
                     incompleteMessages.remove(message);
                 }
@@ -91,7 +91,7 @@ class SMSHandler {
             SMSMessage message = new SMSMessage(new SMSPeer(telephoneNumber), packet);
             incompleteMessages.add(message);
             if (message.hasAllPackets()) {
-                Log.v("SMController", "The message id:" + message.getMessageId() + " is complete with one packet");
+                Log.v("SMController", "The message id:" + message.getMessageID() + " is complete with one packet");
                 SMSManager.getInstance(ctx).callReceivedMessageListener(message);
                 incompleteMessages.remove(message);
             }
@@ -103,7 +103,7 @@ class SMSHandler {
      *
      * @return a sequential code
      */
-    static int getNewMessageId(Context ctx) {
+    static int getNewMessageID(Context ctx) {
         return PreferencesManager.shiftInt(ctx, MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY, SMSMessage.MAX_ID);
     }
 
