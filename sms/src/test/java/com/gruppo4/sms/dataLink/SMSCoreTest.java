@@ -1,5 +1,15 @@
-import static org.junit.Assert.*;
+package com.gruppo4.sms.dataLink;
 
-public class SMSCoreTest {
+import org.junit.Test;
 
+public class SMSCoreTest extends Variables{
+
+    @Test
+    public void sendMessage() {
+    }
+
+    @Test
+    public void sendMessages() {
+
+    }
 }
