@@ -12,16 +12,25 @@ public class AudioUtilityManager {
     /**
      *
      * @param context
-     * Method to get the current volume, shown on a Toast.
+     * @return The current volume.
      */
     public static int getCurrentVolume(Context context){
         // Get the ringer current volume level
         int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
         // Get the ringer maximum volume
-        int maxVolume = getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
+        int maxVolume = getMaxVolume(context);
         return Math.round(100*currentVolume/maxVolume);
     }
 
+    /**
+     *
+     * @param context
+     * @return The maximum volume.
+     */
+    public static int getMaxVolume(Context context){
+        // Get the ringer maximum volume
+        return getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
+    }
 
     /**
      *
@@ -51,7 +60,7 @@ public class AudioUtilityManager {
         }
         percentage = Math.abs(percentage);
         // Get the ringer maximum volume
-        int maxVolume = getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
+        int maxVolume = getMaxVolume(context);
 
         // calculate the new volume
         int newVolume = maxVolume*percentage;
