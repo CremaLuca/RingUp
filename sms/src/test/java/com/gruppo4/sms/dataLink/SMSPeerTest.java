@@ -3,15 +3,7 @@ package com.gruppo4.sms.dataLink;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SMSPeerTest {
-
-    private static SMSPeer peer = null;
-    private static final String TOO_SHORT_TELEPHONE_NUMBER = "+39111";
-    private static final String TOO_LONG_TELEPHONE_NUMBER = "+39111111111111111111";
-    private static final String NO_COUNTRY_CODE_TELEPHONE_NUMBER = "1111111111";
-    private static final String LETTERS_TELEPHONE_NUMBER = "+391111111ABC";
-    private static final String VALID_TELEPHONE_NUMBER = "+391111111111";
-    private static final String EMPTY_TELEPHONE_NUMBER = "";
+public class SMSPeerTest extends Variables{
 
     @Test
     public void checkPhoneNumber_telephonNumber_isTooShort() {

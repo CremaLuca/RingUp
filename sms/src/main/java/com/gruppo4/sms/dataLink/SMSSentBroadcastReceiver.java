@@ -37,7 +37,7 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
     /**
      * @param listener a listener to be called once the message is sent.
      */
-    void setListener(SMSSentListener listener) {
+    public void setListener(SMSSentListener listener) {
         Log.v("SMSSentReceiver", "Changed listener to class:" + listener.getClass());
         this.listener = listener;
     }
@@ -45,7 +45,7 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
     /**
      * @param message a message to pass to the listener once it is sent.
      */
-    void setMessage(@NonNull final SMSMessage message) {
+    public void setMessage(@NonNull final SMSMessage message) {
         Log.v("SMSSentReceiver", "Changed message to id:" + message.getMessageId());
         this.message = message;
         packetsCounter = 0;

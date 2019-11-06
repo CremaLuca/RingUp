@@ -3,23 +3,7 @@ package com.gruppo4.sms.dataLink;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SMSPacketTest {
-
-    private static final String VALID_TEXT_MESSAGE = "Test message";
-    private static final int MAX_PACKET_TEXT_LEN = 140;
-    private static final int VALID_APPLICATION_CODE = 1;
-    private static final int VALID_MESSAGE_ID = 1;
-    private static final int VALID_PACKET_NUMBER = 1;
-    private static final int VALID_TOTAL_PACKET_NUMBER = 1;
-    private static final int TOO_BIG_APPLICATION_CODE = 1000;
-    private static final int TOO_BIG_MESSAGE_ID = 1000;
-    private static final int TOO_BIG_PACKET_NUMBER = 1000;
-    private static final int TOO_BIG_TOTAL_PACKET_NUMBER = 1000;
-    private static final String SHOULD_THROW = "Should have thrown an exception";
-    private static final String TOO_LONG_TEXT_MESSAGE = new String(new char[MAX_PACKET_TEXT_LEN * 2]).replace('\0', ' ');
-    private static final String TOO_LONG_TEXT_MESSAGE_P1 = new String(new char[MAX_PACKET_TEXT_LEN + 1]).replace('\0', ' ');  //P1 = Plus 1
-    private static final String MAX_LENGTH_TEXT_MESSAGE = new String(new char[MAX_PACKET_TEXT_LEN]).replace('\0', ' ');
-    private static final SMSPacket SMS_PACKET = new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, VALID_TEXT_MESSAGE);
+public class SMSPacketTest extends Variables {
 
     @Test
     public void application_code_isEquals() {
@@ -99,7 +83,7 @@ public class SMSPacketTest {
     @Test
     public void message_tooLongByOne() {
         try {
-            new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, TOO_LONG_TEXT_MESSAGE_P1);
+            new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, MAX_LENGTH_PACKET_MESSAGE_P1);
             Assert.fail(SHOULD_THROW);
         } catch (Exception e) {
             //Success
@@ -109,7 +93,7 @@ public class SMSPacketTest {
     @Test
     public void message_isMaxLength() {
         try {
-            new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, MAX_LENGTH_TEXT_MESSAGE);
+            new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, MAX_LENGTH_PACKET_MESSAGE);
         } catch (Exception e) {
             Assert.fail(SHOULD_THROW);
         }
