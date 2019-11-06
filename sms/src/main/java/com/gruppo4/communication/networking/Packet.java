@@ -35,6 +35,6 @@ public abstract class Packet<D, P extends Peer> {
     /**
      * @return packet data ready to be placed in a message and be sent
      */
-    public abstract D formatData();
+    public abstract D getOutput();
 
 }

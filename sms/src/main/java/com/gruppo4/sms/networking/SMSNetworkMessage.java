@@ -15,6 +15,11 @@ public class SMSNetworkMessage extends NetworkMessage<String, SMSPeer> {
         this.applicationID = applicationID;
     }
 
+    /**
+     * Returns a unique sequential code for this message
+     *
+     * @return the message id
+     */
     public int getMessageID() {
         return messageID;
     }

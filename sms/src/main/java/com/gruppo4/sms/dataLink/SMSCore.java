@@ -23,6 +23,16 @@ class SMSCore {
     }
 
     /**
+     * Calls the library method to send a single message
+     *
+     * @param message     message to be sent
+     * @param phoneNumber peer address
+     */
+    static void sendMessage(String message, String phoneNumber) {
+        SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, null, null);
+    }
+
+    /**
      * Calls the library method to send multiple messages
      *
      * @param messages    arrayList of messages to be sent

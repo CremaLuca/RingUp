@@ -9,19 +9,18 @@ import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 public class SMSMessage extends Message<String, SMSPeer> {
 
     public static final int MAX_ID = 999;
-    public static final int MAX_MSG_TEXT_LEN = 160;
-    private int messageID;
+    public static final int MAX_MSG_TEXT_LEN = 155;
+    private int applicationID;
 
     /**
      * Wrap for a text message, used to check the parameters validity
      *
-     * @param ctx         the current application/service context
      * @param peer        a valid peer
      * @param messageText the message content
      * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
      * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
      */
-    public SMSMessage(Context ctx, SMSPeer peer, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public SMSMessage(int applicationID, SMSPeer peer, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         super(messageText, peer);
         //Checks on the peer
         SMSPeer.TelephoneNumberState telephoneNumberState = peer.checkPhoneNumber();
@@ -32,21 +31,32 @@ public class SMSMessage extends Message<String, SMSPeer> {
         MessageTextState messageTextState = checkMessageText(messageText);
         if (messageTextState != MessageTextState.MESSAGE_TEXT_VALID)
             throw new InvalidSMSMessageException("text length exceeds maximum allowed", messageTextState);
-
-        this.messageID = SMSHandler.getNewMessageID(ctx); //Sequential code
+        this.applicationID = applicationID;
     }
 
     /**
      * Overload for constructor
      *
-     * @param ctx         the current application/service context
      * @param destination a valid peer address
      * @param messageText the message
      * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
      * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
      */
-    public SMSMessage(Context ctx, String destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        this(ctx, new SMSPeer(destination), messageText);
+    public SMSMessage(int applicationID, String destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        this(applicationID, new SMSPeer(destination), messageText);
+    }
+
+    /**
+     * Overload for constructor, useful if you don't know the app code
+     *
+     * @param context     the current context
+     * @param destination a valid peer address
+     * @param messageText the message
+     * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
+     * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
+     */
+    public SMSMessage(Context context, String destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        this(SMSHandler.getApplicationCode(context), new SMSPeer(destination), messageText);
     }
 
     /**
@@ -62,15 +72,9 @@ public class SMSMessage extends Message<String, SMSPeer> {
         return MessageTextState.MESSAGE_TEXT_VALID;
     }
 
-    /**
-     * Returns a unique sequential code for this message
-     *
-     * @return the message id
-     */
-    public int getMessageID() {
-        return messageID;
+    public int getApplicationID() {
+        return applicationID;
     }
-
 
     public enum MessageTextState {
         MESSAGE_TEXT_VALID,

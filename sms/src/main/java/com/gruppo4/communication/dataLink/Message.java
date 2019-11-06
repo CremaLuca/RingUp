@@ -5,6 +5,12 @@ public abstract class Message<D, P extends Peer> {
     protected D data;
     protected P peer;
 
+    /**
+     * Constructor
+     *
+     * @param data valid data
+     * @param peer valid peer
+     */
     public Message(D data, P peer) {
         this.data = data;
         this.peer = peer;

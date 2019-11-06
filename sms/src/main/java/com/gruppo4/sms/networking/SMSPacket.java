@@ -26,7 +26,7 @@ class SMSPacket extends Packet<String, SMSPeer> {
      * @return A String that can be sent in a SMS
      */
     @Override
-    public String formatData() {
+    public String getOutput() {
         return applicationCode + SEPARATOR + messageID +
                 SEPARATOR + sequenceNumber + SEPARATOR + totalPacketsNumber + SEPARATOR + data;
     }
