@@ -1,4 +1,4 @@
-package audioUtility;
+package com.gruppo4.audioUtility;
 
 
 import android.content.Context;
@@ -16,7 +16,10 @@ public class AudioUtilityManager {
      */
     public static int getCurrentVolume(Context context){
         // Get the ringer current volume level
-        return getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
+        int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
+        // Get the ringer maximum volume
+        int maxVolume = getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
+        return Math.round(100*currentVolume/maxVolume);
     }
 
 
