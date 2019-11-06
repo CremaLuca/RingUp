@@ -10,6 +10,8 @@ import com.gruppo4.audioUtility.AudioUtilityManager;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Default ringtone volume (%) for the app
+    private static final int DEFAULT_APP_VOLUME = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,10 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        // Sets up the volume at 50%.
-        // HARDWIRING
-        AudioUtilityManager.setRingtoneVolume(this,50);
-        Toast.makeText(this, "RINGTONE AUDIO IS SET APPROX. TO 50 %.", Toast.LENGTH_SHORT).show();
+        // Sets up the volume at a certain percentage.
+        AudioUtilityManager.setRingtoneVolume(this, DEFAULT_APP_VOLUME);
 
         // TESTING the method getCurrentVolume(Context)
         int currentVolume = AudioUtilityManager.getCurrentVolume(this);

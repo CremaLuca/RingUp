@@ -9,6 +9,10 @@ import static android.content.Context.AUDIO_SERVICE;
 
 public class AudioUtilityManager {
 
+    // Maximum percentage is 100% , minimum percentage is 0%.
+    public static final int MAX_PERCENTAGE = 100;
+    public static final int MIN_PERCENTAGE = 0;
+
     /**
      *
      * @param context
@@ -19,7 +23,7 @@ public class AudioUtilityManager {
         int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
         // Get the ringer maximum volume
         int maxVolume = getMaxVolume(context);
-        return Math.round(100*currentVolume/maxVolume);
+        return Math.round(MAX_PERCENTAGE*currentVolume/maxVolume);
     }
 
     /**
@@ -52,11 +56,11 @@ public class AudioUtilityManager {
         // turnOffDoNotDisturbMode();
         // NON FUNZIONA. SERVE METODO ALTERNATIVO PER BYPASSARE IL DND.
 
-        if(percentage<0)
+        if(percentage<MIN_PERCENTAGE)
             Log.d("AudioUtilityManager",percentage+" %. A percentage cannot be below 0%. Considering its absolute value");
-        else if(percentage>100) {
+        else if(percentage>MAX_PERCENTAGE) {
             Log.d("AudioUtilityManager", +percentage+" %. This percentage is too high. Considering 100%.");
-            percentage = 100;
+            percentage = MAX_PERCENTAGE;
         }
         percentage = Math.abs(percentage);
         // Get the ringer maximum volume
@@ -64,7 +68,7 @@ public class AudioUtilityManager {
 
         // calculate the new volume
         int newVolume = maxVolume*percentage;
-        newVolume = Math.round(newVolume/100);
+        newVolume = Math.round(newVolume/MAX_PERCENTAGE);
 
         // Set the ringer volume
         getAudioManager(context).setStreamVolume(
