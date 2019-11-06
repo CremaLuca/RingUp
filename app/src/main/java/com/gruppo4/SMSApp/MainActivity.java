@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Sets up the volume at 50%
         AudioUtilityManager.setupVolumeManager(this);
+
+        // TESTING the method getCurrentVolume(Context)
+        AudioUtilityManager.getCurrentVolume(this);
     }
 
 
