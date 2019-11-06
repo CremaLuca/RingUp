@@ -15,6 +15,7 @@ class SMSPacket {
 
     /**
      * Constructor for the packet, checks the data
+     *
      * @param applicationCode identifier for the app
      * @param messageId       identifier for the messageText
      * @param packetNumber    packet progressive number
@@ -47,7 +48,7 @@ class SMSPacket {
      *
      * @return A String that can be sent in a SMS
      */
-    String getSMSData() {
+    public String getSMSData() {
         return applicationCode + SEPARATOR + messageId +
                 SEPARATOR + packetNumber + SEPARATOR + totalNumber + SEPARATOR + messageText;
     }
@@ -57,23 +58,23 @@ class SMSPacket {
      *
      * @return the number of packets for the message
      */
-    int getTotalNumber() {
+    public int getTotalNumber() {
         return totalNumber;
     }
 
-    int getPacketNumber() {
+    public int getPacketNumber() {
         return packetNumber;
     }
 
-    int getMessageId() {
+    public int getMessageId() {
         return messageId;
     }
 
-    int getApplicationCode() {
+    public int getApplicationCode() {
         return applicationCode;
     }
 
-    String getMessageText() {
+    public String getMessageText() {
         return messageText;
     }
 }

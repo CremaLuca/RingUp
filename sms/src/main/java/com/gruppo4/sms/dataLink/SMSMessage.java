@@ -11,11 +11,12 @@ import java.util.ArrayList;
 public class SMSMessage implements Message<String, SMSPeer> {
 
     public static final int MAX_ID = 999;
+
     //This is because package number cannot exceed three characters
     static final int MAX_PACKETS = 999;
     public static final int MAX_MSG_TEXT_LEN = SMSPacket.MAX_PACKET_TEXT_LEN * MAX_PACKETS; //we deliver at most 999 packets
     private SMSPeer peer;
-    private StringBuilder message;
+    private StringBuilder message = new StringBuilder();
     private int messageId;
     private SMSPacket[] packets;
 
@@ -35,9 +36,8 @@ public class SMSMessage implements Message<String, SMSPeer> {
     }
 
     /**
-     * Constructor for a received message, holds the packets until the message is completed
-     *
      * @param destination the destination peer
+     * @param packet      a packet
      */
     SMSMessage(SMSPeer destination, SMSPacket packet) {
         this.peer = destination;
@@ -140,7 +140,7 @@ public class SMSMessage implements Message<String, SMSPeer> {
     /**
      * @return a list of packets
      */
-    SMSPacket[] getPackets() {
+    public SMSPacket[] getPackets() {
         return packets;
     }
 
@@ -149,7 +149,7 @@ public class SMSMessage implements Message<String, SMSPeer> {
      *
      * @return an array of Strings containing SMSData for each packet
      */
-    ArrayList<String> getPacketsContent() {
+    public ArrayList<String> getPacketsContent() {
         ArrayList<String> content = new ArrayList<>();
         for (int i = 0; i < packets.length; i++) {
             content.add(packets[i].getSMSData());
@@ -171,7 +171,7 @@ public class SMSMessage implements Message<String, SMSPeer> {
      *
      * @return true if there are no missing packets, false otherwise
      */
-    boolean hasAllPackets() {
+    public boolean hasAllPackets() {
         for (SMSPacket packet : packets) {
             if (packet == null)
                 return false;
