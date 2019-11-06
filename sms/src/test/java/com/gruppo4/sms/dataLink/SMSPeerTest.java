@@ -36,9 +36,7 @@ public class SMSPeerTest extends Variables{
     }
 
     @Test
-    public void NOTitanicCheckPhoneNumber_telephoneNumber_isValid() {
+    public void NOTstaticCheckPhoneNumber_telephoneNumber_isValid() {
         Assert.assertEquals(new SMSPeer(VALID_TELEPHONE_NUMBER).checkPhoneNumber(), SMSPeer.TelephoneNumberState.TELEPHONE_NUMBER_VALID);
     }
-
-
 }
