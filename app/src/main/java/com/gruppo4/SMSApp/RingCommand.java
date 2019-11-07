@@ -6,36 +6,34 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * Class that encapsulates the RingCommand
  *
  * @author Alberto Ursino
+ *
+ * revised by Luca Crema
  */
 
 public class RingCommand {
 
-    private SMSPeer sender;
+    private SMSPeer peer;
     private String password;
 
     /**
      * Constructor of the class
      *
-     * @param sender   the peer who sent the command
-     * @param password the password passed by the sender
+     * @param peer     sender/receiver of the RingCommand
+     * @param password a valid password
      */
-    protected RingCommand(SMSPeer sender, String password) {
-        this.sender = sender;
+    protected RingCommand(SMSPeer peer, String password) {
+        this.peer = peer;
         this.password = password;
     }
 
     /**
-     * Return the sender
-     *
      * @return a SMSPeer object
      */
     public SMSPeer getSender() {
-        return sender;
+        return peer;
     }
 
     /**
-     * Return the password
-     *
      * @return a password
      */
     public String getPassword() {

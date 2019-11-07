@@ -12,26 +12,21 @@ import com.gruppo_4.preferences.PreferencesManager;
 
 public class PasswordManager {
 
-    private static PreferencesManager preferencesManager = new PreferencesManager();
     private static final String STRING_KEY = "gruppo4_secret_password";
 
     /**
-     *  Save the password in memory
-     *
      * @param context a valid context
-     * @param password password that want to be saved
+     * @param password password that want to be saved in memory
      */
     public static void setPassword(Context context, String password){
-        preferencesManager.setString(context, STRING_KEY, password);
+        PreferencesManager.setString(context, STRING_KEY, password);
     }
 
     /**
-     * Returns the password saved in memory
-     *
-     * @param context valid context
-     * @return the password
+     * @param context a valid context
+     * @return the password saved in memory
      */
     public static String getPassword(Context context) {
-        return preferencesManager.getString(context, STRING_KEY);
+        return PreferencesManager.getString(context, STRING_KEY);
     }
 }

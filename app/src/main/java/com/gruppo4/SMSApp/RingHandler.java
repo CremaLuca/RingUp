@@ -2,13 +2,12 @@ package com.gruppo4.SMSApp;
 
 import android.content.Context;
 
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo_4.preferences.PreferencesManager;
-
 /**
  * Class used to check if password in memory corresponds to the password passed through sender
  *
  * @author Alberto Ursino
+ *
+ * revised by Luca Crema
  */
 
 public class RingHandler {
@@ -18,8 +17,9 @@ public class RingHandler {
     /**
      * The method extracts the password from the message received
      */
-    private static void parsePassword(SMSMessage smsMessage) {
+    private static RingCommand parseString(String content) {
         //...
+        return null;
     }
 
     /**
@@ -30,6 +30,6 @@ public class RingHandler {
      * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
      */
     public static boolean checkPassword(Context context, RingCommand ringCommand) {
-        return ringCommand.getPassword() == PreferencesManager.getString(context, STRING_KEY);
+        return ringCommand.getPassword().equals(PasswordManager.getPassword(context));
     }
 }
