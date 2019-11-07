@@ -1,5 +1,7 @@
 package com.gruppo4.SMSApp;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -18,12 +20,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
+        else
+            sendTestMessage();
+    }
+
+    private void sendTestMessage() {
         try {
             SMSMessage message = new SMSMessage(456, new SMSPeer("+393467965447"), "Ciao!");
             SMSManager.getInstance(this).sendMessage(message, new SMSSentListener() {
                 @Override
                 public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
-                    Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (InvalidTelephoneNumberException e) {
@@ -32,5 +41,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Wrong message ? " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            sendTestMessage();
+        }
+    }
+
 
 }
