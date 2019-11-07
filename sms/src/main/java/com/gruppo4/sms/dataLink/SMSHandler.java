@@ -123,5 +123,4 @@ class SMSHandler {
     static boolean checkPermissions(Context ctx) {
         return checkSendPermission(ctx) && checkReceivePermission(ctx);
     }
-
 }
