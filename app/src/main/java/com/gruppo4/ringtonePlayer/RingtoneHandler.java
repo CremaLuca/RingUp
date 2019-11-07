@@ -29,12 +29,15 @@ public class RingtoneHandler {
             ringtone.play();
     }
 
-    /*
+    /**
+     * stops the playing ringtone
+     * @param ringtone, the default ringtone
+     */
     public static void ringtoneStop(Ringtone ringtone){
         ringtone.stop();
     }
     
-     */
+
 
 
 

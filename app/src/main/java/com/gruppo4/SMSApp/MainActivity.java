@@ -11,31 +11,33 @@ import com.gruppo4.ringtonePlayer.RingtoneHandler;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    Ringtone ringtone = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Context context = getApplicationContext();
+        ringtone = RingtoneHandler.getDefaultRingtone(context);
     }
 
     /*
-    * when button clicked, play the ringtone
+    * when button "ring!" clicked, plays the ringtone
     * @param the layout button
      */
     public void onRingClick(View view){
-
-        Context context = getApplicationContext();
-        Ringtone ringtone = RingtoneHandler.getDefaultRingtone(context);
         RingtoneHandler.ringtonePlay(ringtone);
     }
 
     /*
+     * when button "stop ringing!" clicked, stops the ringtone
+     * @param the layout button
+     */
     public void onStopClick(View view){
-
-        Context context = getApplicationContext();
-        Ringtone ringtone = RingtoneHandler.getDefaultRingtone(context);
         RingtoneHandler.ringtoneStop(ringtone);
     }
 
-     */
+
 
 }
