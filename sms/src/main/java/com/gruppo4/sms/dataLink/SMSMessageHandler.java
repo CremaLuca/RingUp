@@ -9,8 +9,9 @@ import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 public class SMSMessageHandler extends MessageHandler<SMSMessage> {
 
     public static final String SPLITER_CHARACTER = "_";
-    public static final String HIDDEN_CHARACTER = 0x02 + "";
+    public static final String HIDDEN_CHARACTER = (char) 0x02 + "";
     private static SMSMessageHandler instance;
+    private static final String EXAMPLE_TELEPHONE_NUMBER = "+393455543456";
 
     public static SMSMessageHandler getInstance() {
         if (instance == null)
@@ -49,5 +50,9 @@ public class SMSMessageHandler extends MessageHandler<SMSMessage> {
     @Override
     protected String getOutput(SMSMessage message) {
         return HIDDEN_CHARACTER + message.getApplicationID() + SPLITER_CHARACTER + message.getData();
+    }
+
+    public boolean isLibraryMessage(String content) {
+        return parseMessage(content, EXAMPLE_TELEPHONE_NUMBER) != null;
     }
 }
