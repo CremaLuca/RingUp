@@ -1,6 +1,8 @@
 package com.gruppo4.SMSApp;
 
 import android.content.Context;
+
+import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
@@ -11,10 +13,17 @@ import com.gruppo_4.preferences.PreferencesManager;
 
 public class RingHandler {
 
-    private static final String STRING_KEY = "String key";
+    private static final String STRING_KEY = "gruppo4_secret_password";
 
     /**
-     * Check of the password passed by RingCommand
+     * The method extracts the password from the message received
+     */
+    private static void parsePassword(SMSMessage smsMessage) {
+        //...
+    }
+
+    /**
+     * Verify that the password in the RingCommand is the same as the one in memory
      *
      * @param context     a valid context
      * @param ringCommand a valid RingCommand object

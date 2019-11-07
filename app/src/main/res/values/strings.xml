@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SMSApp</string>
+    <string name="load_ciao">load ciao</string>
+    <string name="save_ciao">save ciao</string>
 </resources>

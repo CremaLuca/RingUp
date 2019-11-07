@@ -13,7 +13,7 @@ import com.gruppo_4.preferences.PreferencesManager;
 public class PasswordManager {
 
     private static PreferencesManager preferencesManager = new PreferencesManager();
-    private static final String STRING_KEY = "gruppo4";
+    private static final String STRING_KEY = "gruppo4_secret_password";
 
     /**
      *  Save the password in memory
