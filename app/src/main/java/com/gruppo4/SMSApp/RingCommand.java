@@ -2,6 +2,12 @@ package com.gruppo4.SMSApp;
 
 import com.gruppo4.sms.dataLink.SMSPeer;
 
+/**
+ * Class that encapsulates the RingCommand
+ *
+ * @author Alberto Ursino
+ */
+
 public class RingCommand {
 
     private SMSPeer sender;
