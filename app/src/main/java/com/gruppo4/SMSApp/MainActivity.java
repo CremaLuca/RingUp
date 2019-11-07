@@ -8,7 +8,9 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.ringtonePlayer.RingtoneHandler;
-
+/*
+* @author Alessandra Tonin
+ */
 public class MainActivity extends AppCompatActivity {
 
 
