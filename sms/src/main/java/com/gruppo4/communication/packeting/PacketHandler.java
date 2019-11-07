@@ -1,4 +1,4 @@
-package com.gruppo4.communication.networking;
+package com.gruppo4.communication.packeting;
 
 public interface PacketHandler<P extends Packet, M extends NetworkMessage> {
 

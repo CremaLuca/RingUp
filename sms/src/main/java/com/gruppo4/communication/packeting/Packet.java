@@ -1,4 +1,4 @@
-package com.gruppo4.communication.networking;
+package com.gruppo4.communication.packeting;
 
 import com.gruppo4.communication.dataLink.Peer;
 

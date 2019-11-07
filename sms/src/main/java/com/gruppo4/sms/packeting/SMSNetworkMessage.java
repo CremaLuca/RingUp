@@ -1,6 +1,6 @@
-package com.gruppo4.sms.networking;
+package com.gruppo4.sms.packeting;
 
-import com.gruppo4.communication.networking.NetworkMessage;
+import com.gruppo4.communication.packeting.NetworkMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 public class SMSNetworkMessage extends NetworkMessage<String, SMSPeer> {

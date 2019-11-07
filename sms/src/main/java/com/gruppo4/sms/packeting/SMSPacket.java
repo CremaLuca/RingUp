@@ -1,6 +1,6 @@
-package com.gruppo4.sms.networking;
+package com.gruppo4.sms.packeting;
 
-import com.gruppo4.communication.networking.Packet;
+import com.gruppo4.communication.packeting.Packet;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
