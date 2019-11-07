@@ -1,5 +1,12 @@
 package com.gruppo4.communication.packeting;
 
+/**
+ * Class that creates packets from a message and parses received data in packets
+ *
+ * @param <P> packet type
+ * @param <M> message type
+ * @author Luca Crema
+ */
 public interface PacketHandler<P extends Packet, M extends NetworkMessage> {
 
     /**
