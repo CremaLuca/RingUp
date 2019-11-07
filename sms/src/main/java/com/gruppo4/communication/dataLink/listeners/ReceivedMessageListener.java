@@ -1,6 +1,6 @@
-package com.gruppo4.communication.listeners;
+package com.gruppo4.communication.dataLink.listeners;
 
-import com.gruppo4.communication.Message;
+import com.gruppo4.communication.dataLink.Message;
 
 public interface ReceivedMessageListener<T extends Message> {
 

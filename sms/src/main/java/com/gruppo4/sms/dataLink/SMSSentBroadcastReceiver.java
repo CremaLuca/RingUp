@@ -20,7 +20,6 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
     private SMSSentListener listener;
     private SMSMessage message;
     private SMSMessage.SentState sentState = SMSMessage.SentState.MESSAGE_SENT;
-    private int packetsCounter;
 
     /**
      * Constructor for the BroadcastReceiver.
@@ -31,7 +30,6 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
     SMSSentBroadcastReceiver(@NonNull final SMSMessage message, SMSSentListener listener) {
         this.listener = listener;
         this.message = message;
-        packetsCounter = 0;
     }
 
     /**
@@ -46,9 +44,8 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
      * @param message a message to pass to the listener once it is sent.
      */
     void setMessage(@NonNull final SMSMessage message) {
-        Log.v("SMSSentReceiver", "Changed message to id:" + message.getMessageId());
+        Log.v("SMSSentReceiver", "Changed message");
         this.message = message;
-        packetsCounter = 0;
     }
 
     /**
@@ -75,19 +72,17 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
                 break;
             default:
                 state = SMSMessage.SentState.ERROR_GENERIC_FAILURE;
-                Log.d("SMSSentReceiver", "Generic error for message id: " + message.getMessageId());
+                Log.d("SMSSentReceiver", "Generic error for message: " + message.getData() + " from:" + message.getPeer().getAddress());
                 break;
         }
         Log.v("SMSSentReceiver", "Sent a packet with state: " + state);
 
         setSentState(state);
-        packetsCounter++; //Updates the number of packets sent
 
-        if (checkCounter()) { //Call the listener if the message is completely sent
-            if (listener != null)
-                listener.onSMSSent(message, sentState);
-            context.unregisterReceiver(this);
-        }
+        if (listener != null)
+            listener.onSMSSent(message, sentState);
+        context.unregisterReceiver(this);
+
     }
 
     /**
@@ -99,18 +94,5 @@ class SMSSentBroadcastReceiver extends BroadcastReceiver {
         //The state is modified ONLY IF THE CURRENT STATE IS OK. If a single packet has given an error the state is error
         if (this.sentState == SMSMessage.SentState.MESSAGE_SENT)
             this.sentState = sentState;
-    }
-
-    /**
-     * Checks if the number of packets we sent is the same as the total number of packets
-     *
-     * @return if we have sent all the packets we had to send and if we can call the listener
-     */
-    private boolean checkCounter() {
-        if (packetsCounter > message.getPackets().length) {
-            //Not an error to die on
-            Log.w("SMSSentBroadcast", "WARNING: the sent broadcast receiver sent more packets than it should");
-        }
-        return packetsCounter >= message.getPackets().length;
     }
 }

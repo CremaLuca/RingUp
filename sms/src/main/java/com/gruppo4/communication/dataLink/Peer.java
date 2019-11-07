@@ -1,10 +1,10 @@
-package com.gruppo4.communication;
+package com.gruppo4.communication.dataLink;
 
 import androidx.annotation.NonNull;
 
 public abstract class Peer<A> {
 
-    private A address;
+    protected A address;
 
     public Peer(A address) {
         this.address = address;

@@ -16,12 +16,8 @@ import java.util.ArrayList;
 
 class SMSHandler {
 
-
-    private static final String MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY = "MessageSequentialCode";
+    public static final String SENT_MESSAGE_INTENT_ACTION = "SMS_SENT";
     private static final String APPLICATION_CODE_PREFERENCES_KEY = "ApplicationCode";
-    private static final String SENT_MESSAGE_INTENT_ACTION_PREFIX = "SENT_SMS";
-    private static ArrayList<SMSMessage> incompleteMessages = new ArrayList<>(); //these are partially constructed messages
-
 
     /**
      * Setup the handler, checks permissions and sets the application code
@@ -43,83 +39,24 @@ class SMSHandler {
      * @param listener called when the message is completely sent to the provider
      */
     static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
-        ArrayList<String> messages = message.getPacketsContent();
+        ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(message.getData());
+        if (dividedBySystem.size() > 1)
+            throw new IllegalStateException("The message is too long (???) how can it be? Are we dividing it in a wrong way?");
+        String smsContent = SMSMessageHandler.getInstance().getOutput(message);
 
-        String intentAction = SENT_MESSAGE_INTENT_ACTION_PREFIX + "_" + message.getMessageId();
-        ArrayList<PendingIntent> onSentIntents = setupPendingIntents(context, messages.size(), intentAction);
-
-        //Setup broadcast receiver
         SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver(message, listener);
-        context.registerReceiver(onSentReceiver, new IntentFilter(intentAction));
+        context.registerReceiver(onSentReceiver, new IntentFilter(SENT_MESSAGE_INTENT_ACTION));
+        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(SENT_MESSAGE_INTENT_ACTION), 0);
 
-        //Check on packets
-        for (String msg : messages) {
-            Log.v("SMSHandler", "String to be sent, length: " + msg.length() + ", content: " + msg);
-            ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(msg);
-            if (dividedBySystem.size() > 1)
-                throw new IllegalStateException("The message is too long (???)");
-        }
-        SMSCore.sendMessages(messages, message.getPeer().getAddress(), onSentIntents);
+        SMSCore.sendMessage(smsContent, message.getPeer().getAddress(), sentPI);
     }
 
 
     /**
      * Method used by SMSReceivedBroadcastReceiver to store a packet
-     *
-     * @param packet the sms content wrapped in a packet
      */
-    static void onReceive(Context ctx, SMSPacket packet, String telephoneNumber) {
-        Log.v("SMSHandler", "Packet received, id:" + packet.getMessageId() + " number:" + packet.getPacketNumber() + " total:" + packet.getTotalNumber() + " from:" + telephoneNumber + " content:" + packet.getMessageText());
-        //Let's see if we already have the message stored
-        boolean found = false;
-        for (SMSMessage message : incompleteMessages) {
-            if (message.getPeer().getAddress().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
-                Log.v("SMSHandler", "Message for the id: " + packet.getMessageId() + " was already in the incomplete messages list");
-                found = true;
-                message.addPacket(packet);
-                if (message.hasAllPackets()) {
-                    Log.v("SMSHandler", "Message id:" + message.getMessageId() + " is now complete");
-                    SMSManager.getInstance(ctx).callReceivedMessageListener(message);
-                    incompleteMessages.remove(message);
-                }
-                break;
-            }
-        }
-        //If not found then create a new Message
-        if (!found) {
-            Log.v("SMSHandler", "Creating a new incomplete messages for id:" + packet.getMessageId());
-            SMSMessage message = new SMSMessage(new SMSPeer(telephoneNumber), packet);
-            incompleteMessages.add(message);
-            if (message.hasAllPackets()) {
-                Log.v("SMController", "The message id:" + message.getMessageId() + " is complete with one packet");
-                SMSManager.getInstance(ctx).callReceivedMessageListener(message);
-                incompleteMessages.remove(message);
-            }
-        }
-    }
-
-    /**
-     * Returns a sequential code for a new message to be sent
-     *
-     * @return a sequential code
-     */
-    static int getNewMessageId(Context ctx) {
-        return PreferencesManager.shiftInt(ctx, MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY, SMSMessage.MAX_ID);
-    }
-
-    /**
-     * Creates an empty array list of pending intents except for the last one
-     *
-     * @param numberOfPackets
-     * @return
-     */
-    private static ArrayList<PendingIntent> setupPendingIntents(Context context, int numberOfPackets, String intentAction) {
-        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(intentAction), 0);
-        ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
-        for (int i = 0; i < numberOfPackets; i++) {
-            onSentIntents.add(sentPI);
-        }
-        return onSentIntents;
+    static void onReceive(Context ctx, SMSMessage message) {
+        SMSManager.getInstance(ctx).callReceivedMessageListener(message);
     }
 
     /**
@@ -161,7 +98,7 @@ class SMSHandler {
      */
     static boolean checkSendPermission(Context ctx) {
         boolean result = ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
-        Log.d("1","return del metodo checkSendPermission: "+ result);
+        Log.d("1", "return del metodo checkSendPermission: " + result);
         return result;
     }
 
@@ -173,7 +110,7 @@ class SMSHandler {
      */
     static boolean checkReceivePermission(Context ctx) {
         boolean result = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
-        Log.d("1","return del metodo checkSendPermission: "+ result);
+        Log.d("1", "return del metodo checkSendPermission: " + result);
         return result;
     }
 
