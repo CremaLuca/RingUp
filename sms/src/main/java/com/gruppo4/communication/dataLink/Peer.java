@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 public abstract class Peer<A> {
 
-    private A address;
+    protected A address;
 
     public Peer(A address) {
         this.address = address;

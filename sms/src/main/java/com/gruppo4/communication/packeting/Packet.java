@@ -39,7 +39,7 @@ public abstract class Packet<D, P extends Peer> {
     /**
      * @return the destination peer for the packet
      */
-    public Peer getDestination() {
+    public P getDestination() {
         return destination;
     }
 

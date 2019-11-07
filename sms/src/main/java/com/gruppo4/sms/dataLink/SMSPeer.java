@@ -59,4 +59,12 @@ public class SMSPeer extends Peer<String> {
         TELEPHONE_NUMBER_NOT_A_NUMBER
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SMSPeer))
+            return false;
+        SMSPeer peer = (SMSPeer) o;
+        return address.equals(peer.address);
+    }
+
 }

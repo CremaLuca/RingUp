@@ -13,6 +13,14 @@ class SMSPacket extends Packet<String, SMSPeer> {
     private int applicationCode;
     private int messageID;
 
+    /**
+     * @param applicationCode    valid application code
+     * @param messageID          valid message id
+     * @param message            content
+     * @param destination        peer of destination or sender
+     * @param sequenceNumber     index of the packet in the message packets list
+     * @param totalPacketsNumber length of the message packets list
+     */
     protected SMSPacket(int applicationCode, int messageID, String message, SMSPeer destination, int sequenceNumber, int totalPacketsNumber) {
         super(message, destination, sequenceNumber, totalPacketsNumber);
         this.applicationCode = applicationCode;
@@ -37,5 +45,23 @@ class SMSPacket extends Packet<String, SMSPeer> {
 
     public int getMessageID() {
         return messageID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SMSPacket))
+            return false;
+        SMSPacket packet = (SMSPacket) o;
+        if (applicationCode != packet.applicationCode)
+            return false;
+        if (messageID != packet.messageID)
+            return false;
+        if (sequenceNumber != packet.sequenceNumber)
+            return false;
+        if (totalPacketsNumber != packet.totalPacketsNumber)
+            return false;
+        if (!destination.equals(packet.destination))
+            return false;
+        return data.equals(packet.data);
     }
 }

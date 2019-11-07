@@ -1,9 +1,9 @@
 package com.gruppo4.sms.packeting;
 
-import com.gruppo4.communication.packeting.Packet;
 import com.gruppo4.communication.packeting.PacketHandler;
+import com.gruppo4.sms.dataLink.SMSPeer;
 
-public class SMSPacketHandler implements PacketHandler<SMSPacket, SMSNetworkMessage> {
+public class SMSPacketHandler implements PacketHandler<SMSPacket, SMSNetworkMessage, SMSPeer> {
 
     private static SMSPacketHandler instance;
 
@@ -29,7 +29,25 @@ public class SMSPacketHandler implements PacketHandler<SMSPacket, SMSNetworkMess
     }
 
     @Override
-    public Packet parsePacket(Object o) {
-        return null;
+    public SMSPacket parsePacket(Object obj, SMSPeer peer) {
+        if (!(obj instanceof String))
+            return null;
+        String receivedData = (String) obj;
+
+        String[] splitData = receivedData.split(SMSPacket.SEPARATOR, 5);
+        if (splitData.length < 5)
+            return null;
+
+        try {
+            int applicationCode = Integer.parseInt(splitData[0]);
+            int messageID = Integer.parseInt(splitData[1]);
+            int sequenceNumber = Integer.parseInt(splitData[2]);
+            int totalPacketsNumber = Integer.parseInt(splitData[3]);
+            String messageData = splitData[4];
+
+            return new SMSPacket(applicationCode, messageID, messageData, peer, sequenceNumber, totalPacketsNumber);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
