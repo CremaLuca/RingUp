@@ -9,38 +9,26 @@ import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import androidx.core.content.ContextCompat;
-
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
 import java.util.ArrayList;
 
-public class SMSHandler {
+class SMSHandler {
 
-
-    private static final String MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY = "MessageSequentialCode";
+    public static final String SENT_MESSAGE_INTENT_ACTION = "SMS_SENT";
     private static final String APPLICATION_CODE_PREFERENCES_KEY = "ApplicationCode";
-    private static final String SENT_MESSAGE_INTENT_ACTION_PREFIX = "SENT_SMS";
-    private static ArrayList<SMSMessage> incompleteMessages = new ArrayList<>(); //these are partially constructed messages
-
 
     /**
      * Setup the handler, checks permissions and sets the application code
      *
      * @param applicationCode an identifier for the current application
      */
-    public static void setup(Context context, int applicationCode) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED)
-            throw new SecurityException("Missing Manifest.permission.SEND_SMS permission, use requestPermissions() to be granted this permission runtime");
+    static void setup(Context context, int applicationCode) {
+        if (!checkApplicationCodeIsValid(applicationCode))
+            throw new IllegalStateException("Application code not valid, check it with checkApplicationCodeIsValid() first");
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED)
-            throw new SecurityException("Missing Manifest.permission.RECEIVE_SMS permission, use requestPermissions() to be granted this permission runtime");
-
-        if (!SMSHandler.checkApplicationCode(applicationCode))
-            throw new IllegalStateException("Application code not valid, check it with checkApplicationCode() first");
-
-        SMSHandler.setApplicationCode(context, applicationCode);
+        setApplicationCode(context, applicationCode);
     }
 
     /**
@@ -50,91 +38,32 @@ public class SMSHandler {
      * @param message  the message to be sent via SMS
      * @param listener called when the message is completely sent to the provider
      */
-    public static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
-        ArrayList<String> messages = message.getPacketsContent();
+    static void sendMessage(Context context, final SMSMessage message, SMSSentListener listener) {
+        ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(message.getData());
+        if (dividedBySystem.size() > 1)
+            throw new IllegalStateException("The message is too long (???) how can it be? Are we dividing it in a wrong way?");
+        String smsContent = SMSMessageHandler.getInstance().getOutput(message);
 
-        String intentAction = SENT_MESSAGE_INTENT_ACTION_PREFIX + "_" + message.getMessageId();
-        ArrayList<PendingIntent> onSentIntents = setupPendingIntents(context, messages.size(), intentAction);
-
-        //Setup broadcast receiver
         SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver(message, listener);
-        context.registerReceiver(onSentReceiver, new IntentFilter(intentAction));
+        context.registerReceiver(onSentReceiver, new IntentFilter(SENT_MESSAGE_INTENT_ACTION));
+        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(SENT_MESSAGE_INTENT_ACTION), 0);
 
-        //Check on packets
-        for (String msg : messages) {
-            Log.v("SMSHandler", "String to be sent, length: " + msg.length() + ", content: " + msg);
-            ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(msg);
-            if (dividedBySystem.size() > 1)
-                throw new IllegalStateException("The message is too long (???)");
-        }
-        SMSCore.sendMessages(messages, message.getPeer().getAddress(), onSentIntents);
+        SMSCore.sendMessage(smsContent, message.getPeer().getAddress(), sentPI);
     }
 
 
     /**
      * Method used by SMSReceivedBroadcastReceiver to store a packet
-     *
-     * @param packet the sms content wrapped in a packet
      */
-    public static void onReceive(Context ctx, SMSPacket packet, String telephoneNumber) {
-        Log.v("SMSHandler", "Packet received, id:" + packet.getMessageId() + " number:" + packet.getPacketNumber() + " total:" + packet.getTotalNumber() + " from:" + telephoneNumber + " content:" + packet.getMessageText());
-        //Let's see if we already have the message stored
-        boolean found = false;
-        for (SMSMessage message : incompleteMessages) {
-            if (message.getPeer().getAddress().equals(telephoneNumber) && message.getMessageId() == packet.getMessageId()) {
-                Log.v("SMSHandler", "Message for the id: " + packet.getMessageId() + " was already in the incomplete messages list");
-                found = true;
-                message.addPacket(packet);
-                if (message.hasAllPackets()) {
-                    Log.v("SMSHandler", "Message id:" + message.getMessageId() + " is now complete");
-                    SMSManager.getInstance(ctx).callReceivedMessageListener(message);
-                    incompleteMessages.remove(message);
-                }
-                break;
-            }
-        }
-        //If not found then create a new Message
-        if (!found) {
-            Log.v("SMSHandler", "Creating a new incomplete messages for id:" + packet.getMessageId());
-            SMSMessage message = new SMSMessage(new SMSPeer(telephoneNumber), packet);
-            incompleteMessages.add(message);
-            if (message.hasAllPackets()) {
-                Log.v("SMController", "The message id:" + message.getMessageId() + " is complete with one packet");
-                SMSManager.getInstance(ctx).callReceivedMessageListener(message);
-                incompleteMessages.remove(message);
-            }
-        }
-    }
-
-    /**
-     * Returns a sequential code for a new message to be sent
-     *
-     * @return a sequential code
-     */
-    static int getNewMessageId(Context ctx) {
-        return PreferencesManager.shiftInt(ctx, MESSAGE_SEQUENTIAL_CODE_PREFERENCES_KEY, SMSMessage.MAX_ID);
-    }
-
-    /**
-     * Creates an empty array list of pending intents except for the last one
-     *
-     * @param numberOfPackets
-     * @return
-     */
-    private static ArrayList<PendingIntent> setupPendingIntents(Context context, int numberOfPackets, String intentAction) {
-        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(intentAction), 0);
-        ArrayList<PendingIntent> onSentIntents = new ArrayList<>();
-        for (int i = 0; i < numberOfPackets; i++) {
-            onSentIntents.add(sentPI);
-        }
-        return onSentIntents;
+    static void onReceive(Context ctx, SMSMessage message) {
+        SMSManager.getInstance(ctx).callReceivedMessageListener(message);
     }
 
     /**
      * @param applicationCode a integer code.
      * @return true if the parameter application code is valid.
      */
-    public static boolean checkApplicationCode(int applicationCode) {
+    static boolean checkApplicationCodeIsValid(int applicationCode) {
         return applicationCode > 0 && applicationCode < 1000;
     }
 
@@ -142,7 +71,7 @@ public class SMSHandler {
      * Writes in the memory the application code.
      *
      * @param ctx             current app or service context.
-     * @param applicationCode a valid application code, checked with checkApplicationCode.
+     * @param applicationCode a valid application code, checked with checkApplicationCodeIsValid.
      */
     private static void setApplicationCode(Context ctx, int applicationCode) {
         PreferencesManager.setInt(ctx, APPLICATION_CODE_PREFERENCES_KEY, applicationCode);
@@ -154,19 +83,44 @@ public class SMSHandler {
      * @param ctx current app or service context.
      * @return the current application code
      */
-    public static int getApplicationCode(Context ctx) {
+    static int getApplicationCode(Context ctx) {
         int appCode = PreferencesManager.getInt(ctx, APPLICATION_CODE_PREFERENCES_KEY);
         if (appCode < 0)
             throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup, call the setup() method at least once");
         return appCode;
     }
 
-    public enum SentState {
-        MESSAGE_SENT,
-        ERROR_GENERIC_FAILURE,
-        ERROR_RADIO_OFF,
-        ERROR_NULL_PDU,
-        ERROR_NO_SERVICE,
-        ERROR_LIMIT_EXCEEDED
+    /**
+     * Checks if SEND_SMS permission is granted
+     *
+     * @param ctx a valid context
+     * @return true if permission is granted
+     */
+    static boolean checkSendPermission(Context ctx) {
+        boolean result = ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+        Log.d("1", "return del metodo checkSendPermission: " + result);
+        return result;
+    }
+
+    /**
+     * Checks if RECEIVE_SMS permission is granted
+     *
+     * @param ctx a valid context
+     * @return true if permission is granted
+     */
+    static boolean checkReceivePermission(Context ctx) {
+        boolean result = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+        Log.d("1", "return del metodo checkSendPermission: " + result);
+        return result;
+    }
+
+    /**
+     * Checks if both SEND_SMS & RECEIVE_SMS permissions are granted
+     *
+     * @param ctx a valid context
+     * @return true if both permissions are granted
+     */
+    static boolean checkPermissions(Context ctx) {
+        return checkSendPermission(ctx) && checkReceivePermission(ctx);
     }
 }

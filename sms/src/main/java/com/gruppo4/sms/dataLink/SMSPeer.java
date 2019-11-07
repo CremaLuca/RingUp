@@ -1,7 +1,10 @@
 package com.gruppo4.sms.dataLink;
 
-import com.gruppo4.communication.Peer;
+import com.gruppo4.communication.dataLink.Peer;
 
+/**
+ * @author Luca Crema
+ */
 public class SMSPeer extends Peer<String> {
 
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
@@ -57,6 +60,14 @@ public class SMSPeer extends Peer<String> {
         TELEPHONE_NUMBER_TOO_LONG,
         TELEPHONE_NUMBER_NO_COUNTRY_CODE,
         TELEPHONE_NUMBER_NOT_A_NUMBER
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SMSPeer))
+            return false;
+        SMSPeer peer = (SMSPeer) o;
+        return address.equals(peer.address);
     }
 
 }
