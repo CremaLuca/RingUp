@@ -2,6 +2,9 @@ package com.gruppo4.sms.dataLink;
 
 import com.gruppo4.communication.dataLink.Peer;
 
+/**
+ * @author Luca Crema
+ */
 public class SMSPeer extends Peer<String> {
 
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;

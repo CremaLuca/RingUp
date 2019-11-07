@@ -3,6 +3,9 @@ package com.gruppo4.sms.packeting;
 import com.gruppo4.communication.packeting.PacketHandler;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
+/**
+ * @author Luca Crema
+ */
 public class SMSPacketHandler implements PacketHandler<SMSPacket, SMSNetworkMessage, SMSPeer> {
 
     private static SMSPacketHandler instance;

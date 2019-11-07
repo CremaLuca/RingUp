@@ -6,6 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Luca Crema
+ */
 public class SMSPacketUnitTest {
 
     private static final int DEFAULT_APPLICATION_CODE = 987;

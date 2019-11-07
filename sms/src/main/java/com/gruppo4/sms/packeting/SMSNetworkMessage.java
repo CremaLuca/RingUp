@@ -3,12 +3,24 @@ package com.gruppo4.sms.packeting;
 import com.gruppo4.communication.packeting.NetworkMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
+/**
+ * Represent a message from the app that will be sent on the SMS network, and will be reconstructed on arrival
+ *
+ * @author Luca Crema
+ */
 public class SMSNetworkMessage extends NetworkMessage<String, SMSPeer> {
 
     private int messageID;
     private int applicationID;
     private SMSPacket[] packets;
 
+    /**
+     *
+     * @param applicationID current valid application code
+     * @param messageID valid message id
+     * @param data message content
+     * @param destination destination/source peer
+     */
     public SMSNetworkMessage(int applicationID, int messageID, String data, SMSPeer destination) {
         super(data, destination);
         this.messageID = messageID;
@@ -24,10 +36,17 @@ public class SMSNetworkMessage extends NetworkMessage<String, SMSPeer> {
         return messageID;
     }
 
+    /**
+     * @return identifier for the current application
+     */
     public int getApplicationID() {
         return applicationID;
     }
 
+    /**
+     * Splits the message in packets
+     * @return array of packets ready to be sent
+     */
     SMSPacket[] getPackets() {
         if (packets == null)
             packets = SMSPacketHandler.getInstance().parseMessage(this);
@@ -63,6 +82,10 @@ public class SMSNetworkMessage extends NetworkMessage<String, SMSPeer> {
         if (hasAllPackets()) constructMessage();
     }
 
+    /**
+     * Builds a message from its packets
+     * @return the original content of the message
+     */
     private String constructMessage() {
         StringBuilder message = new StringBuilder();
         for (SMSPacket packet : packets)

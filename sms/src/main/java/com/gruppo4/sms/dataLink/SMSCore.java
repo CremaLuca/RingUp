@@ -8,6 +8,8 @@ import java.util.ArrayList;
 /**
  * Wrapper for the Android Telephony Sms Library
  * This class is only used to interface with the core of Android
+ *
+ * @author Luca Crema
  */
 class SMSCore {
 

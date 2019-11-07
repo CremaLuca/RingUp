@@ -6,6 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Luca Crema
+ */
 public class SMSPacketHandlerTest {
 
     private static final int DEFAULT_APP_CODE = 5;
@@ -15,7 +18,7 @@ public class SMSPacketHandlerTest {
     private static final SMSPeer DEFAULT_PEER = new SMSPeer("+393467965447");
     private static final int DEFAULT_PACKET_SEQUENCE_NUMBER = 3;
     private static final int DEFAULT_PACKET_TOTAL_PACKETS_NUMBER = 5;
-    SMSPacketHandler handlerInstance;
+    private SMSPacketHandler handlerInstance;
 
     @Before
     public void init() {
