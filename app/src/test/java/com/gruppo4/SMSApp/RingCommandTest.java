@@ -1,5 +1,6 @@
 package com.gruppo4.SMSApp;
 
+import com.gruppo4.SMSApp.ringCommands.RingCommand;
 import com.gruppo4.sms.dataLink.SMSPeer;
 import org.junit.Assert;
 import org.junit.Before;

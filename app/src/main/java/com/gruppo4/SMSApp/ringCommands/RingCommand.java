@@ -1,4 +1,4 @@
-package com.gruppo4.SMSApp;
+package com.gruppo4.SMSApp.ringCommands;
 
 import com.gruppo4.sms.dataLink.SMSPeer;
 
@@ -6,7 +6,6 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * Class that encapsulates the RingCommand
  *
  * @author Alberto Ursino
- *
  * revised by Luca Crema
  */
 
