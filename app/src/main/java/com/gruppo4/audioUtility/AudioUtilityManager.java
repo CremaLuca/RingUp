@@ -1,5 +1,8 @@
 package com.gruppo4.audioUtility;
 
+/**
+ * @author Francesco Bau'
+ */
 
 import android.content.Context;
 import android.media.AudioManager;
