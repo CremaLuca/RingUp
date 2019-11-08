@@ -31,9 +31,10 @@ public class MainActivity extends AppCompatActivity {
         int maxVolume = AudioUtilityManager.getMaxRingtoneVolume(this);
         Toast.makeText(this, "MAXIMUM RINGTONE VOLUME: "+maxVolume, Toast.LENGTH_SHORT).show();
 
-        // TESTING the method setMaxRingtoneVolume(Context), after waiting 3 seconds.
+        // TESTING the method setMaxRingtoneVolume(Context), after waiting 5 seconds.
         Log.d("[TEST]","WAITING 5 SECONDS...");
         try {
+            // HARDWIRING...
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
