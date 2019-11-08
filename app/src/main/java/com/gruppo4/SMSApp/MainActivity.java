@@ -1,6 +1,7 @@
 package com.gruppo4.SMSApp;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     public void setup() {
         //Initialize the receiver
         SMSManager.getInstance(this).addReceivedMessageListener(new ReceivedMessageListener(this));
+
+        Log.d("ATTENZIONE", "Questo è il branch per l'applicazione");
     }
 
     @Override
