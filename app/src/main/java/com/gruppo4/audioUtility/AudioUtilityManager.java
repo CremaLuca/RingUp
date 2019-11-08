@@ -19,22 +19,22 @@ public class AudioUtilityManager {
     /**
      *
      * @param context
-     * @return The current volume.
+     * @return The current Ringtone Volume.
      */
-    public static int getCurrentVolume(Context context){
+    public static int getCurrentRingtoneVolume(Context context){
         // Get the ringer current volume level
         int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
         // Get the ringer maximum volume
-        int maxVolume = getMaxVolume(context);
+        int maxVolume = getMaxRingtoneVolume(context);
         return Math.round(MAX_PERCENTAGE*currentVolume/maxVolume);
     }
 
     /**
      *
      * @param context
-     * @return The maximum volume.
+     * @return The maximum Ringtone volume.
      */
-    public static int getMaxVolume(Context context){
+    public static int getMaxRingtoneVolume(Context context){
         // Get the ringer maximum volume
         return getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
     }
@@ -51,7 +51,7 @@ public class AudioUtilityManager {
 
     /**
      *
-     * @param context
+     * @param context,percentage
      * Sets up the Ringtone Volume a certain percentage.
      */
     public static void setRingtoneVolume(Context context, int percentage) {
@@ -67,7 +67,7 @@ public class AudioUtilityManager {
         }
         percentage = Math.abs(percentage);
         // Get the ringer maximum volume
-        int maxVolume = getMaxVolume(context);
+        int maxVolume = getMaxRingtoneVolume(context);
 
         // calculate the new volume
         int newVolume = maxVolume*percentage;
@@ -80,6 +80,13 @@ public class AudioUtilityManager {
                 AudioManager.FLAG_SHOW_UI
         );
 
+    }
+    /**
+     * @param context
+     * Sets up the Ringtone Volume to its maximum value.
+     */
+    public static void setMaxRingtoneVolume(Context context){
+        setRingtoneVolume(context, MAX_PERCENTAGE);
     }
 
 }
