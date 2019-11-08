@@ -2,7 +2,6 @@ package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
 
-import com.gruppo4.SMSApp.PasswordManager;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**

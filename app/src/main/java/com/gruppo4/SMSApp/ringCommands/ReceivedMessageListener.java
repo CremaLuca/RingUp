@@ -2,25 +2,38 @@ package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
 
-import com.gruppo4.SMSApp.AppManager;
 import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 
 /**
+ * Class used to capture the message and create a ring command
  *
+ * @author Alberto Ursino && Luca Crema
  */
 public class ReceivedMessageListener implements SMSReceivedListener {
 
-    Context ctx;
+    private static Context context;
+    private static RingCommand ringCommand;
 
+    /**
+     * Set the context
+     *
+     * @param ctx application context
+     */
     public ReceivedMessageListener(Context ctx) {
-        this.ctx = ctx;
+        context = ctx;
     }
 
+    /**
+     * Creation of the command upon receipt of the message
+     *
+     * @param message received
+     */
     @Override
     public void onMessageReceived(SMSMessage message) {
-        RingCommand ringCommand = RingHandler.parseString(message.getPeer(), message.getData());
+        ringCommand = RingHandler.parseString(message.getPeer(), message.getData());
         if (ringCommand != null)
-            AppManager.onRingCommandReceived(ctx, ringCommand);
+            AppManager.onRingCommandReceived(context, ringCommand);
     }
 }
