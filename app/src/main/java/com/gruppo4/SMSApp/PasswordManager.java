@@ -1,7 +1,6 @@
 package com.gruppo4.SMSApp;
 
 import android.content.Context;
-
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
@@ -15,10 +14,10 @@ public class PasswordManager {
     private static final String STRING_KEY = "gruppo4_secret_password";
 
     /**
-     * @param context a valid context
+     * @param context  a valid context
      * @param password password that want to be saved in memory
      */
-    public static void setPassword(Context context, String password){
+    public static void setPassword(Context context, String password) {
         PreferencesManager.setString(context, STRING_KEY, password);
     }
 
