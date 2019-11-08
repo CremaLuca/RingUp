@@ -37,14 +37,24 @@ public class RingtoneHandler {
     }
 
     /**
-     * plays a ringtone
+     * user can decide in which mode he wants to play the ringtone
+     *
+     * @param ringtone   @NotNull
+     * @param USAGE_CODE from AudioAttributes
+     */
+    static void ringtonePlay(Ringtone ringtone, final int USAGE_CODE) {
+        ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(USAGE_CODE).build());
+        ringtone.play();
+    }
+
+    /**
+     * plays a ringtone (overload di ringtonePlay(Ringtone ringtone, final int USAGE_CODE))
      *
      * @param ringtone, the default ringtone
      */
     public static void ringtonePlay(Ringtone ringtone) {
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
-        if (ringtone != null)
-            ringtone.play();
+        ringtone.play();
     }
 
     /**
