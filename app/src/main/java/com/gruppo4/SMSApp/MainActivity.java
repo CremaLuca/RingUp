@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gruppo4.SMSApp.ringCommands.ReceivedMessageListener;
 import com.gruppo4.sms.dataLink.SMSManager;
 
 /**
