@@ -1,5 +1,9 @@
 package com.gruppo4.SMSApp;
 
+/**
+  *@author Francesco Bau'
+*/
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
