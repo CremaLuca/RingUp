@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SMSRingtonePlayer</string>
     <string name="edit_number">Enter lost phone number</string>
-    <string name="button_ring">Ring!</string>
+    <string name="button_ring">Ringtone</string>
     <string name="button_stop">Stop ringing!</string>
+    <string name="button_alarm">Alarm</string>
 </resources>

@@ -13,18 +13,29 @@ import android.net.Uri;
 public class RingtoneHandler {
 
     /**
-    * get the user's default ringtone
+    * get the user's ringtone
     * @param ctx, the current application context
-    * @return the default ringtone
+    * @return the ringtone
      */
     public static Ringtone getDefaultRingtone(Context ctx){
-        Uri alarmTone = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_RINGTONE);
-        Ringtone ringtone = RingtoneManager.getRingtone(ctx, alarmTone);
+        Uri ringtoneId = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_RINGTONE);
+        Ringtone ringtone = RingtoneManager.getRingtone(ctx, ringtoneId);
         return ringtone;
     }
 
     /**
-    * plays the default ringtone
+     * get the user's alarm tone
+     * @param ctx, the current application context
+     * @return the alarm tone
+     */
+    public static Ringtone getDefaultAlarmTone(Context ctx){
+        Uri alarmToneId = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_ALARM);
+        Ringtone alarmTone = RingtoneManager.getRingtone(ctx, alarmToneId);
+        return alarmTone;
+    }
+
+    /**
+    * plays a ringtone
     * @param ringtone, the default ringtone
      */
     public static void ringtonePlay(Ringtone ringtone){
@@ -34,8 +45,8 @@ public class RingtoneHandler {
     }
 
     /**
-     * stops the playing ringtone
-     * @param ringtone, the default ringtone
+     * stops the playing sound
+     * @param ringtone, the playing sound (ringtone or alarm tone)
      */
     public static void ringtoneStop(Ringtone ringtone){
         ringtone.stop();
