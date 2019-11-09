@@ -1,7 +1,8 @@
-package com.gruppo4.SMSApp;
+package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
 
+import com.gruppo4.SMSApp.AppManager;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 
@@ -18,7 +19,8 @@ public class ReceivedMessageListener implements SMSReceivedListener {
 
     @Override
     public void onMessageReceived(SMSMessage message) {
-        //RingCommand command = RingHandler.parseString(message.getData(), message.getPeer())
-        //if(command != null){ AppManager.onRingCommandReceived(ctx,command);}
+        RingCommand ringCommand = RingHandler.parseString(message.getPeer(), message.getData());
+        if (ringCommand != null)
+            AppManager.onRingCommandReceived(ctx, ringCommand);
     }
 }

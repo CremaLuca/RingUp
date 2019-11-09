@@ -1,14 +1,17 @@
 package com.gruppo4.SMSApp;
 
+import android.content.Context;
+
+import com.gruppo4.SMSApp.ringCommands.RingCommand;
+import com.gruppo4.SMSApp.ringCommands.RingHandler;
+
 public class AppManager {
 
-    /*
     public static void onRingCommandReceived(Context ctx, RingCommand command){
-        if(RingHandler.checkPassword(ctx, command){
-            RingtoneHandler.playRingtone(15);
+        if(RingHandler.checkPassword(ctx, command)){
+            //TODO RingtoneHandler.playRingtone(15);
         }
     }
-     */
 
     /*
     public static void sendCommand(Context ctx, RingCommand command, SMSSentListener listener){
