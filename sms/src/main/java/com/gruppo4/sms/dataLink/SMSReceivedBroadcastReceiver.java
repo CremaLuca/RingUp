@@ -22,8 +22,8 @@ class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 String phoneNumber = sms.getOriginatingAddress();
 
                 SMSMessage message = SMSMessageHandler.getInstance().parseMessage(smsContent, phoneNumber);
-                if (message != null && message.getApplicationID() == SMSHandler.getApplicationCode(context)) {
-                    SMSHandler.onReceive(context, message);
+                if (message != null && message.getApplicationID() == SMSHandler.getInstance(context).getApplicationCode()) {
+                    SMSHandler.getInstance(context).onReceive(message);
                 }
             }
         }

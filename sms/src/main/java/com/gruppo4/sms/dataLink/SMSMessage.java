@@ -8,15 +8,15 @@ import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 
 public class SMSMessage extends Message<String, SMSPeer> {
 
-    public static final int MAX_ID = 999;
     public static final int MAX_MSG_TEXT_LEN = 155;
     private int applicationID;
 
     /**
      * Wrap for a text message, used to check the parameters validity
      *
-     * @param peer        a valid peer
-     * @param messageText the message content
+     * @param applicationID the current application identifier
+     * @param peer          a valid peer
+     * @param messageText   the message content
      * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
      * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
      */
@@ -56,7 +56,7 @@ public class SMSMessage extends Message<String, SMSPeer> {
      * @throws InvalidTelephoneNumberException if SMSPeer.checkPhoneNumber() is different from TELEPHONE_NUMBER_VALID
      */
     public SMSMessage(Context context, String destination, String messageText) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        this(SMSHandler.getApplicationCode(context), new SMSPeer(destination), messageText);
+        this(SMSHandler.getInstance(context).getApplicationCode(), new SMSPeer(destination), messageText);
     }
 
     /**
