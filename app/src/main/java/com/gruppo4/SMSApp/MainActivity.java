@@ -2,20 +2,16 @@ package com.gruppo4.SMSApp;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.gruppo4.SMSApp.ringCommands.AppManager;
 import com.gruppo4.SMSApp.ringCommands.ReceivedMessageListener;
 import com.gruppo4.SMSApp.ringCommands.RingCommand;
-import com.gruppo4.sms.dataLink.SMSManager;
+import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSMessageHandler;
 import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
@@ -30,15 +26,17 @@ public class MainActivity extends AppCompatActivity {
     Button ringButton;
     EditText phoneNumber;
     EditText password;
-    SMSManager smsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        smsManager = new SMSManager();
-        smsManager.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(getApplicationContext()));
+        Context context = getApplicationContext();
+
+        new SMSHandler().setup(context, 1);
+
+        SMSHandler.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(context));
 
         ringButton = findViewById(R.id.button);
         phoneNumber = findViewById(R.id.telephoneNumber);
@@ -63,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
         AppManager.sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
             @Override
             public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
-                smsManager.sendMessage(message);
-                Toast.makeText(MainActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Command sent", Toast.LENGTH_SHORT).show();
             }
         });
     }

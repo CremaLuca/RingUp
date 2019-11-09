@@ -1,9 +1,9 @@
 package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
-import android.util.Log;
+import android.widget.Toast;
 
-import com.gruppo4.sms.dataLink.SMSManager;
+import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
@@ -23,7 +23,9 @@ public class AppManager {
     public static void onRingCommandReceived(Context context, RingCommand ringCommand) {
         if (RingHandler.checkPassword(context, ringCommand)) {
             //TODO RingtoneHandler.playRingtone(15);
-
+        }
+        else{
+            Toast.makeText(context, "La password era sbagliata, nessuna suoneria attivata", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -34,7 +36,7 @@ public class AppManager {
      */
     public static void sendCommand(Context ctx, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         SMSMessage message = commandToMessage(ringCommand);
-        SMSManager.getInstance(ctx).sendMessage(message, listener);
+        SMSHandler.getInstance(ctx).sendMessage(message, listener);
     }
 
     private static SMSMessage commandToMessage(RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {

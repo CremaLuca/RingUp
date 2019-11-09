@@ -2,7 +2,9 @@ package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.gruppo4.SMSApp.MainActivity;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
@@ -33,6 +35,7 @@ public class ReceivedMessageListener implements SMSReceivedListener {
      */
     @Override
     public void onMessageReceived(SMSMessage message) {
+        Log.d("1", "Il messaggio è arrivato");
         ringCommand = RingHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
             AppManager.onRingCommandReceived(context, ringCommand);
