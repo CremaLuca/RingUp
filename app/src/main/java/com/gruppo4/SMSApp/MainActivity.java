@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.SMSApp.ringCommands.ReceivedMessageListener;
-import com.gruppo4.sms.dataLink.SMSManager;
+import com.gruppo4.sms.dataLink.SMSHandler;
 
 /**
  * @author Gruppo 4
@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setup() {
         //Initialize the receiver
-        SMSManager.getInstance(this).addReceivedMessageListener(new ReceivedMessageListener(this));
+        SMSHandler.getInstance(this).addReceivedMessageListener(new ReceivedMessageListener(this));
     }
 
     @Override
