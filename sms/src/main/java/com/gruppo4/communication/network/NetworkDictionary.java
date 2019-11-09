@@ -16,9 +16,9 @@ public interface NetworkDictionary<U extends Peer, R> {
 
     void removeResource(U user);
 
-    U getUserByResource(R resource);
+    U[] getUsersByResource(R resource);
 
-    R getResourcesByUser(U user);
+    R[] getResourcesByUser(U user);
 
     U[] getAllUsers();
 
