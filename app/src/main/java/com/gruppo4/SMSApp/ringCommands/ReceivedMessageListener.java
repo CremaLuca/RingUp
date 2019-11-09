@@ -1,6 +1,7 @@
 package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -32,8 +33,10 @@ public class ReceivedMessageListener implements SMSReceivedListener {
      */
     @Override
     public void onMessageReceived(SMSMessage message) {
-        ringCommand = RingHandler.parseString(message.getPeer(), message.getData());
+        ringCommand = RingHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
             AppManager.onRingCommandReceived(context, ringCommand);
+        else
+            Log.d("Fail: ", "Message received is not a valid command for play the ringtone");
     }
 }

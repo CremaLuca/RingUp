@@ -2,6 +2,9 @@ package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
 
+/**
+ * @author Gruppo 4
+ */
 public class AppManager {
 
     /**
@@ -26,6 +29,5 @@ public class AppManager {
     private static SMSMessage commandToMessage(RingCommand command){
         return new SMSMessage(command.getPeer(),RingtoneHandler.parseCommand(command));
     }
-     */
-
+*/
 }

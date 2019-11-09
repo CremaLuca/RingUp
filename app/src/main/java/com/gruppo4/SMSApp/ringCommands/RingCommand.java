@@ -20,7 +20,7 @@ public class RingCommand {
      * @param peer     sender/receiver of the RingCommand
      * @param password a valid password
      */
-    protected RingCommand(SMSPeer peer, String password) {
+    public RingCommand(SMSPeer peer, String password) {
         this.peer = peer;
         this.password = password;
     }
