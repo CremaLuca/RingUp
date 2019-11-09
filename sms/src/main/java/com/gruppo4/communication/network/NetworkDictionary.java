@@ -3,26 +3,24 @@ package com.gruppo4.communication.network;
 import com.gruppo4.communication.dataLink.Peer;
 
 /**
- * @param <KU> Key for user
- * @param <KR> Key for resource
- * @param <P>  Peer for user
- * @param <V>  Values for resource
+ * @param <U>  Peer for user
+ * @param <R>  Values for resource
  */
-public interface NetworkDictionary<KU, KR, P extends Peer, V> {
+public interface NetworkDictionary<U extends Peer, R> {
 
-    void addUser(KU key, P peer);
+    void addUser(U peer);
 
-    void addResource(KR key, V value);
+    void addResource(U user, R value);
 
-    void removeUser(KU key);
+    void removeUser(U peer);
 
-    void removeResource(KR key);
+    void removeResource(U user);
 
-    P getUser(KU key);
+    U getUserByResource(R resource);
 
-    V getResource(KR key);
+    R getResourcesByUser(U user);
 
-    P[] getAllUser();
+    U[] getAllUsers();
 
-    V[] getAllResources();
+    R[] getAllResources();
 }
