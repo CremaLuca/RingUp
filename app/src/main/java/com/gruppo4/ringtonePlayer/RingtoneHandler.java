@@ -19,9 +19,8 @@ public class RingtoneHandler {
      * @return the ringtone
      */
     public static Ringtone getDefaultRingtone(Context ctx) {
-        Uri ringtoneId = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_RINGTONE);
-        Ringtone ringtone = RingtoneManager.getRingtone(ctx, ringtoneId);
-        return ringtone;
+        Uri ringtoneID = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_RINGTONE);
+        return RingtoneManager.getRingtone(ctx, ringtoneID);
     }
 
     /**
@@ -31,9 +30,8 @@ public class RingtoneHandler {
      * @return the alarm tone
      */
     public static Ringtone getDefaultAlarmTone(Context ctx) {
-        Uri alarmToneId = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_ALARM);
-        Ringtone alarmTone = RingtoneManager.getRingtone(ctx, alarmToneId);
-        return alarmTone;
+        Uri alarmToneID = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_ALARM);
+        return RingtoneManager.getRingtone(ctx, alarmToneID);
     }
 
     /**
@@ -53,8 +51,7 @@ public class RingtoneHandler {
      * @param ringtone, the default ringtone
      */
     public static void ringtonePlay(Ringtone ringtone) {
-        ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
-        ringtone.play();
+        ringtonePlay(ringtone, AudioAttributes.USAGE_ALARM);
     }
 
     /**
