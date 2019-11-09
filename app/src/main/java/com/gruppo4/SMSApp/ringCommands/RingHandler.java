@@ -23,8 +23,7 @@ public class RingHandler {
      * @return a RingCommand
      */
     protected static RingCommand parseContent(SMSPeer peer, String content) {
-        //If the content has an invisible character at the beginning its a valid command
-        if ((content.charAt(0)+"").equals(SPLIT_CHARACTER)) {
+        if ((content.charAt(0) + "").equals(SPLIT_CHARACTER)) {
             String[] parts = content.split(SPLIT_CHARACTER);
             //parts[0] is empty, parts[1] contains the password
             return new RingCommand(peer, parts[1]);

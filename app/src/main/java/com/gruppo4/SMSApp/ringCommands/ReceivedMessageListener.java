@@ -17,7 +17,6 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 public class ReceivedMessageListener implements SMSReceivedListener {
 
     private static Context context;
-    private static RingCommand ringCommand;
 
     /**
      * Set the context
@@ -36,7 +35,7 @@ public class ReceivedMessageListener implements SMSReceivedListener {
     @Override
     public void onMessageReceived(SMSMessage message) {
         Log.d("1", "Il messaggio è arrivato");
-        ringCommand = RingHandler.parseContent(message.getPeer(), message.getData());
+        RingCommand ringCommand = RingHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
             AppManager.onRingCommandReceived(context, ringCommand);
         else

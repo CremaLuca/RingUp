@@ -23,23 +23,23 @@ public class AppManager {
     public static void onRingCommandReceived(Context context, RingCommand ringCommand) {
         if (RingHandler.checkPassword(context, ringCommand)) {
             //TODO RingtoneHandler.playRingtone(15);
-        }
-        else{
-            Toast.makeText(context, "La password era sbagliata, nessuna suoneria attivata", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "La password è corretta ma Alessandra non sa fare la classe RingtoneHandler", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Password wrong", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * @param ctx         of the application
+     * @param context     of the application
      * @param ringCommand to send
      * @param listener
      */
-    public static void sendCommand(Context ctx, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        SMSMessage message = commandToMessage(ringCommand);
-        SMSHandler.getInstance(ctx).sendMessage(message, listener);
+    public static void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        SMSMessage message = commandToMessage(context, ringCommand);
+        SMSHandler.getInstance(context).sendMessage(message, listener);
     }
 
-    private static SMSMessage commandToMessage(RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        return new SMSMessage(1, ringCommand.getPeer(), "_"+ringCommand.getPassword());
+    private static SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        return new SMSMessage(context, ringCommand.getPeer().toString(), ringCommand.getPassword());
     }
 }
