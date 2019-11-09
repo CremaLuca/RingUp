@@ -1,4 +1,4 @@
-package com.gruppo4.SMSApp;
+package com.gruppo4.SMSApp.ringCommands;
 
 import com.gruppo4.SMSApp.ringCommands.RingCommand;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -22,7 +22,7 @@ public class RingCommandTest {
 
     @Test
     public void getSender() {
-        Assert.assertEquals(ringCommand.getSender().toString(), VALID_NUMBER);
+        Assert.assertEquals(ringCommand.getPeer().toString(), VALID_NUMBER);
     }
 
     @Test

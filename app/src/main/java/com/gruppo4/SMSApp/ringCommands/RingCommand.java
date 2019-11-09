@@ -28,7 +28,7 @@ public class RingCommand {
     /**
      * @return a SMSPeer object
      */
-    public SMSPeer getSender() {
+    public SMSPeer getPeer() {
         return peer;
     }
 

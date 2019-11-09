@@ -13,27 +13,21 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 
 public class RingHandler {
 
-    private static final String INVISIBLE_CHARACTER = (char) 0x02 + "";  //Invisible character
+    private static final String SPLIT_CHARACTER = "_";  //Invisible character
 
     /**
-     * Extracts the password from the message received and create a RingCommand, null if the message has the wrong format
+     * Extracts the password from the message received and create a RingCommand, null if the command is not valid
      *
      * @param peer    is the sender/receiver of the message
-     * @param content of the message
+     * @param content command
      * @return a RingCommand
      */
-    public static RingCommand parseContent(SMSPeer peer, String content) {
-        int numInvChar = 0;
-        //Control if the content has 2 invisible character
-        for (int i = 0; i < content.length(); i++) {
-            if ((content.charAt(i) + "").equals(INVISIBLE_CHARACTER))
-                numInvChar++;
-        }
-        //If the content has 2 invisible character then can build a valid ringCommand object
-        if (numInvChar == 2) {
-            String[] parts = content.split(INVISIBLE_CHARACTER);
-            //parts[0] is empty, parts[1] contains a command, parts[2] contains the password
-            return new RingCommand(peer, parts[2]);
+    protected static RingCommand parseContent(SMSPeer peer, String content) {
+        //If the content has an invisible character at the beginning its a valid command
+        if ((content.charAt(0)+"").equals(SPLIT_CHARACTER)) {
+            String[] parts = content.split(SPLIT_CHARACTER);
+            //parts[0] is empty, parts[1] contains the password
+            return new RingCommand(peer, parts[1]);
         }
         //Message received is not a command for play the ringtone
         return null;

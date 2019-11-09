@@ -1,9 +1,16 @@
 package com.gruppo4.SMSApp.ringCommands;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.gruppo4.sms.dataLink.SMSManager;
+import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
+import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
+import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 /**
- * @author Gruppo 4
+ * @author Alberto Ursino
  */
 public class AppManager {
 
@@ -16,18 +23,21 @@ public class AppManager {
     public static void onRingCommandReceived(Context context, RingCommand ringCommand) {
         if (RingHandler.checkPassword(context, ringCommand)) {
             //TODO RingtoneHandler.playRingtone(15);
+
         }
     }
 
-    /*
-    public static void sendCommand(Context ctx, RingCommand command, SMSSentListener listener){
-        SMSMessage message = commandToMessage(command);
-        SMSManager.getInstance(ctx).sendMessage(message,listener);
-
+    /**
+     * @param ctx         of the application
+     * @param ringCommand to send
+     * @param listener
+     */
+    public static void sendCommand(Context ctx, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        SMSMessage message = commandToMessage(ringCommand);
+        SMSManager.getInstance(ctx).sendMessage(message, listener);
     }
 
-    private static SMSMessage commandToMessage(RingCommand command){
-        return new SMSMessage(command.getPeer(),RingtoneHandler.parseCommand(command));
+    private static SMSMessage commandToMessage(RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        return new SMSMessage(1, ringCommand.getPeer(), "_"+ringCommand.getPassword());
     }
-*/
 }
