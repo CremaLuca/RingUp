@@ -26,5 +26,12 @@ class TestResource implements Resource<String> {
         return otherResource.resourceName.equals(resourceName);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof TestResource))
+            return false;
+        return isEquals((TestResource) other);
+    }
+
 
 }

@@ -7,6 +7,8 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Network dictionary for peers and resources on the SMS network
@@ -15,8 +17,8 @@ import java.util.HashMap;
  */
 public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 
-    private ArrayList<SMSPeer> userList = new ArrayList<>();
-    private HashMap<SMSPeer, ArrayList<Resource>> resourcesDict = new HashMap<>();
+    private Set<SMSPeer> userList = new HashSet<>();
+    private HashMap<SMSPeer, Set<Resource>> resourcesDict = new HashMap<>();
 
     /**
      * Registers a SMS user to the network
@@ -31,14 +33,15 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
     /**
      * Registers the couple key value (user, resource) into the dictionary
      * The user must not have already another copy of the resource
-     * @param user the holder of the resource
+     *
+     * @param user     the holder of the resource
      * @param resource the resource identification and details
      */
     @Override
     public void addResource(SMSPeer user, Resource resource) {
-        ArrayList<Resource> userResources = resourcesDict.get(user);
+        Set<Resource> userResources = resourcesDict.get(user);
         if (userResources == null)
-            resourcesDict.put(user, new ArrayList<>(Arrays.asList(resource)));
+            resourcesDict.put(user, new HashSet<>(Arrays.asList(resource)));
         else {
             userResources.add(resource);
             resourcesDict.put(user, userResources);
@@ -47,21 +50,24 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 
     /**
      * Removes a SMS user from the network
+     *
      * @param peer SMS user
      */
     @Override
     public void removeUser(SMSPeer peer) {
         userList.remove(peer);
+        resourcesDict.remove(peer);
     }
 
     /**
      * Removes a resource availability from the network dictionary
-     * @param user SMS user that had the resource
+     *
+     * @param user     SMS user that had the resource
      * @param resource resource no more available
      */
     @Override
     public void removeResource(SMSPeer user, Resource resource) {
-        ArrayList<Resource> userResources = resourcesDict.get(user);
+        Set<Resource> userResources = resourcesDict.get(user);
         if (userResources != null) {
             userResources.remove(resource);
             resourcesDict.put(user, userResources);
@@ -70,6 +76,7 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 
     /**
      * Finds all the SMS network users that have that resource
+     *
      * @param resource wanted resource
      * @return array of SMS users
      */
@@ -84,20 +91,21 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
                 }
             }
         }
-        return (SMSPeer[]) peers.toArray();
+        return peers.toArray(new SMSPeer[peers.size()]);
     }
 
     /**
      * Retrieves all the resources from a given SMS network user
+     *
      * @param user SMS newtork user
      * @return array of resources for the given SMS user
      */
     @Override
     public Resource[] getResourcesByUser(SMSPeer user) {
-        ArrayList<Resource> userResources = resourcesDict.get(user);
+        Set<Resource> userResources = resourcesDict.get(user);
         if (userResources == null)
             return null;
-        return (Resource[]) userResources.toArray();
+        return userResources.toArray(new Resource[userResources.size()]);
     }
 
     /**
@@ -105,19 +113,20 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      */
     @Override
     public SMSPeer[] getAllUsers() {
-        return (SMSPeer[]) userList.toArray();
+        return userList.toArray(new SMSPeer[userList.size()]);
     }
 
     /**
      * Could contain duplicates because multiple users can have the same resource
+     *
      * @return an array of all the resources available in the netwrok
      */
     @Override
     public Resource[] getAllResources() {
-        ArrayList<Resource> resourceList = new ArrayList<>();
-        for (ArrayList<Resource> userResources : resourcesDict.values()) {
+        Set<Resource> resourceList = new HashSet<>();
+        for (Set<Resource> userResources : resourcesDict.values()) {
             resourceList.addAll(userResources);
         }
-        return (Resource[]) resourceList.toArray();
+        return resourceList.toArray(new Resource[resourceList.size()]);
     }
 }
