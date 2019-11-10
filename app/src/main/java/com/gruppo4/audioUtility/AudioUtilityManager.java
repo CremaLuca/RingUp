@@ -6,7 +6,7 @@ package com.gruppo4.audioUtility;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.util.Log;
+
 import static android.content.Context.AUDIO_SERVICE;
 
 
@@ -18,23 +18,23 @@ public class AudioUtilityManager {
     /**
      *
      * @param context
-     * @return The current Ringtone Volume (in percentage).
+     * @return The current Alarm Volume (in percentage).
      */
-    public static int getCurrentRingtoneVolume(Context context){
+    public static int getCurrentAlarmVolume(Context context){
 
-        int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_RING);
+        int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_ALARM);
 
-        int maxVolume = getMaxRingtoneVolume(context);
+        int maxVolume = getMaxAlarmVolume(context);
         return Math.round(MAX_PERCENTAGE*currentVolume/maxVolume);
     }
 
     /**
      *
      * @param context
-     * @return The maximum Ringtone volume (real value).
+     * @return The maximum Alarm volume (real value).
      */
-    private static int getMaxRingtoneVolume(Context context){
-        return getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_RING);
+    private static int getMaxAlarmVolume(Context context){
+        return getAudioManager(context).getStreamMaxVolume(AudioManager.STREAM_ALARM);
     }
 
     /**
@@ -51,9 +51,9 @@ public class AudioUtilityManager {
      * @param context
      * @param percentage
      * @throws IllegalArgumentException if percentage is not between 0 and 100.
-     * Sets up the Ringtone Volume, given a certain percentage.
+     * Sets up the Alarm Volume, given a certain percentage.
      */
-    public static void setRingtoneVolume(Context context, int percentage) throws IllegalArgumentException{
+    public static void setAlarmVolume(Context context, int percentage) throws IllegalArgumentException{
 
         if(percentage<MIN_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too low. Please insert a value between 0 and 100.");
@@ -61,15 +61,15 @@ public class AudioUtilityManager {
             throw new IllegalArgumentException(" Your value is too high. Please insert a value between 0 and 100.");
         }
 
-        int maxVolume = getMaxRingtoneVolume(context);
+        int maxVolume = getMaxAlarmVolume(context);
 
         // Calculate the real value of the new volume
         int newVolume = maxVolume*percentage;
         newVolume = Math.round(newVolume/MAX_PERCENTAGE);
 
-        // Set the ringer volume
+        // Set the Alarm volume
         getAudioManager(context).setStreamVolume(
-                AudioManager.STREAM_RING,
+                AudioManager.STREAM_ALARM,
                 newVolume,
                 AudioManager.FLAG_SHOW_UI
         );
@@ -78,21 +78,20 @@ public class AudioUtilityManager {
 
     /**
      * @param context
-     * Sets up the Ringtone Volume to its maximum value (in percentage).
+     * Sets up the Alarm Volume to its maximum value (in percentage).
      */
-    public static void setMaxRingtoneVolume(Context context){
-        setRingtoneVolume(context, MAX_PERCENTAGE);
+    public static void setMaxAlarmVolume(Context context){
+        setAlarmVolume(context, MAX_PERCENTAGE);
     }
 
     /**
      * @param context
-     * Sets up the Ringtone Volume to its minimum value (in percentage).
+     * Sets up the Alarm Volume to its minimum value (in percentage).
      */
-    public static void setMinRingtoneVolume(Context context){
-        setRingtoneVolume(context, MIN_PERCENTAGE);
+    public static void setMinAlarmVolume(Context context){
+        setAlarmVolume(context, MIN_PERCENTAGE);
     }
 
 
 }
-//TODO SWITCH OPERATIONS WITH Stream "RINGTONE" INTO Stream "ALARM", EDIT METHODS' NAMES, EDIT COMMENTS.
 //TODO TESTING

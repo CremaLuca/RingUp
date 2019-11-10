@@ -29,36 +29,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Action performed by clicking button0
-        // -> TEST the method getCurrentRingtoneVolume(Context).
+        // -> TEST the method getCurrentAlarmVolume(Context).
         findViewById(R.id.button0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Sets up the volume at default percentage.
-                AudioUtilityManager.setRingtoneVolume(MainActivity.this, DEFAULT_APP_VOLUME);
-                int defaultVolume = AudioUtilityManager.getCurrentRingtoneVolume(MainActivity.this);
-                Toast.makeText(MainActivity.this, "DEFAULT RINGTONE VOLUME: "+defaultVolume+" %.", Toast.LENGTH_SHORT).show();
+                AudioUtilityManager.setAlarmVolume(MainActivity.this, DEFAULT_APP_VOLUME);
+                int defaultVolume = AudioUtilityManager.getCurrentAlarmVolume(MainActivity.this);
+                Toast.makeText(MainActivity.this, "DEFAULT ALARM VOLUME: "+defaultVolume+" %.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Action performed by clicking button1
-        // -> TEST the method setMaxRingtoneVolume(Context).
+        // -> TEST the method setMaxAlarmVolume(Context).
         findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.setMaxRingtoneVolume(MainActivity.this);
-                int maxVolume = AudioUtilityManager.getCurrentRingtoneVolume(MainActivity.this);
-                Toast.makeText(MainActivity.this, "MAXIMUM RINGTONE VOLUME: "+maxVolume+" %.", Toast.LENGTH_SHORT).show();
+                AudioUtilityManager.setMaxAlarmVolume(MainActivity.this);
+                int maxVolume = AudioUtilityManager.getCurrentAlarmVolume(MainActivity.this);
+                Toast.makeText(MainActivity.this, "MAXIMUM ALARM VOLUME: "+maxVolume+" %.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Action performed by clicking button2
-        // -> TEST the method setMinRingtoneVolume(Context).
+        // -> TEST the method setMinAlarmVolume(Context).
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.setMinRingtoneVolume(MainActivity.this);
-                int minVolume = AudioUtilityManager.getCurrentRingtoneVolume(MainActivity.this);
-                Toast.makeText(MainActivity.this, "MINIMUM RINGTONE VOLUME: "+minVolume+" %.", Toast.LENGTH_SHORT).show();
+                AudioUtilityManager.setMinAlarmVolume(MainActivity.this);
+                int minVolume = AudioUtilityManager.getCurrentAlarmVolume(MainActivity.this);
+                Toast.makeText(MainActivity.this, "MINIMUM ALARM VOLUME: "+minVolume+" %.", Toast.LENGTH_SHORT).show();
             }
         });
 
