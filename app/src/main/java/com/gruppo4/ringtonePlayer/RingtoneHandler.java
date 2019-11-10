@@ -6,41 +6,40 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
- * @author Alessandra Tonin
+ * @author Alessandra Tonin, with a lot of useful tips from Luca Crema
  */
 
 public class RingtoneHandler {
 
+
     /**
-     * get the user's ringtone
-     *
-     * @param ctx, the current application context
-     * @return the ringtone
+     * @param type a type from RingtoneManager API
+     * @return the Uri of the specified type tone
      */
-    public static Ringtone getDefaultRingtone(Context ctx) {
-        Uri ringtoneID = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_RINGTONE);
-        return RingtoneManager.getRingtone(ctx, ringtoneID);
+    private static Uri getToneUri(int type) {
+        return RingtoneManager.getDefaultUri(type);
     }
 
     /**
-     * get the user's alarm tone
+     * get the tone of the specified type
      *
      * @param ctx, the current application context
-     * @return the alarm tone
+     * @return the requested tone
      */
-    public static Ringtone getDefaultAlarmTone(Context ctx) {
-        Uri alarmToneID = RingtoneManager.getActualDefaultRingtoneUri(ctx, RingtoneManager.TYPE_ALARM);
-        return RingtoneManager.getRingtone(ctx, alarmToneID);
+    public static Ringtone getDefaultTone(Context ctx, int type) {
+        return RingtoneManager.getRingtone(ctx, getToneUri(type));
     }
 
     /**
      * user can decide in which mode he wants to play the ringtone
      *
-     * @param ringtone   @NotNull
+     * @param ringtone   the sound to be played
      * @param USAGE_CODE from AudioAttributes
      */
-    static void ringtonePlay(Ringtone ringtone, final int USAGE_CODE) {
+    static void playRingtone(@NotNull Ringtone ringtone, final int USAGE_CODE) {
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(USAGE_CODE).build());
         ringtone.play();
     }
@@ -50,8 +49,8 @@ public class RingtoneHandler {
      *
      * @param ringtone, the default ringtone
      */
-    public static void ringtonePlay(Ringtone ringtone) {
-        ringtonePlay(ringtone, AudioAttributes.USAGE_ALARM);
+    public static void playRingtone(Ringtone ringtone) {
+        playRingtone(ringtone, AudioAttributes.USAGE_ALARM);
     }
 
     /**
@@ -59,7 +58,7 @@ public class RingtoneHandler {
      *
      * @param ringtone, the playing sound (ringtone or alarm tone)
      */
-    public static void ringtoneStop(Ringtone ringtone) {
+    public static void stopRingtone(Ringtone ringtone) {
         ringtone.stop();
     }
 

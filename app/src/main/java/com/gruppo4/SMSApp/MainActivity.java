@@ -2,6 +2,7 @@ package com.gruppo4.SMSApp;
 
 import android.content.Context;
 import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -28,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
-        ringtone = RingtoneHandler.getDefaultRingtone(context);
-        alarmtone = RingtoneHandler.getDefaultAlarmTone(context);
+        ringtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_RINGTONE);
+        alarmtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_ALARM);
 
     }
 
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRingClick(View view) {
 
         if (!(alarmtone.isPlaying()))
-            RingtoneHandler.ringtonePlay(ringtone);
+            RingtoneHandler.playRingtone(ringtone);
         else
             Toast.makeText(this, "The alarm tone is already playing, please stop it and retry!", Toast.LENGTH_SHORT).show();
 
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onAlarmClick(View view) {
         if (!(ringtone.isPlaying()))
-            RingtoneHandler.ringtonePlay(alarmtone);
+            RingtoneHandler.playRingtone(alarmtone);
         else
             Toast.makeText(this, "The ringtone is already playing, please stop it and retry!", Toast.LENGTH_SHORT).show();
     }
@@ -66,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onStopClick(View view) {
         if (ringtone.isPlaying())
-            RingtoneHandler.ringtoneStop(ringtone);
+            RingtoneHandler.stopRingtone(ringtone);
 
         if (alarmtone.isPlaying())
-            RingtoneHandler.ringtoneStop(alarmtone);
+            RingtoneHandler.stopRingtone(alarmtone);
     }
 
 
