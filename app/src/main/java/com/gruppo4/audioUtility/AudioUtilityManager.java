@@ -48,7 +48,9 @@ public class AudioUtilityManager {
 
     /**
      *
-     * @param context,percentage
+     * @param context
+     * @param percentage
+     * @throws IllegalArgumentException if percentage is not between 0 and 100.
      * Sets up the Ringtone Volume, given a certain percentage.
      */
     public static void setRingtoneVolume(Context context, int percentage) throws IllegalArgumentException{
@@ -92,3 +94,5 @@ public class AudioUtilityManager {
 
 
 }
+//TODO SWITCH OPERATIONS WITH Stream "RINGTONE" INTO Stream "ALARM", EDIT METHODS' NAMES, EDIT COMMENTS.
+//TODO TESTING
