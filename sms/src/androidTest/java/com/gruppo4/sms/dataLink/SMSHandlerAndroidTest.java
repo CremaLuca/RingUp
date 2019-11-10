@@ -19,8 +19,8 @@ public class SMSHandlerAndroidTest {
 
     @Test
     public void setup_getApplicationCode_isEquals() {
-        SMSHandler.setup(context, VALID_TEST_APP_ID);
-        Assert.assertEquals(SMSHandler.getApplicationCode(context), VALID_TEST_APP_ID);
+        SMSHandler.getInstance(context).setup(VALID_TEST_APP_ID);
+        Assert.assertEquals(SMSHandler.getInstance(context).getApplicationCode(), VALID_TEST_APP_ID);
     }
 
     @Test
