@@ -92,6 +92,5 @@ public class AudioUtilityManager {
         setAlarmVolume(context, MIN_PERCENTAGE);
     }
 
-
 }
 //TODO TESTING
