@@ -37,24 +37,23 @@ public class MainActivity extends AppCompatActivity {
         Fred test1 = new Fred(this,1);
         test1.start();
         try {
-            wait();
+            test1.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Toast.makeText(this, test1.getMessage(), Toast.LENGTH_SHORT).show();
-
 
 
         // TESTING the method setMinRingtoneVolume(Context), after waiting 5 seconds.
         Fred test2 = new Fred(this,2);
         try {
-            test2.wait();
-            wait();
-            //test2.join();
+            //test2.wait();
+            test2.start();
+            test2.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, test1.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, test2.getMessage(), Toast.LENGTH_SHORT).show();
 
 
 
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class Fred extends Thread{
         private Context context;
-        private String message;
+        private String tag,message;
         private int code;
         public Fred(Context context, int code){
             setFred(context,code);
@@ -70,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
         private void setFred(Context context, int code) throws IllegalStateException{
             this.context = context;
             this.code = code;
+            this.tag = "[Test"+code+"]";
+        }
+        public String getTag(){
+            return this.tag;
         }
         public String getMessage(){
             return this.message;
@@ -81,14 +84,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() throws IllegalArgumentException{
             super.run();
-            Log.d("[Test"+code+"]","WAITING 5 SECONDS...");
+            Log.d(getTag(),"WAITING 5 SECONDS...");
             try {
                 // HARDWIRING...
-                Thread.sleep(5000);
+                sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.d("[Test"+code+"]","RESUMING...");
+            Log.d(getTag(),"RESUMING...");
             switch (code){
                 case 1:{
                     AudioUtilityManager.setMaxRingtoneVolume(this.context);
@@ -108,10 +111,8 @@ public class MainActivity extends AppCompatActivity {
             }
             // Toasts create conflicts with Thread (Handler)
             //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-            notifyAll();
+            Log.d(getTag(),getMessage());
         }
     }
 }
-//TODO: Resolve the Thread vs MainActivity issues, and Thread vs Toast issues. [Handler Exceptions].
-//TODO: Objective: being able to do all the tests sequentially, with intervals of 5 seconds.
-//TODO: TESTING
+//TODO TESTING
