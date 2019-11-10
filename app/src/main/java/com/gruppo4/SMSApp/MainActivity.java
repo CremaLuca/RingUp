@@ -2,7 +2,6 @@ package com.gruppo4.SMSApp;
 
 import android.content.Context;
 import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -29,15 +28,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
-        ringtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_RINGTONE);
-        alarmtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_ALARM);
+        ringtone = RingtoneHandler.getDefaultRingtone(context);
+        alarmtone = RingtoneHandler.getDefaultAlarmTone(context);
 
     }
 
     /**
      * when button "ringtone" clicked, plays the ringtone if the alarm isn't ringing
      *
-     * @param view, the layout button
+     * @param view the layout button
      */
     public void onRingClick(View view) {
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * when button "alarm" clicked, plays the alarm tone if the ringtone isn't ringing
      *
-     * @param view, the layout button
+     * @param view the layout button
      */
     public void onAlarmClick(View view) {
         if (!(ringtone.isPlaying()))
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * when button "stop ringing!" clicked, stops the sound that's playing
      *
-     * @param view, the layout button
+     * @param view the layout button
      */
     public void onStopClick(View view) {
         if (ringtone.isPlaying())
