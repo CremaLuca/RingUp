@@ -3,11 +3,10 @@ package com.gruppo4.communication.network;
 import com.gruppo4.communication.dataLink.Peer;
 
 /**
- * @param <U>  Peer for user
- * @param <R>  Values for resource
+ * @param <U>  Peer for users in the network
  * @author Group 4
  */
-public interface NetworkDictionary<U extends Peer, R extends Resource> {
+public interface NetworkDictionary<U extends Peer> {
 
     /**
      * Registers a user to the network
@@ -22,7 +21,7 @@ public interface NetworkDictionary<U extends Peer, R extends Resource> {
      * @param user
      * @param resource
      */
-    void addResource(U user, R resource);
+    void addResource(U user, Resource resource);
 
     /**
      * Removes the user from the network
@@ -37,7 +36,7 @@ public interface NetworkDictionary<U extends Peer, R extends Resource> {
      * @param user
      * @param resource
      */
-    void removeResource(U user, R resource);
+    void removeResource(U user, Resource resource);
 
     /**
      * Get all the users that has that resource
@@ -45,14 +44,14 @@ public interface NetworkDictionary<U extends Peer, R extends Resource> {
      * @param resource
      * @return
      */
-    U[] getUsersByResource(R resource);
+    U[] getUsersByResource(Resource resource);
 
     /**
      * Get all the resources for a user
      * @param user
      * @return
      */
-    R[] getResourcesByUser(U user);
+    Resource[] getResourcesByUser(U user);
 
     /**
      * Get the whole list of users from the network
@@ -64,5 +63,5 @@ public interface NetworkDictionary<U extends Peer, R extends Resource> {
      * Get all the resources available in the network
      * @return a list of resources in the network
      */
-    R[] getAllResources();
+    Resource[] getAllResources();
 }
