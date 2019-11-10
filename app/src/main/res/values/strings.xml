@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SMSApp</string>
+    <string name="ding">Ding!</string>
+    <string name="inserisci_il_numero_a_cui_mandare_un_ding">Inserisci il numero a cui mandare un Ding!</string>
 </resources>

@@ -1,7 +1,8 @@
 package com.gruppo4.sms;
 
-import android.util.Log;
-
+/**
+ * @author Tommasini Marco
+ */
 public class SMSMessage {
 
     private String msgBody;
@@ -17,14 +18,8 @@ public class SMSMessage {
      * @param destinationAddress
      */
     public SMSMessage(String msgBody, String destinationAddress) {
-        try {
-            this.msgBody = checkMsgBody(msgBody);
-            this.destinationAddress = checkDestinationAddress(destinationAddress);
-        } catch (MsgBodyException e) {
-            Log.e("SMSMessage", e.getMessage());
-        } catch (DestinationAddressException e) {
-            Log.e("SMSMessage", e.getMessage());
-        }
+        this.msgBody = checkMsgBody(msgBody);
+        this.destinationAddress = checkDestinationAddress(destinationAddress);
     }
 
     public String getMsgBody() {
@@ -39,11 +34,10 @@ public class SMSMessage {
      * Checks if the Body length of the message is correct
      * @param msgBody
      * @return
-     * @throws MsgBodyException
      */
-    private String checkMsgBody(String msgBody) throws MsgBodyException {
+    private String checkMsgBody(String msgBody) {
         if(msgBody.length() > MAX_MSGBODY_LENGTH)
-            throw new MsgBodyException("message body too long (" + msgBody.length() + ")");
+            return null;
         return msgBody;
     }
 
@@ -51,11 +45,10 @@ public class SMSMessage {
      * Checks if the Address length of the message is correct
      * @param destinationAddress
      * @return
-     * @throws DestinationAddressException
      */
-    private String checkDestinationAddress(String destinationAddress) throws DestinationAddressException {
+    private String checkDestinationAddress(String destinationAddress) {
         if(destinationAddress.length() > MAX_DESTINATIONADDRESS_LENGTH || destinationAddress.length() < MIN_DESTINATIONADDRESS_LENGTH)
-            throw new DestinationAddressException("destination address invalid length (" + destinationAddress.length() + ")");
+            return null;
         return destinationAddress;
     }
 }

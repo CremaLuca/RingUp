@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
 
+/**
+ * @author Tommasini Marco
+ */
+
 public class SMSSent extends BroadcastReceiver {
 
     /**

@@ -1,12 +1,13 @@
 package com.gruppo4.sms;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
 
-import java.util.EventListener;
+/**
+ * @author Tommasini Marco
+ */
 
 public class SMSController {
 
@@ -45,6 +46,8 @@ public class SMSController {
 
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, sentI, 0);
         PendingIntent deliveredPI = PendingIntent.getBroadcast(context, 0, deliveredI, 0);
+
+
 
         SmsManager.getDefault().sendTextMessage(
                 msg.getDestinationAddress(),
