@@ -10,38 +10,37 @@ public class SMSNetworkDictionaryTest {
 
     private static final String DEFAULT_PEER_ADDRESS = "+393434444543";
     private static final String DEFAULT_RESOURCE_ID = "DefaultResourceID";
-    SMSNetworkDictionary dictionary;
+
+    private static final SMSPeer defaultUser1 = new SMSPeer(DEFAULT_PEER_ADDRESS);
+    private static final SMSPeer defaultUser2 = new SMSPeer(DEFAULT_PEER_ADDRESS + "1");
+    private static final TestResource defaultResource1 = new TestResource(DEFAULT_RESOURCE_ID);
+    private static final TestResource resource2 = new TestResource(DEFAULT_RESOURCE_ID + "1");
+
+    private SMSNetworkDictionary dictionary;
 
     /**
-     * @throws Exception ??? Auto-gerated from Android Studio
+     * @throws Exception ??? Auto-generated from Android Studio
      */
     @Before
     public void setUp() throws Exception {
         dictionary = new SMSNetworkDictionary();
-        SMSPeer user = new SMSPeer(DEFAULT_PEER_ADDRESS);
-        TestResource resource = new TestResource(DEFAULT_RESOURCE_ID);
-        dictionary.addUser(user);
-        dictionary.addResource(user, resource);
+        dictionary.addUser(defaultUser1);
+        dictionary.addResource(defaultUser1, defaultResource1);
     }
 
     @Test
-    public void addUser_user_isEquals() {
-        SMSPeer user = new SMSPeer(DEFAULT_PEER_ADDRESS);
-        dictionary.addUser(user);
-        Assert.assertEquals(user, dictionary.getAllUsers()[0]);
+    public void getAllUsers_user_isEquals() {
+        Assert.assertEquals(defaultUser1, dictionary.getAllUsers()[0]);
     }
 
     @Test
-    public void addResource_resource_isEquals() {
-        SMSPeer user = new SMSPeer(DEFAULT_PEER_ADDRESS);
-        TestResource resource = new TestResource(DEFAULT_RESOURCE_ID) {
-        };//It's an abstract class, this is an implementation
-        dictionary.addResource(user, resource);
-        Assert.assertEquals(resource, dictionary.getResourcesByUser(user)[0]);
+    public void getAllResources_resource_isEquals() {
+        Assert.assertEquals(defaultResource1, dictionary.getAllResources()[0]);
     }
 
     @Test
     public void removeUser() {
+
     }
 
     @Test
