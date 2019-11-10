@@ -38,10 +38,7 @@ public class Variables {
     /**
      * Instantiated objects
      */
-    protected static final SMSPacket SMS_PACKET = new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, VALID_TEXT_MESSAGE);
-    protected static final SMSPacket SMS_PACKET_2 = new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, VALID_TEXT_MESSAGE);
-    protected static final SMSMessage SMS_MESSAGE = new SMSMessage(new SMSPeer(VALID_TELEPHONE_NUMBER), SMS_PACKET);
-    protected static final SMSCore SMS_CORE = new SMSCore();
+    protected static final SMSMessage SMS_MESSAGE = new SMSMessage(VALID_APPLICATION_CODE, new SMSPeer(VALID_TELEPHONE_NUMBER), VALID_TEXT_MESSAGE);
     /**
      * Class objectss
      */
