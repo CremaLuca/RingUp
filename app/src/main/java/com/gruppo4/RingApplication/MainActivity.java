@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
             new SMSHandler().setup(context, APPLICATION_CODE);
         }
 
-        SMSHandler.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(context, ringtone));
-
         ringtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_RINGTONE);
         ringButton = findViewById(R.id.button);
         phoneNumber = findViewById(R.id.telephoneNumber);
@@ -60,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         defaultPassword = findViewById(R.id.defaultPassword);
         setPassword = findViewById(R.id.setPassword);
         stop = findViewById(R.id.stop);
+
+        SMSHandler.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(context, ringtone));
+
 
         ringButton.setOnClickListener(new View.OnClickListener() {
             @Override
