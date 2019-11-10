@@ -1,4 +1,4 @@
-package com.gruppo4.SMSApp.ringCommands;
+package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.gruppo4.SMSApp;
+package com.gruppo4.RingApplication;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

@@ -1,8 +1,10 @@
-package com.gruppo4.SMSApp;
+package com.gruppo4.RingApplication;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,10 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gruppo4.SMSApp.ringCommands.AppManager;
-import com.gruppo4.SMSApp.ringCommands.PasswordManager;
-import com.gruppo4.SMSApp.ringCommands.ReceivedMessageListener;
-import com.gruppo4.SMSApp.ringCommands.RingCommand;
+import com.gruppo4.RingApplication.ringCommands.AppManager;
+import com.gruppo4.RingApplication.ringCommands.PasswordManager;
+import com.gruppo4.RingApplication.ringCommands.ReceivedMessageListener;
+import com.gruppo4.RingApplication.ringCommands.RingCommand;
+import com.gruppo4.RingApplication.ringCommands.RingtoneHandler;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -30,11 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_CODE = 0;
     private static final int APPLICATION_CODE = 1;
-    Button ringButton;
-    Button setPassword;
-    EditText phoneNumber;
-    EditText password;
-    EditText defaultPassword;
+    Button ringButton, setPassword, stop;
+    EditText phoneNumber, password, defaultPassword;
+    Ringtone ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,48 +51,64 @@ public class MainActivity extends AppCompatActivity {
             new SMSHandler().setup(context, APPLICATION_CODE);
         }
 
-        SMSHandler.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(context));
+        SMSHandler.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(context, ringtone));
 
+        ringtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_RINGTONE);
         ringButton = findViewById(R.id.button);
         phoneNumber = findViewById(R.id.telephoneNumber);
         password = findViewById(R.id.password);
         defaultPassword = findViewById(R.id.defaultPassword);
         setPassword = findViewById(R.id.setPassword);
-
-        setPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PasswordManager.setPassword(getApplicationContext(), defaultPassword.getText().toString());
-                Toast.makeText(getApplicationContext(), "Password memorized", Toast.LENGTH_SHORT).show();
-            }
-        });
+        stop = findViewById(R.id.stop);
 
         ringButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    sendRingCommand(phoneNumber.getText().toString(), password.getText().toString());
-                } catch (InvalidSMSMessageException e) {
-                    e.printStackTrace();
-                } catch (InvalidTelephoneNumberException e) {
-                    e.printStackTrace();
+                if (!passwordIsEmpty(password.getText().toString())) {
+                    try {
+                        sendRingCommand(phoneNumber.getText().toString(), password.getText().toString());
+                    } catch (InvalidSMSMessageException e) {
+                        e.printStackTrace();
+                    } catch (InvalidTelephoneNumberException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Insert the password!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RingtoneHandler.stopRingtone(ringtone);
+            }
+        });
+
+        setPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!passwordIsEmpty(defaultPassword.getText().toString())) {
+                    PasswordManager.setPassword(getApplicationContext(), defaultPassword.getText().toString());
+                    Toast.makeText(getApplicationContext(), "Password memorized", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Create a not empty password!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     /**
      * @param destination telephone number of the receiver
-     * @param password    password
-     * @throws InvalidSMSMessageException
-     * @throws InvalidTelephoneNumberException
+     * @param password
      */
     private void sendRingCommand(String destination, String password) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         final RingCommand ringCommand = new RingCommand(new SMSPeer(destination), createPassword(password));
         AppManager.sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
             @Override
             public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
-                Toast.makeText(MainActivity.this, "Command sent to " + ringCommand.getPeer(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -104,7 +121,14 @@ public class MainActivity extends AppCompatActivity {
         return "_" + password;
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    /**
+     * Check if the password is empty, true = yes, false = no
+     */
+    private boolean passwordIsEmpty(String password) {
+        return password.equals("");
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 new SMSHandler().setup(getApplicationContext(), APPLICATION_CODE);

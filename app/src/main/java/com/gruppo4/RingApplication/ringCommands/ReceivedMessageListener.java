@@ -1,12 +1,10 @@
-package com.gruppo4.SMSApp.ringCommands;
+package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
+import android.media.Ringtone;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.gruppo4.SMSApp.MainActivity;
 import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 
 /**
@@ -17,14 +15,16 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 public class ReceivedMessageListener implements SMSReceivedListener {
 
     private static Context context;
+    private static Ringtone ringtone;
 
     /**
      * Set the context
      *
-     * @param ctx application context
+     * @param context application context
      */
-    public ReceivedMessageListener(Context ctx) {
-        context = ctx;
+    public ReceivedMessageListener(Context context, Ringtone ringtone) {
+        this.context = context;
+        this.ringtone = ringtone;
     }
 
     /**
@@ -35,9 +35,9 @@ public class ReceivedMessageListener implements SMSReceivedListener {
     @Override
     public void onMessageReceived(SMSMessage message) {
         Log.d("1", "Il messaggio è arrivato");
-        RingCommand ringCommand = RingHandler.parseContent(message.getPeer(), message.getData());
+        RingCommand ringCommand = RingCommandHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
-            AppManager.onRingCommandReceived(context, ringCommand);
+            AppManager.onRingCommandReceived(context, ringCommand, ringtone);
         else
             Log.d("Fail: ", "Message received is not a valid command for play the ringtone");
     }

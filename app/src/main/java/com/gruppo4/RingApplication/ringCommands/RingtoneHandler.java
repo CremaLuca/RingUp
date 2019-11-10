@@ -1,4 +1,4 @@
-package com.gruppo4.ringtonePlayer;
+package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
 import android.media.AudioAttributes;
@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class RingtoneHandler {
-
 
     /**
      * @param type a type from RingtoneManager API
@@ -61,6 +60,5 @@ public class RingtoneHandler {
     public static void stopRingtone(Ringtone ringtone) {
         ringtone.stop();
     }
-
 
 }

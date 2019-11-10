@@ -1,4 +1,4 @@
-package com.gruppo4.SMSApp.ringCommands;
+package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
 
@@ -11,7 +11,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * revised by Luca Crema
  */
 
-public class RingHandler {
+public class RingCommandHandler {
 
     private static final String SPLIT_CHARACTER = "_";  //Invisible character
 

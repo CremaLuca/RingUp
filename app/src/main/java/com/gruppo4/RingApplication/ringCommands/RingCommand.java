@@ -1,4 +1,4 @@
-package com.gruppo4.SMSApp.ringCommands;
+package com.gruppo4.RingApplication.ringCommands;
 
 import com.gruppo4.sms.dataLink.SMSPeer;
 

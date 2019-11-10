@@ -1,10 +1,10 @@
-package com.gruppo4.SMSApp.ringCommands;
+package com.gruppo4.RingApplication.ringCommands;
 
 import com.gruppo4.sms.dataLink.SMSPeer;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RingHandlerTest {
+public class RingCommandHandlerTest {
 
     private static final String SPLIT_CHARACTER = "_";
     private static final String VALID_NUMBER = "+391111111111";
@@ -15,21 +15,21 @@ public class RingHandlerTest {
 
     @Test
     public void parseContent_content_isValid() {
-        Assert.assertNotEquals(null, RingHandler.parseContent(SMS_PEER, VALID_CONTENT));
+        Assert.assertNotEquals(null, RingCommandHandler.parseContent(SMS_PEER, VALID_CONTENT));
     }
 
     @Test
     public void parseContent_content_isNotValid() {
-        Assert.assertEquals(null, RingHandler.parseContent(SMS_PEER, WRONG_CONTENT));
+        Assert.assertEquals(null, RingCommandHandler.parseContent(SMS_PEER, WRONG_CONTENT));
     }
 
     @Test
     public void parseContent_ringCommandPasswords_areEquals() {
-        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_PASSWORD).getPassword(), RingHandler.parseContent(SMS_PEER, VALID_CONTENT).getPassword());
+        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_PASSWORD).getPassword(), RingCommandHandler.parseContent(SMS_PEER, VALID_CONTENT).getPassword());
     }
 
     @Test
     public void parseContent_ringCommandPeers_areEquals() {
-        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_CONTENT).getPeer(), RingHandler.parseContent(SMS_PEER, VALID_CONTENT).getPeer());
+        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_CONTENT).getPeer(), RingCommandHandler.parseContent(SMS_PEER, VALID_CONTENT).getPeer());
     }
 }

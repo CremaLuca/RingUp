@@ -1,6 +1,8 @@
-package com.gruppo4.SMSApp.ringCommands;
+package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.widget.Toast;
 
 import com.gruppo4.sms.dataLink.SMSHandler;
@@ -20,10 +22,9 @@ public class AppManager {
      * @param context     of the application
      * @param ringCommand a ring command not null
      */
-    public static void onRingCommandReceived(Context context, RingCommand ringCommand) {
-        if (RingHandler.checkPassword(context, ringCommand)) {
-            //TODO RingtoneHandler.playRingtone(15);
-            Toast.makeText(context, "La password è corretta ma Alessandra non sa fare la classe RingtoneHandler", Toast.LENGTH_SHORT).show();
+    public static void onRingCommandReceived(Context context, RingCommand ringCommand, Ringtone ringtone) {
+        if (RingCommandHandler.checkPassword(context, ringCommand)) {
+            RingtoneHandler.playRingtone(ringtone);
         } else {
             Toast.makeText(context, "Password wrong", Toast.LENGTH_SHORT).show();
         }
