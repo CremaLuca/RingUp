@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             new SMSHandler().setup(context, APPLICATION_CODE);
         }
 
-        ringtone = RingtoneHandler.getDefaultTone(context, RingtoneManager.TYPE_RINGTONE);
+        ringtone = RingtoneHandler.getDefaultRingtone(context);
         ringButton = findViewById(R.id.button);
         phoneNumber = findViewById(R.id.telephoneNumber);
         password = findViewById(R.id.password);
