@@ -16,7 +16,7 @@ import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
  */
 public class AppManager {
 
-    private final static int TIME = 30*1000;
+    private final static int TIME = 30 * 1000;
 
     /**
      * If the password of the message received is valid then play ringtone for fixed amount of time
@@ -31,8 +31,8 @@ public class AppManager {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
-                public void run(){
-                    RingtoneHandler.stopRingtone(ringtone);;
+                public void run() {
+                    RingtoneHandler.stopRingtone(ringtone);
                 }
             }, TIME);
         } else {
