@@ -26,7 +26,7 @@ import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 /**
- * @author Alberto Ursino
+ * @author Alberto Ursino, Alessandra Tonin
  */
 public class MainActivity extends AppCompatActivity {
 

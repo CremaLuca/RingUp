@@ -12,7 +12,7 @@ import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 /**
- * @author Alberto Ursino
+ * @author Alberto Ursino, Luca Crema, Alessandra Tonin, Marco Mariotto
  */
 public class AppManager {
 
@@ -27,6 +27,7 @@ public class AppManager {
     public static void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
         if (RingCommandHandler.checkPassword(context, ringCommand)) {
             RingtoneHandler.playRingtone(ringtone);
+            //Timer: the ringtone is playing for TIME seconds.
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override

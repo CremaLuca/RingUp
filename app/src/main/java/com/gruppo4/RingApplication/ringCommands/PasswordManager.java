@@ -7,7 +7,7 @@ import com.gruppo_4.preferences.PreferencesManager;
 /**
  * Class used to save and read the password from memory
  *
- * @author Alberto Ursino
+ * @author Alberto Ursino, Luca Crema
  */
 
 public class PasswordManager {

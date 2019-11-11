@@ -10,7 +10,7 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 /**
  * Class used to capture the message and create a ring command
  *
- * @author Alberto Ursino && Luca Crema
+ * @author Alberto Ursino, Luca Crema
  */
 public class ReceivedMessageListener implements SMSReceivedListener {
 

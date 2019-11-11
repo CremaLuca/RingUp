@@ -7,8 +7,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 /**
  * Class used to check if password in memory corresponds to the password passed through sender
  *
- * @author Alberto Ursino
- * revised by Luca Crema
+ * @author Alberto Ursino, Luca Crema, Marco Mariotto
  */
 
 public class RingCommandHandler {

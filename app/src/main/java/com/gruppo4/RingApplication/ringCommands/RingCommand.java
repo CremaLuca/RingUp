@@ -5,8 +5,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 /**
  * Class that encapsulates the RingCommand
  *
- * @author Alberto Ursino
- * revised by Luca Crema
+ * @author Alberto Ursino, Luca Crema
  */
 
 public class RingCommand {

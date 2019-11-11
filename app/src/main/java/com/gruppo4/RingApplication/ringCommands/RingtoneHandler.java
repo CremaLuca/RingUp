@@ -10,7 +10,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 /**
- * @author Alessandra Tonin, with a lot of useful tips from Luca Crema
+ * @author Alessandra Tonin, Luca Crema
  */
 
 public class RingtoneHandler {
