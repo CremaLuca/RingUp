@@ -39,7 +39,7 @@ public class AudioUtilityManager {
      * @param context
      * @return The current AudioManager instance, determined by a certain Context.
      */
-    public static AudioManager getAudioManager(Context context) {
+    protected static AudioManager getAudioManager(Context context) {
         return (AudioManager) context.getSystemService(AUDIO_SERVICE);
     }
 

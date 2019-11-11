@@ -47,26 +47,6 @@ public class AudioUtilityManagerTest {
     }
 
     @Test
-    public void getCurrentAlarmVolume_context_isOK() {
-        try {
-            AudioUtilityManager.getAudioManager(context);
-            //Success
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace() + "\nIt's NOT supposed to fail!");
-        }
-    }
-
-    @Test
-    public void getAudioManager_method_isOK() {
-        try {
-            AudioUtilityManager.getAudioManager(context);
-            //Success
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace() + "\nIt's NOT supposed to fail!");
-        }
-    }
-
-    @Test
     public void setMaxAlarmVolume_maxVolume_isOK() {
         try {
             AudioUtilityManager.setMaxAlarmVolume(context);
