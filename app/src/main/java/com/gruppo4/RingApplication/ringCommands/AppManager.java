@@ -26,7 +26,7 @@ public class AppManager {
         if (RingCommandHandler.checkPassword(context, ringCommand)) {
             RingtoneHandler.playRingtone(ringtone);
         } else {
-            Toast.makeText(context, "Password wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Wrong Password", Toast.LENGTH_SHORT).show();
         }
     }
 
