@@ -22,6 +22,7 @@ public class SMSMessageHandler extends MessageHandler<SMSMessage> {
     @Override
     protected SMSMessage parseMessage(String data, String peerData) {
         String[] splitData = data.split(SPLIT_CHARACTER, 2);
+        //Must be only 2 parts of the message
         if (splitData.length < 2)
             return null;
         //First part must be (1 + 3 = 4) characters long at max
