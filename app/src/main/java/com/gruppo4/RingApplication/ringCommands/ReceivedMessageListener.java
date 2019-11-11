@@ -34,7 +34,6 @@ public class ReceivedMessageListener implements SMSReceivedListener {
      */
     @Override
     public void onMessageReceived(SMSMessage message) {
-        Log.d("1", "Il messaggio è arrivato");
         RingCommand ringCommand = RingCommandHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
             AppManager.onRingCommandReceived(context, ringCommand, ringtone);

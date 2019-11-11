@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_CODE = 0;
     private static final int APPLICATION_CODE = 1;
-    Button ringButton, setPassword, stop;
-    EditText phoneNumber, password, defaultPassword;
-    Ringtone ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +48,25 @@ public class MainActivity extends AppCompatActivity {
             new SMSHandler().setup(context, APPLICATION_CODE);
         }
 
-        ringtone = RingtoneHandler.getDefaultRingtone(context);
-        ringButton = findViewById(R.id.button);
-        phoneNumber = findViewById(R.id.telephoneNumber);
-        password = findViewById(R.id.password);
-        defaultPassword = findViewById(R.id.defaultPassword);
-        setPassword = findViewById(R.id.setPassword);
-        stop = findViewById(R.id.stop);
+        final Ringtone ringtone = RingtoneHandler.getDefaultRingtone(context);
+        final EditText phoneNumber = findViewById(R.id.telephoneNumber);
+        final EditText password = findViewById(R.id.password);
+        final EditText defaultPassword = findViewById(R.id.defaultPassword);
+        final Button ringButton = findViewById(R.id.button);
+        final Button setPassword = findViewById(R.id.setPassword);
+        final Button stop = findViewById(R.id.stop);
+
+        Log.d("1", "+++++++++++++++++++++++++++++++++getPassword: "+PasswordManager.getPassword(context));
+
+        if(PasswordManager.getPassword(context) == null) {
+            //Password must be memorize first
+            ringButton.setEnabled(false);
+            phoneNumber.setEnabled(false);
+            password.setEnabled(false);
+            stop.setEnabled(false);
+        }
 
         SMSHandler.getInstance(getApplicationContext()).addReceivedMessageListener(new ReceivedMessageListener(context, ringtone));
-
 
         ringButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!passwordIsEmpty(defaultPassword.getText().toString())) {
                     PasswordManager.setPassword(getApplicationContext(), defaultPassword.getText().toString());
+                    ringButton.setEnabled(true);
+                    phoneNumber.setEnabled(true);
+                    password.setEnabled(true);
+                    stop.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Password memorized", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Create a not empty password!", Toast.LENGTH_SHORT).show();
