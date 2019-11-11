@@ -35,7 +35,7 @@ public class AppManager {
                 }
             }, TIME);
         } else {
-            Toast.makeText(context, "Password wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Wrong Password", Toast.LENGTH_SHORT).show();
         }
     }
 
