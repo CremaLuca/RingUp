@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private RecyclerView listView;
     private ListAdapter adapter;
     private static int mark = 0;
+    private static boolean active = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +81,28 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+    }
+
+    public static boolean isActive() {
+        return active;
+    }
+
     private void setupSMSManager(Context ctx) {
         if (!SMSManager.getInstance(ctx).isSetup()) {
             SMSManager.getInstance(ctx).setup(APP_ID);
         }
-        SMSManager.getInstance(ctx).addReceivedMessageListener(this);
+        //SMSManager.getInstance(ctx).addReceivedMessageListener(this);
+        SMSManager.getInstance(ctx).addReceivedMessageListener(new ActivityHelper());
     }
 
     /**

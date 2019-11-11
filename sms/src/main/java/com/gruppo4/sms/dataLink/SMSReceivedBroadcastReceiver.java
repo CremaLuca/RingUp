@@ -22,8 +22,6 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 String smsContent = sms.getMessageBody();
                 String phoneNumber = sms.getOriginatingAddress();
 
-                Toast.makeText(context, "Messaggio da " + phoneNumber, Toast.LENGTH_SHORT).show();
-
                 SMSPacket packet = parsePacket(context, smsContent);
                 if(packet != null)
                     SMSHandler.onReceive(context, packet, phoneNumber);

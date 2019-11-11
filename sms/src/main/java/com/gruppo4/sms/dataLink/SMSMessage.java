@@ -6,9 +6,10 @@ import com.gruppo4.communication.Message;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SMSMessage implements Message<String, SMSPeer> {
+public class SMSMessage implements Message<String, SMSPeer>, Serializable {
 
     public static final int MAX_ID = 999;
 
