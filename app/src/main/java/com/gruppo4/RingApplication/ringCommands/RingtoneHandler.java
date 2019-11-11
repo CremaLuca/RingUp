@@ -25,7 +25,7 @@ public class RingtoneHandler {
     }
 
     /**
-     * get the tone of the specified type
+     * Get the tone of the specified type
      *
      * @param ctx the current application context
      * @return the requested tone
@@ -35,7 +35,7 @@ public class RingtoneHandler {
     }
 
     /**
-     * get the default ringtone
+     * Get the default ringtone
      *
      * @param ctx the current application context
      * @return the actual ringtone
@@ -47,19 +47,18 @@ public class RingtoneHandler {
 
 
     /**
-     * get the default alarm tone
+     * Get the default alarm tone
      *
      * @param ctx the current application context
      * @return the actual alarm tone
      */
-
     public static Ringtone getDefaultAlarmTone(Context ctx) {
         return getDefaultTone(ctx, RingtoneManager.TYPE_ALARM);
     }
 
 
     /**
-     * user can decide in which mode he wants to play the ringtone
+     * User can decide in which mode he wants to play the ringtone
      *
      * @param ringtone   the sound to be played
      * @param USAGE_CODE from AudioAttributes
@@ -67,10 +66,11 @@ public class RingtoneHandler {
     static void playRingtone(@NonNull Ringtone ringtone, final int USAGE_CODE) {
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(USAGE_CODE).build());
         ringtone.play();
+
     }
 
     /**
-     * plays a ringtone (overload di ringtonePlay(Ringtone ringtone, final int USAGE_CODE))
+     * Plays a ringtone (overload di ringtonePlay(Ringtone ringtone, final int USAGE_CODE))
      *
      * @param ringtone the default ringtone
      */
@@ -79,7 +79,7 @@ public class RingtoneHandler {
     }
 
     /**
-     * stops the playing sound
+     * Stops the playing sound
      *
      * @param ringtone the playing sound (ringtone or alarm tone)
      */

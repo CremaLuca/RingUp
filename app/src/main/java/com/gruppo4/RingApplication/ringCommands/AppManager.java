@@ -2,7 +2,7 @@ package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
 import android.media.Ringtone;
-import android.media.RingtoneManager;
+import android.os.Handler;
 import android.widget.Toast;
 
 import com.gruppo4.sms.dataLink.SMSHandler;
@@ -16,15 +16,24 @@ import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
  */
 public class AppManager {
 
+    private final static int TIME = 30*1000;
+
     /**
-     * If the password of the message received is valid then play ringtone
+     * If the password of the message received is valid then play ringtone for fixed amount of time
      *
      * @param context     of the application
      * @param ringCommand a ring command not null
      */
-    public static void onRingCommandReceived(Context context, RingCommand ringCommand, Ringtone ringtone) {
+    public static void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
         if (RingCommandHandler.checkPassword(context, ringCommand)) {
             RingtoneHandler.playRingtone(ringtone);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run(){
+                    RingtoneHandler.stopRingtone(ringtone);;
+                }
+            }, TIME);
         } else {
             Toast.makeText(context, "Password wrong", Toast.LENGTH_SHORT).show();
         }
