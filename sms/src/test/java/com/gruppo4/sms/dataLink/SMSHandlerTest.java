@@ -3,21 +3,24 @@ package com.gruppo4.sms.dataLink;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Alberto Ursino
+ */
 public class SMSHandlerTest extends Variables {
 
     @Test
     public void checkApplicationCodeIsValid_applicationCode_tooBig() {
-        Assert.assertEquals(SMSHandler.checkApplicationCodeIsValid(TOO_BIG_APPLICATION_CODE), false);
+        Assert.assertFalse(SMSHandler.checkApplicationCodeIsValid(TOO_BIG_APPLICATION_CODE));
     }
 
     @Test
     public void checkApplicationCodeIsValid_applicationCode_tooSmall() {
-        Assert.assertEquals(SMSHandler.checkApplicationCodeIsValid(TOO_SMALL_APPLICATION_CODE), false);
+        Assert.assertFalse(SMSHandler.checkApplicationCodeIsValid(TOO_SMALL_APPLICATION_CODE));
     }
 
     @Test
     public void checkApplicationCodeIsValid_applicationCode_isValid() {
-        Assert.assertEquals(SMSHandler.checkApplicationCodeIsValid(VALID_APPLICATION_CODE), true);
+        Assert.assertTrue(SMSHandler.checkApplicationCodeIsValid(VALID_APPLICATION_CODE));
     }
 
 }

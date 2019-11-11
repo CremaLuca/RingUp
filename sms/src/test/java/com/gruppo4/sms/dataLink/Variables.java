@@ -1,52 +1,33 @@
 package com.gruppo4.sms.dataLink;
 
+/**
+ * @author Alberto Ursino
+ */
 public class Variables {
 
     /**
-     * Text Messages
+     * Application code
      */
-    protected static final int MAX_MSG_TEXT_LEN = 139860;
-    protected static final String VALID_TEXT_MESSAGE = "Test message";
-    protected static final String TOO_LONG_TEXT_MESSAGE = new String(new char[MAX_MSG_TEXT_LEN * 2]).replace('\0', ' ');
-    protected static final String MAX_LENGTH_TEXT_MESSAGE = new String(new char[MAX_MSG_TEXT_LEN]).replace('\0', ' ');
-    protected static final String MAX_LENGTH_TEXT_MESSAGE_P1 = new String(new char[MAX_MSG_TEXT_LEN + 1]).replace('\0', ' '); //P1 = Plus 1
-    protected static final String EMPTY_TEXT_MESSAGE = "";
+    protected static final int VALID_APPLICATION_CODE = 1;
+    protected static final int TOO_BIG_APPLICATION_CODE = 1000;
+    protected static final int TOO_SMALL_APPLICATION_CODE = -1;
+    /**
+     * Message
+     */
+    protected static final String HIDDEN_CHARACTER = (char) 0x02 + "";
+    protected static final String SEPARATOR_CHARACTER = "_";
+    protected static final int MAX_MSG_TEXT_LEN = SMSMessage.MAX_MSG_TEXT_LEN;
+    protected static final String MAIN_MESSAGE = "Test message";
+    protected static final String VALID_MESSAGE_START = HIDDEN_CHARACTER + VALID_APPLICATION_CODE + SEPARATOR_CHARACTER;
+    protected static final String VALID_TEXT_MESSAGE = VALID_MESSAGE_START + MAIN_MESSAGE;
     /**
      * Telephone Numbers
      */
+    protected static final String WRONG_TELEPHONE_NUMBER = "2lb";
     protected static final String VALID_TELEPHONE_NUMBER = "+391111111111";
-    protected static final String TOO_SHORT_TELEPHONE_NUMBER = "+39111";
-    protected static final String TOO_LONG_TELEPHONE_NUMBER = "+39111111111111111111";
-    protected static final String NO_COUNTRY_CODE_TELEPHONE_NUMBER = "1111111111";
-    protected static final String LETTERS_TELEPHONE_NUMBER = "+391111111ABC";
-    protected static final String EMPTY_TELEPHONE_NUMBER = "";
-    /**
-     * Packets
-     */
-    protected static final int MAX_PACKET_TEXT_LEN = 140;
-    protected static final int VALID_APPLICATION_CODE = 1, VALID_MESSAGE_ID = 1, VALID_PACKET_NUMBER = 1, VALID_TOTAL_PACKET_NUMBER = 1;
-    protected static final String VALID_PACKET_DATA = "[" + VALID_APPLICATION_CODE + "_" + VALID_MESSAGE_ID + "_" + VALID_PACKET_NUMBER + "_" + VALID_TOTAL_PACKET_NUMBER + "_" + VALID_TEXT_MESSAGE + "]"; //[1_1_1_1_Test message}
-    protected static final int TOO_BIG_APPLICATION_CODE = 1000, TOO_BIG_MESSAGE_ID = 1000, TOO_BIG_PACKET_NUMBER = 1000, TOO_BIG_TOTAL_PACKET_NUMBER = 1000;
-    protected static final int TOO_SMALL_APPLICATION_CODE = -1;
-    protected static final String MAX_LENGTH_PACKET_MESSAGE = new String(new char[MAX_PACKET_TEXT_LEN]).replace('\0', ' ');
-    protected static final String MAX_LENGTH_PACKET_MESSAGE_P1 = new String(new char[MAX_PACKET_TEXT_LEN + 1]).replace('\0', ' ');  //P1 = Plus 1
     /**
      * Warnings
      */
     protected static final String SHOULD_NOT = "Should not have thrown an exception";
     protected static final String SHOULD_THROW = "Should have thrown an exception";
-    /**
-     * Instantiated objects
-     */
-    protected static final SMSPacket SMS_PACKET = new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, VALID_TEXT_MESSAGE);
-    protected static final SMSPacket SMS_PACKET_2 = new SMSPacket(VALID_APPLICATION_CODE, VALID_MESSAGE_ID, VALID_PACKET_NUMBER, VALID_TOTAL_PACKET_NUMBER, VALID_TEXT_MESSAGE);
-    protected static final SMSMessage SMS_MESSAGE = new SMSMessage(new SMSPeer(VALID_TELEPHONE_NUMBER), SMS_PACKET);
-    protected static final SMSCore SMS_CORE = new SMSCore();
-    /**
-     * Class objectss
-     */
-    protected static SMSMessage smsMessage = null;
-    protected static SMSPeer peer = null;
-    protected static SMSHandler smsHandler = null;
-    protected static SMSCore smsCore = null;
 }

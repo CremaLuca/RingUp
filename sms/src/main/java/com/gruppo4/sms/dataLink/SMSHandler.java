@@ -88,11 +88,11 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
      *
      * @param applicationCode an identifier for the current application
      */
-    public void setup(Context context, int applicationCode) {
+    public void setup(int applicationCode) {
         if (!checkApplicationCodeIsValid(applicationCode))
             throw new IllegalStateException("Application code not valid, check it with checkApplicationCodeIsValid() first");
 
-        setApplicationCode(context, applicationCode);
+        setApplicationCode(ctx, applicationCode);
     }
 
     /**
@@ -136,6 +136,7 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
 
     /**
      * Overload for checkPermissions(Context)
+     *
      * @return true if both SEND_SMS and RECEIVE_SMS permissions are granted
      */
     public boolean checkPermissions() {
@@ -146,7 +147,7 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
      * Send a SMSMessage, multiple packets could be sent
      * Requires Manifest.permission.SEND_SMS permission
      *
-     * @param message  the message to be sent via SMS
+     * @param message the message to be sent via SMS
      */
     @Override
     public void sendMessage(SMSMessage message) {

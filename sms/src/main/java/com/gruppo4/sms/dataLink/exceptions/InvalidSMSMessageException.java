@@ -2,7 +2,7 @@ package com.gruppo4.sms.dataLink.exceptions;
 
 import com.gruppo4.sms.dataLink.SMSMessage;
 
-public class InvalidSMSMessageException extends Exception {
+public class InvalidSMSMessageException extends RuntimeException {
 
     private SMSMessage.MessageTextState state;
 

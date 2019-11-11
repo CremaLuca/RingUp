@@ -2,7 +2,7 @@ package com.gruppo4.sms.dataLink.exceptions;
 
 import com.gruppo4.sms.dataLink.SMSPeer;
 
-public class InvalidTelephoneNumberException extends Exception {
+public class InvalidTelephoneNumberException extends RuntimeException {
 
     private SMSPeer.TelephoneNumberState state;
 
