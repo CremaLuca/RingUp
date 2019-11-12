@@ -2,6 +2,8 @@ package com.gruppo4.communication.network;
 
 import com.gruppo4.communication.dataLink.Peer;
 
+import java.util.ArrayList;
+
 /**
  * @param <U>  Peer for users in the network
  * @author Group 4
@@ -44,24 +46,24 @@ public interface NetworkDictionary<U extends Peer> {
      * @param resource
      * @return
      */
-    U[] getUsersByResource(Resource resource);
+    ArrayList<U> getUsersByResource(Resource resource);
 
     /**
      * Get all the resources for a user
      * @param user
      * @return
      */
-    Resource[] getResourcesByUser(U user);
+    ArrayList<Resource> getResourcesByUser(U user);
 
     /**
      * Get the whole list of users from the network
      * @return a list of users in the network
      */
-    U[] getAllUsers();
+    ArrayList<U> getAllUsers();
 
     /**
      * Get all the resources available in the network
      * @return a list of resources in the network
      */
-    Resource[] getAllResources();
+    ArrayList<Resource> getAllResources();
 }

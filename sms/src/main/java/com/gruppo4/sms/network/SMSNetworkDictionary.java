@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -18,14 +19,14 @@ import java.util.Set;
  */
 public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 
-    private Set<SMSPeer> userList;
+    private ArrayList<SMSPeer> userList;
     private HashMap<SMSPeer, Set<Resource>> resourcesDict;
 
     /**
      * Constructor for the dictionary
      */
     protected SMSNetworkDictionary() {
-        userList = new HashSet<>();
+        userList = new ArrayList<>();
         resourcesDict = new HashMap<>();
     }
 
@@ -35,8 +36,13 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * @param peer SMS user
      */
     @Override
-    public void addUser(SMSPeer peer) {
-        userList.add(peer);
+    public void addUser(SMSPeer peer) { //dict is sorted by address
+        for(int i = 0; i < userList.size(); i++){
+            if(Integer.parseInt(userList.get(i).getAddress()) > Integer.parseInt(peer.getAddress())){
+                userList.add(i, peer);
+                break;
+            }
+        }
     }
 
     /**
@@ -90,7 +96,7 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * @return array of SMS users
      */
     @Override
-    public SMSPeer[] getUsersByResource(Resource resource) {
+    public ArrayList<SMSPeer> getUsersByResource(Resource resource) {
         ArrayList<SMSPeer> peers = new ArrayList<>();
         for (SMSPeer user : resourcesDict.keySet()) {
             for (Resource currentResource : resourcesDict.get(user)) {
@@ -100,7 +106,7 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
                 }
             }
         }
-        return peers.toArray(new SMSPeer[peers.size()]);
+        return peers;
     }
 
     /**
@@ -110,19 +116,17 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * @return array of resources for the given SMS user
      */
     @Override
-    public Resource[] getResourcesByUser(SMSPeer user) {
+    public ArrayList<Resource> getResourcesByUser(SMSPeer user) {
         Set<Resource> userResources = resourcesDict.get(user);
-        if (userResources == null)
-            return new Resource[0];
-        return userResources.toArray(new Resource[userResources.size()]);
+        return new ArrayList<>(userResources);
     }
 
     /**
      * @return an array of all the users in the network
      */
     @Override
-    public SMSPeer[] getAllUsers() {
-        return userList.toArray(new SMSPeer[userList.size()]);
+    public ArrayList<SMSPeer> getAllUsers() {
+        return userList;
     }
 
     /**
@@ -131,11 +135,11 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * @return an array of all the resources available in the netwrok
      */
     @Override
-    public Resource[] getAllResources() {
+    public  ArrayList<Resource> getAllResources() {
         Set<Resource> resourceList = new HashSet<>();
         for (Set<Resource> userResources : resourcesDict.values()) {
             resourceList.addAll(userResources);
         }
-        return resourceList.toArray(new Resource[resourceList.size()]);
+        return new ArrayList<>(resourceList);
     }
 }
