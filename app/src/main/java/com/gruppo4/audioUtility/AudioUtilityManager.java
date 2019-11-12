@@ -20,7 +20,6 @@ public class AudioUtilityManager {
      * @return The current Alarm Volume (in percentage).
      */
     public static int getCurrentAlarmVolume(Context context) {
-
         int currentVolume = getAudioManager(context).getStreamVolume(AudioManager.STREAM_ALARM);
 
         int maxVolume = getMaxAlarmVolume(context);
@@ -44,13 +43,12 @@ public class AudioUtilityManager {
     }
 
     /**
+     * Sets up the Alarm Volume, given a certain percentage.
      * @param context
      * @param percentage
      * @throws IllegalArgumentException if percentage is not between 0 and 100.
-     *                                  Sets up the Alarm Volume, given a certain percentage.
      */
     public static void setAlarmVolume(Context context, int percentage) throws IllegalArgumentException {
-
         if (percentage < MIN_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too low. Please insert a value between 0 and 100.");
         else if (percentage > MAX_PERCENTAGE) {
@@ -69,18 +67,19 @@ public class AudioUtilityManager {
                 newVolume,
                 AudioManager.FLAG_SHOW_UI
         );
-
     }
 
     /**
-     * @param context Sets up the Alarm Volume to its maximum value (in percentage).
+     * Sets up the Alarm Volume to its maximum value (in percentage).
+     * @param context
      */
     public static void setMaxAlarmVolume(Context context) {
         setAlarmVolume(context, MAX_PERCENTAGE);
     }
 
     /**
-     * @param context Sets up the Alarm Volume to its minimum value (in percentage).
+     * Sets up the Alarm Volume to its minimum value (in percentage).
+     * @param context
      */
     public static void setMinAlarmVolume(Context context) {
         setAlarmVolume(context, MIN_PERCENTAGE);

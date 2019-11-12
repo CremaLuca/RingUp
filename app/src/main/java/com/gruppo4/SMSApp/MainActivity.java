@@ -15,9 +15,6 @@ import com.gruppo4.audioUtility.AudioUtilityManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int TEST_ZERO = 0;
-    private static final int TEST_ONE = 1;
-    private static final int TEST_TWO = 2;
 
     // Default app volume, expressed in percentage
     private static final int DEFAULT_APP_VOLUME = 50;
@@ -64,4 +61,3 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
-//TODO TESTING
