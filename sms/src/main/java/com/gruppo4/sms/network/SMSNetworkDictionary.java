@@ -18,8 +18,16 @@ import java.util.Set;
  */
 public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 
-    private Set<SMSPeer> userList = new HashSet<>();
-    private HashMap<SMSPeer, Set<Resource>> resourcesDict = new HashMap<>();
+    private Set<SMSPeer> userList;
+    private HashMap<SMSPeer, Set<Resource>> resourcesDict;
+
+    /**
+     * Constructor for the dictionary
+     */
+    protected SMSNetworkDictionary() {
+        userList = new HashSet<>();
+        resourcesDict = new HashMap<>();
+    }
 
     /**
      * Registers a SMS user to the network
@@ -35,7 +43,7 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * Registers the couple key value (user, resource) into the dictionary
      * The user must not have already another copy of the resource
      *
-     * @param user     the holder of the resource
+     * @param user     the holder of the resource, must be already in the user list via {@link #addUser(SMSPeer) addUser}
      * @param resource the resource identification and details
      */
     @Override
@@ -105,7 +113,7 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
     public Resource[] getResourcesByUser(SMSPeer user) {
         Set<Resource> userResources = resourcesDict.get(user);
         if (userResources == null)
-            return null;
+            return new Resource[0];
         return userResources.toArray(new Resource[userResources.size()]);
     }
 
