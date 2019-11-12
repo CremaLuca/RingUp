@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public void applyText(String password, Context context) {
         PasswordManager.setPassword(context, password);
         checkPermission(context);
-        Toast.makeText(context, "Password saved", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Password saved", Toast.LENGTH_LONG).show();
     }
 
     /**
