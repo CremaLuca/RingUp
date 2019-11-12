@@ -24,11 +24,10 @@ import java.util.ArrayList;
 
 public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSMessage>
 {
-    private final String JOIN_REQUEST = "JOIN-REQ";
-    private final String JOIN_ACCEPT = "JOIN-ACC";
-    private final String LEAVE_REQUEST = "LEAVE-REQ";
-    private final String ADD_USER = "ADD-USER";
-    private final String REMOVE_USER = "RMV-USER";
+    private final String JOIN_PROPOSAL = "JOIN-PRO"; //we send
+    private final String JOIN_AGREED = "JOIN-ACK"; //newcomer is welcome
+    private final String ADD_USER = "ADD-USER"; //someone has connected
+    private final String REMOVE_USER = "RMV-USER"; //someone has disconnected
     private final String ADD_RESOURCE = "ADD-RES";
     private final String REMOVE_RESOURCE = "RMV-RES";
 
@@ -55,57 +54,62 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
     }
 
     public void invite(SMSPeer peer){
-        SMSMessage invMsg = new SMSMessage(handler.getApplicationCode(), peer, JOIN_REQUEST + "_" + networkName);
+        SMSMessage invMsg = new SMSMessage(handler.getApplicationCode(), peer, JOIN_PROPOSAL + "_" + networkName);
         joinSent.add(peer);
         handler.sendMessage(invMsg);
     }
     public  void disconnect(){
-
+        spread(REMOVE_USER + "_" + mySelf.getAddress());
         dict = new SMSNetworkDictionary();
         joinSent = new ArrayList<>();
-        spread(LEAVE_REQUEST + "_" + mySelf.getAddress());
     }
     public void addResource(Resource res){
-        dict.addResource(mySelf, res);
         spread(ADD_RESOURCE + "_" + res.toString() + "_" + mySelf.getAddress());
+        dict.addResource(mySelf, res);
     }
     public void removeResource(Resource res){
-        dict.removeResource(mySelf, res);
         spread(REMOVE_RESOURCE + "_" + res.toString() + "_" + mySelf.getAddress());
+        dict.removeResource(mySelf, res);
     }
 
     public void addUser(SMSPeer peer){
-        dict.addUser(peer);
         spread(ADD_USER + "_" + peer.toString());
+        dict.addUser(peer);
     }
 
     public  void removeUser(SMSPeer peer){
-        dict.removeUser(peer);
         spread(REMOVE_USER + "_" + peer.getAddress());
+        dict.removeUser(peer);
     }
 
     public void onMessageReceived(SMSMessage message){
         String text = message.getData();
-        if(text.equals(JOIN_ACCEPT)){
+        SMSPeer peer = message.getPeer();
 
+        if(text.equals(JOIN_PROPOSAL)){
+            //we should let the app decide
         }
-        else if(text.equals(JOIN_REQUEST)){
+        else if(text.equals(JOIN_AGREED)){
 
-        }
-        else if(text.equals(LEAVE_REQUEST)){
-
+            if(joinSent.contains(peer)){
+                addUser(peer);
+                //send the whole dict to the newcomer
+            }
+            else{
+                //ignore
+            }
         }
         else if(text.equals(ADD_USER)){
-
+            addUser(peer);
         }
         else if(text.equals(REMOVE_USER)){
-
+            removeUser(peer);
         }
         else if(text.equals(ADD_RESOURCE)){
-
+            //should build resource from textMsg
         }
         else if(text.equals(REMOVE_RESOURCE)){
-
+            //should build resource from textMsg
         }
         else{
             throw new IllegalStateException("Should not have received this command");
