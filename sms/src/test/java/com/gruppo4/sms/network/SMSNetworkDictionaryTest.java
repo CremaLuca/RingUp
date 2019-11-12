@@ -17,24 +17,29 @@ public class SMSNetworkDictionaryTest {
 
     private static final SMSPeer DEFAULT_USER_1 = new SMSPeer(DEFAULT_PEER_ADDRESS);
     private static final SMSPeer DEFAULT_USER_2 = new SMSPeer(DEFAULT_PEER_ADDRESS + "1");
+    private static final SMSPeer DEFAULT_USER_3 = new SMSPeer(DEFAULT_PEER_ADDRESS + "2");
     private static final TestResource DEFAULT_RESOURCE_1 = new TestResource(DEFAULT_RESOURCE_ID);
     private static final TestResource DEFAULT_RESOURCE_2 = new TestResource(DEFAULT_RESOURCE_ID + "1");
+    private static final TestResource DEFAULT_RESOURCE_3 = new TestResource(DEFAULT_RESOURCE_ID + "2");
     private static final TestResource[] DEFAULT_RESOURCE_ARRAY = new TestResource[]{DEFAULT_RESOURCE_1, DEFAULT_RESOURCE_2};
     private static final SMSPeer[] DEFAULT_USER_ARRAY = new SMSPeer[]{DEFAULT_USER_1, DEFAULT_USER_2};
+    private static final TestResource[] USER_1_RESOURCES = new TestResource[]{DEFAULT_RESOURCE_1, DEFAULT_RESOURCE_2};
+    private static final TestResource[] USER_2_RESOURCES = new TestResource[]{DEFAULT_RESOURCE_1};
+    private static final TestResource[] EMPTY_RESOURCES = new TestResource[0];
 
-    private SMSNetworkDictionary dictionary;
+    private SMSNetworkDictionary defaultDictionary;
 
     /**
      * @throws Exception ??? Auto-generated from Android Studio
      */
     @Before
     public void setUp() throws Exception {
-        dictionary = new SMSNetworkDictionary();
-        dictionary.addUser(DEFAULT_USER_1);
-        dictionary.addUser(DEFAULT_USER_2);
-        dictionary.addResource(DEFAULT_USER_1, DEFAULT_RESOURCE_1);
-        dictionary.addResource(DEFAULT_USER_1, DEFAULT_RESOURCE_2);
-        dictionary.addResource(DEFAULT_USER_2, DEFAULT_RESOURCE_1);
+        defaultDictionary = new SMSNetworkDictionary();
+        defaultDictionary.addUser(DEFAULT_USER_1);
+        defaultDictionary.addUser(DEFAULT_USER_2);
+        defaultDictionary.addResource(DEFAULT_USER_1, DEFAULT_RESOURCE_1);
+        defaultDictionary.addResource(DEFAULT_USER_1, DEFAULT_RESOURCE_2);
+        defaultDictionary.addResource(DEFAULT_USER_2, DEFAULT_RESOURCE_1);
     }
 
     private boolean compareArray(Object[] array1, Object[] array2) {
@@ -45,49 +50,107 @@ public class SMSNetworkDictionaryTest {
 
     @Test
     public void getAllUsers_user_isEquals() {
-        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, dictionary.getAllUsers()));
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
     }
 
     @Test
     public void getAllResources_resources_areEquals() {
-        Resource[] allResources = dictionary.getAllResources();
+        Resource[] allResources = defaultDictionary.getAllResources();
         Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, allResources));
     }
 
     @Test
     public void removeUser_users_areEquals() {
-        dictionary.removeUser(DEFAULT_USER_1);
-        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_2}, dictionary.getAllUsers()));
+        defaultDictionary.removeUser(DEFAULT_USER_1);
+        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_2}, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void removeUser_users_areEquals2() {
+        defaultDictionary.removeUser(DEFAULT_USER_2);
+        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_1}, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void removeUser_nonExistentUser_users_areEquals() {
+        defaultDictionary.removeUser(DEFAULT_USER_3);
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void removeUser_users_isEmpty() {
+        defaultDictionary.removeUser(DEFAULT_USER_1);
+        defaultDictionary.removeUser(DEFAULT_USER_2);
+        Assert.assertTrue(compareArray(new SMSPeer[0], defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void removeUser_resources_isEmpty() {
+        defaultDictionary.removeUser(DEFAULT_USER_1);
+        defaultDictionary.removeUser(DEFAULT_USER_2);
+        Assert.assertTrue(compareArray(EMPTY_RESOURCES, defaultDictionary.getAllResources()));
     }
 
     @Test
     public void removeUser_resources_areEquals() {
-        dictionary.removeUser(DEFAULT_USER_1);
-        Assert.assertTrue(compareArray(new TestResource[]{DEFAULT_RESOURCE_1}, dictionary.getAllResources()));
+        defaultDictionary.removeUser(DEFAULT_USER_1);
+        Assert.assertTrue(compareArray(USER_2_RESOURCES, defaultDictionary.getAllResources()));
+    }
+
+    @Test
+    public void removeUser_resources_areEquals2() {
+        defaultDictionary.removeUser(DEFAULT_USER_2);
+        Assert.assertTrue(compareArray(USER_1_RESOURCES, defaultDictionary.getAllResources()));
+    }
+
+    @Test
+    public void removeUser_nonExistentUser_resources_areEquals() {
+        defaultDictionary.removeUser(DEFAULT_USER_3);
+        Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, defaultDictionary.getAllResources()));
     }
 
     @Test
     public void removeResource_resources_areEquals() {
-        dictionary.removeResource(DEFAULT_USER_1, DEFAULT_RESOURCE_1);
-        Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, dictionary.getAllResources()));
+        defaultDictionary.removeResource(DEFAULT_USER_1, DEFAULT_RESOURCE_1);
+        Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, defaultDictionary.getAllResources()));
     }
 
     @Test
-    public void getUsersByResource() {
+    public void getResourcesByUser_resources_areEquals() {
+        Assert.assertTrue(compareArray(USER_1_RESOURCES, defaultDictionary.getResourcesByUser(DEFAULT_USER_1)));
+    }
+
+    @Test
+    public void getResourcesByUser_resources_areEquals2() {
+        Assert.assertTrue(compareArray(USER_2_RESOURCES, defaultDictionary.getResourcesByUser(DEFAULT_USER_2)));
+    }
+
+    @Test
+    public void getResourcesByUser_resources_isEmpty() {
+        Assert.assertTrue(compareArray(EMPTY_RESOURCES, defaultDictionary.getResourcesByUser(DEFAULT_USER_3)));
+    }
+
+    @Test
+    public void getUsersByResource_users_areEquals() {
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getUsersByResource(DEFAULT_RESOURCE_1)));
+    }
+
+    @Test
+    public void getUsersByResource_users_areEquals2() {
+        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_1}, defaultDictionary.getUsersByResource(DEFAULT_RESOURCE_2)));
+    }
+
+    @Test
+    public void getUsersByResource_users_isEmpty() {
+        Assert.assertTrue(compareArray(new SMSPeer[0], defaultDictionary.getUsersByResource(DEFAULT_RESOURCE_3)));
+    }
+
+    @Test
+    public void test_compareArray_isCorrect() {
         Resource[] arr1 = new TestResource[]{DEFAULT_RESOURCE_1, DEFAULT_RESOURCE_2};
         TestResource[] arr2 = new TestResource[]{DEFAULT_RESOURCE_2, DEFAULT_RESOURCE_1};
         Assert.assertTrue(compareArray(arr1, arr2));
     }
 
-    @Test
-    public void getResourcesByUser() {
-    }
 
-    @Test
-    public void getAllUsers() {
-    }
-
-    @Test
-    public void getAllResources() {
-    }
 }
