@@ -1,2 +1,2 @@
-include ':app', ':sms', ':preferences'
+include ':sms', ':preferences'
 rootProject.name='SMSApp'

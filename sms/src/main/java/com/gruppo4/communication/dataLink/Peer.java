@@ -19,9 +19,6 @@ public abstract class Peer<A> {
     }
 
     @NonNull
-    @Override
-    public String toString() {
-        return address.toString();
-    }
+    public abstract String toString();
 
 }

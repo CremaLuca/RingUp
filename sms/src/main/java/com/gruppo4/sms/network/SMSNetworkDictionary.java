@@ -1,5 +1,6 @@
 package com.gruppo4.sms.network;
 
+import com.gruppo4.communication.dataLink.Peer;
 import com.gruppo4.communication.network.NetworkDictionary;
 import com.gruppo4.communication.network.Resource;
 import com.gruppo4.sms.dataLink.SMSPeer;

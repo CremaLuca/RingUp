@@ -107,11 +107,9 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
         if (dividedBySystem.size() > 1)
             throw new IllegalStateException("The message is too long (???) how can it be? Are we dividing it in a wrong way?");
         String smsContent = SMSMessageHandler.getInstance().getOutput(message);
-
         SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver(message, listener);
         ctx.registerReceiver(onSentReceiver, new IntentFilter(SENT_MESSAGE_INTENT_ACTION));
         PendingIntent sentPI = PendingIntent.getBroadcast(ctx, 0, new Intent(SENT_MESSAGE_INTENT_ACTION), 0);
-
         SMSCore.sendMessage(smsContent, message.getPeer().getAddress(), sentPI);
     }
 

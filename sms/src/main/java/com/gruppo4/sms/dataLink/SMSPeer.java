@@ -1,5 +1,7 @@
 package com.gruppo4.sms.dataLink;
 
+import androidx.annotation.NonNull;
+
 import com.gruppo4.communication.dataLink.Peer;
 
 /**
@@ -68,6 +70,11 @@ public class SMSPeer extends Peer<String> {
             return false;
         SMSPeer peer = (SMSPeer) o;
         return address.equals(peer.address);
+    }
+
+    @NonNull
+    public String toString(){
+        return address;
     }
 
 }
