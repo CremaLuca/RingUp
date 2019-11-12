@@ -10,8 +10,6 @@ import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 /* SMS REQUESTS FORMATS
@@ -38,7 +36,7 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
     private static SMSNetworkManager instance;
     private static SMSHandler handler;
     private static String networkName;
-    private static ArrayList<SMSPeer> joinSent;
+    private static ArrayList<SMSPeer> joinSent = new ArrayList<>();
 
 
     static public SMSNetworkManager getInstance(Context ctx){
