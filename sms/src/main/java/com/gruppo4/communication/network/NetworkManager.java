@@ -11,6 +11,4 @@ public interface NetworkManager<P extends Peer, V extends Resource, T extends Me
     void disconnect();
     void addResource(V resource);
     void removeResource(V resource);
-    void addUser(P peer);
-    void removeUser(P peer);
 }

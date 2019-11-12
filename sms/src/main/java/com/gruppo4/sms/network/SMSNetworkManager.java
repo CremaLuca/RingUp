@@ -14,10 +14,9 @@ import java.util.ArrayList;
 
 /* SMS REQUESTS FORMATS
 *  Join:            "JOIN-REQUEST_%networkName"
-*  Leave:           "LEAVE-REQUEST_%address"     //node x send leave requests to K nodes, who will spread this request to other nodes: for this to be done, we pass the address of x
-*  AddUser:         "ADD-USER_%peerInfo"             //we include info from peer
-*  RemoveUser:      "REMOVE-USER_%address"
-*  AddResource:     "ADD-RESOURCE_%resourceInfo"     //we include info from resource
+*  AddUser:         "ADD-USER_%peerInfo"             we include info from peer
+*  RemoveUser:      "REMOVE-USER_%address"           node x sends disconnects requests to K nodes, who will spread this request to other nodes: for this to be done, we pass the address of x
+*  AddResource:     "ADD-RESOURCE_%resourceInfo"     we include info from resource
 *  RemoveResource:  "REMOVE-RESOURCE_%resourceIdentifier"
 * */
 
@@ -50,6 +49,7 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
         handler.setup(applicationCode);
         SMSNetworkManager.networkName = networkName;
         SMSNetworkManager.mySelf = mySelf;
+        dict.addUser(mySelf);
     }
 
     public void invite(SMSPeer peer){
@@ -57,27 +57,35 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
         joinSent.add(peer);
         handler.sendMessage(invMsg);
     }
-    public  void disconnect(){
-        spread(REMOVE_USER + "_" + mySelf.toString());
+    public void disconnect(){
+        spread(REMOVE_USER + "_" + mySelf.getAddress());
         dict = new SMSNetworkDictionary();
         joinSent = new ArrayList<>();
     }
+
     public void addResource(Resource res){
-        spread(ADD_RESOURCE + "_" + res.toString() + "_" + mySelf.getAddress());
-        dict.addResource(mySelf, res);
-    }
-    public void removeResource(Resource res){
-        spread(REMOVE_RESOURCE + "_" + res.toString() + "_" + mySelf.getAddress());
-        dict.removeResource(mySelf, res);
+
     }
 
-    public void addUser(SMSPeer peer){
+    public void removeResource(Resource res){
+
+    }
+
+    private void addPeerResource(Resource res, SMSPeer p){
+
+    }
+
+    private void removePeerResource(Resource res, SMSPeer p){
+
+    }
+
+    private void addUser(SMSPeer peer){
         spread(ADD_USER + "_" + peer.toString());
         dict.addUser(peer);
     }
 
-    public  void removeUser(SMSPeer peer){
-        spread(REMOVE_USER + "_" + peer.toString());
+    private void removeUser(SMSPeer peer){
+        spread(REMOVE_USER + "_" + peer.getAddress());
         dict.removeUser(peer);
     }
 
@@ -95,8 +103,9 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
                 joinSent.remove(sourcePeer);
                 //send the whole dict to the newcomer
                 for(SMSPeer p: dict.getAllUsers()){
-                    SMSMessage msg = new SMSMessage(handler.getApplicationCode(), sourcePeer, ADD_USER + "_" + p.toString());
-                    handler.sendMessage(msg);
+                    for(Resource res: dict.getResourcesByUser(p)){
+                        //send peer and res
+                    }
                 }
             }
             else{
