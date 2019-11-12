@@ -1,41 +1,49 @@
 package com.gruppo4.SMSApp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.sms.SMSController;
 import com.gruppo4.sms.SMSMessage;
 
+/**
+ * @author Alessandra Tonin
+ */
+
 public class MainActivity extends AppCompatActivity {
 
-    /*
-     *What happens when the app is opened
-     *@param a Bundle
-     *@return void
+    final String myPhoneNumber = "5555215554";
+    final String myHelloText = "Hello, this is a test sms";
+    final String mySentFeedback = "Message sent!!";
+
+    /**
+     * What happens when the app is opened
+     *
+     * @param savedInstanceState a Bundle object
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //we ask for the permissions to send and receive sms
-        requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
-        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},1);
+        requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
+        requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1);
 
         //send a sms as the app is opened
         SMSController controller = new SMSController();
-        SMSMessage sms = new SMSMessage("3457090735", "hello, this is a test sms");
+        SMSMessage sms = new SMSMessage(myPhoneNumber, myHelloText);
         controller.sendMessage(sms);
 
         //this is a toast to notify the message's sending
         Context context = getApplicationContext();
-        CharSequence text = "Message sent!";
+        CharSequence text = mySentFeedback;
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);

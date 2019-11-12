@@ -3,18 +3,20 @@ package com.gruppo4.sms;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.Log;
-import android.widget.Toast;
+
+/**
+ * @author Alessandra Tonin, Luca Crema
+ */
 
 public class SMSReceiver extends BroadcastReceiver {
 
-    /*
-     *Receives a sms message
-     *@param a Context and an Intent
-     *@return void
+    /**
+     * Receives a sms message
+     *
+     * @param context the current application context
+     * @param intent
      */
     @Override
     public void onReceive(Context context, Intent intent) {

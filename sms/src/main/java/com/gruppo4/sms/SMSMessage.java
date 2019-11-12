@@ -1,35 +1,40 @@
 package com.gruppo4.sms;
 
+/**
+ * @author Alessandra Tonin
+ */
+
 public class SMSMessage {
 
     private String number = "";
     private String text = "";
 
-    /*
-     *constructor
-     *@param a String as phone number to which we send the message and a String as the text of the message
-     *@return 
+    /**
+     * Constructor for SMSMessage object
+     *
+     * @param phoneNum the phone number to which we send the message
+     * @param smsTxt   the text of the message
      */
-    public SMSMessage(String phoneNum, String smsTxt){
+    public SMSMessage(String phoneNum, String smsTxt) {
         number = phoneNum;
         text = smsTxt;
     }
 
-    /*
-     *Returns the phone number to which we send the message
-     *@param no parameters
-     *@return the phone number
+    /**
+     * Gets the phone number to which we send the message
+     *
+     * @return the phone number
      */
-    public String getPhoneNumber(){
+    public String getPhoneNumber() {
         return number;
     }
 
-    /*
-     *Returns the message text
-     *@param no parameters
-     *@return the message text
+    /**
+     * Gets the message text
+     *
+     * @return the message text
      */
-    public String getTextMessage(){
+    public String getTextMessage() {
         return text;
     }
 }

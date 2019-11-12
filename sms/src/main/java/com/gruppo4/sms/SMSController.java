@@ -1,11 +1,12 @@
 package com.gruppo4.sms;
 
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.telephony.SmsManager;
 
 import java.util.ArrayList;
+
+/**
+ * @author Alessandra Tonin
+ */
 
 public class SMSController {
 
@@ -13,50 +14,51 @@ public class SMSController {
     private static ArrayList<SMSSentListener> sentListeners = new ArrayList<>();
 
 
-    /*
-     *constructor
+    /**
+     * Constructor for SMSController object
      */
-    public SMSController(){};
+    public SMSController() {
+    }
 
-    /*
-     *send a SMS message
-     *@param an object of SMSMessage class
-     *@return void
+    ;
+
+    /**
+     * Send a SMS message
+     *
+     * @param message an object of SMSMessage class
      */
-    public void sendMessage(SMSMessage message){
+    public void sendMessage(SMSMessage message) {
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(message.getPhoneNumber(), null, message.getTextMessage(),null, null);
+        sms.sendTextMessage(message.getPhoneNumber(), null, message.getTextMessage(), null, null);
 
     }
 
-    /*
-     *add a listener to the list receivedListeners
-     *@param an object of SMSReceivedListener class
-     *@return void
+    /**
+     * Add a listener to the list receivedListeners
+     *
+     * @param listener an object of SMSReceivedListener class
      */
-    //NB: su Trello si chiama onMessageReceived(SMSReceivedListener listener)
-    public static void addOnReceivedListeners(SMSReceivedListener listener){
+    public static void addOnReceivedListeners(SMSReceivedListener listener) {
         receivedListeners.add(listener);
     }
 
-    /*
-     *add a listener to the list sentListeners
-     *@param an object of SMSSentListener class
-     *@return void
+    /**
+     * Add a listener to the list sentListeners
+     *
+     * @param listener an object of SMSSentListener class
      */
-    //NB: su Trello si chiama onMessageSent(SMSSentListener listener)
-    public static void addOnSentListeners(SMSSentListener listener){
+    public static void addOnSentListeners(SMSSentListener listener) {
         sentListeners.add(listener);
     }
 
-    /*
-     *When a message arrives, call the receivedListener
-     *@param a SMSMessage object
-     *@return void
+    /**
+     * When a message arrives, call the receivedListener
+     *
+     * @param message a SMSMessage object
      */
-    public static void callReceivedListeners(SMSMessage message){
-        for (SMSReceivedListener listener : receivedListeners){
+    public static void callReceivedListeners(SMSMessage message) {
+        for (SMSReceivedListener listener : receivedListeners) {
             listener.onMessageReceived(message);
         }
     }
