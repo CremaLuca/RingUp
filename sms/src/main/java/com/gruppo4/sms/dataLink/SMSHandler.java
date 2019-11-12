@@ -10,6 +10,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.gruppo4.communication.dataLink.CommunicationHandler;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
@@ -158,5 +159,9 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
     protected void callReceivedMessageListener(SMSMessage message) {
         if (this.receivedMessageListener != null)
             this.receivedMessageListener.onMessageReceived(message);
+    }
+
+    public void addCustomReceivedListener(SMSReceivedListener listener) {
+        SMSReceivedBroadcastReceiver.listener = listener;
     }
 }

@@ -1,10 +1,14 @@
 package com.gruppo4.SMSApp;
 
+import android.Manifest;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.sms.dataLink.SMSHandler;
+import com.gruppo4.sms.dataLink.SMSMessage;
+import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
  * @author Gruppo 4
@@ -13,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setup() {
         //Initialize the receiver
+        SMSHandler.getInstance(this).setup(123);
         SMSHandler.getInstance(this).addReceivedMessageListener(new ActivityHelper());
     }
 
@@ -20,12 +25,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setup();
+
+        if(!SMSHandler.checkPermissions(this)) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
+        }else{
+            sendTestMessage();
+        }
     }
 
-    private void sendRingCommand(String destination, String password) {
-        //RingCommand command = new RingCommand(new SMSPeer(destination), password);
-        //AppManager.sendCommand(this,command,new SMSSentListener(){})
-        //TODO : Dentro al listener un toast per dire che il comando è stato inviato
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        sendTestMessage();
+
+    }
+
+    private void sendTestMessage(){
+        SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,new SMSPeer("+393467965447"),"Test message"));
     }
 
 }
