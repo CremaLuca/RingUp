@@ -25,10 +25,8 @@ public class SMSManager extends CommunicationHandler<SMSMessage> {
 
     @Override
     protected void callReceivedMessageListener(SMSMessage message) {
-        if (this.receivedMessageListener != null) {
+        if (this.receivedMessageListener != null)
             this.receivedMessageListener.onMessageReceived(message);
-        }
-
     }
 
     /**

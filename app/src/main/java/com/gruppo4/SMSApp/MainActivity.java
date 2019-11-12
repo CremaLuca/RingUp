@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
     private RecyclerView listView;
     private ListAdapter adapter;
     private static int mark = 0;
-    private static boolean active = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
         setContentView(R.layout.activity_main);
 
         //If the application is given the permissions before sending the first message, the SMSController setup is immediately done.
-        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+        if(checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
             setupSMSManager(getApplicationContext());
         }
 
@@ -81,28 +80,11 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        active = true;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        active = false;
-    }
-
-    public static boolean isActive() {
-        return active;
-    }
-
     private void setupSMSManager(Context ctx) {
         if (!SMSManager.getInstance(ctx).isSetup()) {
             SMSManager.getInstance(ctx).setup(APP_ID);
         }
-        //SMSManager.getInstance(ctx).addReceivedMessageListener(this);
-        SMSManager.getInstance(ctx).addReceivedMessageListener(new ActivityHelper());
+        SMSManager.getInstance(ctx).addReceivedMessageListener(this);
     }
 
     /**
@@ -220,15 +202,15 @@ public class MainActivity extends AppCompatActivity implements SMSReceivedListen
             if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
                 setupSMSManager(ctx);
-                if (mark == 1) {
+                if(mark == 1){
                     String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                     sendMessage(ctx, SMILE_COMMAND, phoneNumber);
                 }
-                if (mark == 2) {
+                if(mark == 2){
                     String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                     sendMessage(ctx, HEART_COMMAND, phoneNumber);
                 }
-                if (mark == 3) {
+                if(mark == 3){
                     String phoneNumber = ((EditText) findViewById(R.id.phoneNumberTextView)).getText().toString();
                     sendMessage(ctx, LONG_COMMAND, phoneNumber);
                 }
