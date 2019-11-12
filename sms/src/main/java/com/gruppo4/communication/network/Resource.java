@@ -14,7 +14,7 @@ public abstract class Resource{
      * @param other another object
      * @return true if the resource represented is the same
      */
-    public abstract  boolean equals(Object other);
+    public abstract boolean equals(Object other);
     public abstract int hashCode();
     public abstract String toString(); //serialization
 }

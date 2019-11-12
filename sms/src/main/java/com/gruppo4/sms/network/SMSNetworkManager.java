@@ -38,7 +38,6 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
     private static SMSPeer mySelf;
     private static ArrayList<SMSPeer> joinSent = new ArrayList<>();
 
-
     static public SMSNetworkManager getInstance(Context ctx){
         if (instance == null){
             instance = new SMSNetworkManager();
@@ -59,7 +58,7 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
         handler.sendMessage(invMsg);
     }
     public  void disconnect(){
-        spread(REMOVE_USER + "_" + mySelf.getAddress());
+        spread(REMOVE_USER + "_" + mySelf.toString());
         dict = new SMSNetworkDictionary();
         joinSent = new ArrayList<>();
     }
@@ -78,32 +77,37 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
     }
 
     public  void removeUser(SMSPeer peer){
-        spread(REMOVE_USER + "_" + peer.getAddress());
+        spread(REMOVE_USER + "_" + peer.toString());
         dict.removeUser(peer);
     }
 
     public void onMessageReceived(SMSMessage message){
         String text = message.getData();
-        SMSPeer peer = message.getPeer();
+        SMSPeer sourcePeer = message.getPeer();
 
         if(text.equals(JOIN_PROPOSAL)){
             //we should let the app decide
         }
         else if(text.equals(JOIN_AGREED)){
 
-            if(joinSent.contains(peer)){
-                addUser(peer);
+            if(joinSent.contains(sourcePeer)){
+                addUser(sourcePeer);
+                joinSent.remove(sourcePeer);
                 //send the whole dict to the newcomer
+                for(SMSPeer p: dict.getAllUsers()){
+                    SMSMessage msg = new SMSMessage(handler.getApplicationCode(), sourcePeer, ADD_USER + "_" + p.toString());
+                    handler.sendMessage(msg);
+                }
             }
             else{
                 //ignore
             }
         }
         else if(text.equals(ADD_USER)){
-            addUser(peer);
+            addUser(new SMSPeer(text.split("_")[1]));
         }
         else if(text.equals(REMOVE_USER)){
-            removeUser(peer);
+            removeUser(new SMSPeer(text.split("_")[1]));
         }
         else if(text.equals(ADD_RESOURCE)){
             //should build resource from textMsg
