@@ -11,7 +11,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 
 public class RingCommandHandler {
 
-    private static final String SPLIT_CHARACTER = "_";
+    public static final String SPLIT_CHARACTER = "_";
 
     /**
      * Extracts the password from the message received and create a RingCommand, null if the command is not valid

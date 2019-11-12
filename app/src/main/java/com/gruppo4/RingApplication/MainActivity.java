@@ -5,16 +5,20 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.gruppo4.RingApplication.ringCommands.AppManager;
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
 import com.gruppo4.RingApplication.ringCommands.ReceivedMessageListener;
 import com.gruppo4.RingApplication.ringCommands.RingCommand;
+import com.gruppo4.RingApplication.ringCommands.RingCommandHandler;
 import com.gruppo4.RingApplication.ringCommands.RingtoneHandler;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
@@ -32,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     private static final int PERMISSION_CODE = 0;
     private static final int APPLICATION_CODE = 1;
+    private static final int CHANGE_PASS_COMMAND = 0;
+    private static final int SET_PASS_COMMAND = 1;
+    private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +49,19 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         SMSHandler smsHandler = SMSHandler.getInstance(context);
 
         /**
-         * Two cases can occur, both satisfied by the following if:
+         * Two cases can occur:
          * 1st) The user open the app for the 1st time -> set a valid password -> grant permissions.
          * 2nd) The user open the app for the 1st time -> set a valid password -> DON'T grant permissions -> Re-enter the application -> Has the possibility to grant permits again ↺
+         * Both satisfied by the following if:
          */
 
         //If there's a password stored and the permissions are granted -> setup the SMSHandler
         if (PasswordManager.isPassSaved(context) && SMSHandler.checkReceivePermission(context))
             smsHandler.setup(APPLICATION_CODE);
 
-        //Password stored: if NOT -> open a dialog, if YES -> check permissions
+        //Password stored: if NOT -> open the dialog, if YES -> check permissions
         if (!PasswordManager.isPassSaved(context)) {
-            openDialog();
+            openDialog(SET_PASS_COMMAND);
         } else {
             checkPermission(context);
         }
@@ -63,9 +71,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         final EditText SEND_PASSWORD = findViewById(R.id.password);
         final Button RING_BUTTON = findViewById(R.id.button);
         final Button STOP_BUTTON = findViewById(R.id.stop);
+        final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.changePassword);
 
         smsHandler.addReceivedMessageListener(new ReceivedMessageListener(context, RINGTONE));
 
+        //Send the ring command
         RING_BUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,10 +89,19 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
         });
 
+        //Stop the ringtone
         STOP_BUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RingtoneHandler.stopRingtone(RINGTONE);
+            }
+        });
+
+        //Open a dialog where the user can change the password
+        CHANGE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog(CHANGE_PASS_COMMAND);
             }
         });
 
@@ -106,8 +125,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * @param destination telephone number of the receiver
-     * @param password
+     * @param destination the telephone number of the person you want to send the ring command
+     * @param password    to send
+     * @param context     of the application
+     * @throws InvalidSMSMessageException
+     * @throws InvalidTelephoneNumberException
      */
     private void sendRingCommand(String destination, String password, Context context) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         final RingCommand ringCommand = new RingCommand(new SMSPeer(destination), createPassword(password));
@@ -124,15 +146,22 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @return the passwords with a special character at the beginning
      */
     private String createPassword(String password) {
-        return "_" + password;
+        return SPLIT_CHARACTER + password;
     }
 
     /**
-     * Create the dialog where the user can enter a valid password or exit
+     * Create the dialog used to insert a valid password or exit/abort
      */
-    private void openDialog() {
-        PasswordDialog passwordDialog = new PasswordDialog();
-        passwordDialog.show(getSupportFragmentManager(), "Device Password");
+    private void openDialog(int command) {
+        if (isCommandChangePass(command)) {
+            PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
+            passwordDialog.show(getSupportFragmentManager(), "Device Password");
+        } else if (isCommandSetPass(command)) {
+            PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
+            passwordDialog.show(getSupportFragmentManager(), "Change Password");
+        } else {
+            Log.d("Command: ", "Wrong command");
+        }
     }
 
     /**
@@ -141,5 +170,19 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private void checkPermission(Context context) {
         if (!SMSHandler.checkReceivePermission(context))
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
+    }
+
+    /**
+     * Check if the command is CHANGE_PASSWORD
+     */
+    public boolean isCommandChangePass(int command) {
+        return command == CHANGE_PASS_COMMAND;
+    }
+
+    /**
+     * Check if the command is SET_PASSWORD
+     */
+    public boolean isCommandSetPass(int command) {
+        return command == SET_PASS_COMMAND;
     }
 }
