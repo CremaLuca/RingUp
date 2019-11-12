@@ -9,10 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
-
 import com.gruppo4.RingApplication.R;
 
 /**
@@ -31,6 +29,7 @@ public class PasswordDialog extends AppCompatDialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
+        final Context context = getContext();
 
         final EditText DEVICE_PASSWORD = view.findViewById(R.id.devicePassword);
         final Button SET_BUTTON = view.findViewById(R.id.setPass);
@@ -41,9 +40,9 @@ public class PasswordDialog extends AppCompatDialogFragment {
             public void onClick(View v) {
                 String password = DEVICE_PASSWORD.getText().toString();
                 if (passwordIsEmpty(password)) {
-                    Toast.makeText(getContext(), "Password is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show();
                 } else {
-                    passwordDialogListener.applyText(password);
+                    passwordDialogListener.applyText(password, context);
                     //Close the dialog
                     dismiss();
                 }

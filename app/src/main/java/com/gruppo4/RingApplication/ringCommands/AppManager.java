@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.Ringtone;
 import android.os.Handler;
 import android.widget.Toast;
-
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;

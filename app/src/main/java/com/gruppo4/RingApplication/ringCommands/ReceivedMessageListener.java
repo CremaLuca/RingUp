@@ -3,7 +3,6 @@ package com.gruppo4.RingApplication.ringCommands;
 import android.content.Context;
 import android.media.Ringtone;
 import android.util.Log;
-
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 
