@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public void setup() {
         //Initialize the receiver
         SMSHandler.getInstance(this).setup(123);
-        SMSHandler.getInstance(this).addReceivedMessageListener(ActivityHelper.class);
+        SMSHandler.getInstance(this).setReceivedMessageListener(ActivityHelper.class);
     }
 
     @Override
