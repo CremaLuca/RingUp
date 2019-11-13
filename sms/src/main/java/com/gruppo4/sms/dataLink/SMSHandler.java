@@ -117,13 +117,6 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
     }
 
     /**
-     * Method used by SMSReceivedBroadcastReceiver to store a packet
-     */
-    protected void onReceive(SMSMessage message) {
-        callReceivedMessageListener(message);
-    }
-
-    /**
      * Gets the identifier application code from the memory.
      *
      * @return the current application code
@@ -155,13 +148,7 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
         this.sendMessage(message, null);
     }
 
-    @Override
-    protected void callReceivedMessageListener(SMSMessage message) {
-        if (this.receivedMessageListener != null)
-            this.receivedMessageListener.onMessageReceived(message);
-    }
-
-    public void addCustomReceivedListener(SMSReceivedListener listener) {
-        SMSReceivedBroadcastReceiver.listener = listener;
+    public <T extends SMSReceivedListener> void addReceivedMessageListener(Class<T> service) {
+        SMSReceivedBroadcastReceiver.listener = service;
     }
 }

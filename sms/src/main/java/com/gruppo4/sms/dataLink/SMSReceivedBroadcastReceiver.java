@@ -7,15 +7,9 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
-
 public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
-    public static SMSReceivedListener listener;
-
-    public void setReceivedistener(SMSReceivedListener listener) {
-        this.listener = listener;
-    }
+    public static Class listener;
 
     public void onReceive(Context context, Intent intent) {
         Log.v("SMSReceiver", "Received message from android broadcaster");
@@ -28,10 +22,18 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 SmsMessage sms = SmsMessage.createFromPdu((byte[]) smsExtra[i], format);
                 String smsContent = sms.getMessageBody();
                 String phoneNumber = sms.getOriginatingAddress();
-
+                Log.d("SMSReceiver", "Parsing the message");
                 SMSMessage message = SMSMessageHandler.getInstance().parseMessage(smsContent, phoneNumber);
                 if (message != null && message.getApplicationID() == SMSHandler.getInstance(context).getApplicationCode()) {
-                    listener.onMessageReceived(message, context);
+                    Log.d("SMSReceiver", "Message is valid");
+                    if (listener != null) {
+                        Log.d("SMSReceiver", "Calling serivice via intent");
+                        Intent serviceIntent = new Intent(context, listener);
+                        serviceIntent.putExtra("Message", message);
+                        context.startService(serviceIntent);
+                    } else {
+                        Log.e("SMSReceiver", "Listener class is null");
+                    }
                 }
             }
         }
