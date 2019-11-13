@@ -6,7 +6,9 @@ import com.gruppo4.communication.dataLink.Message;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 
-public class SMSMessage extends Message<String, SMSPeer> {
+import java.io.Serializable;
+
+public class SMSMessage extends Message<String, SMSPeer> implements Serializable {
 
     public static final int MAX_MSG_TEXT_LEN = 155;
     private int applicationID;

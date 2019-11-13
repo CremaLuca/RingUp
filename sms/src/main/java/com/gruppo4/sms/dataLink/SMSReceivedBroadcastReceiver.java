@@ -13,12 +13,12 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public static SMSReceivedListener listener;
 
-    public void setReceivedistener(SMSReceivedListener listener) {
+    /*public void setReceivedistener(SMSReceivedListener listener) {
         this.listener = listener;
-    }
+    }*/
 
     public void onReceive(Context context, Intent intent) {
-        Log.v("SMSReceiver", "Received message from android broadcaster");
+        Log.d("SMSReceiver", "Received message from android broadcaster");
         Bundle extras = intent.getExtras();
         if (extras != null) {
             Object[] smsExtra = (Object[]) extras.get("pdus");
@@ -31,7 +31,11 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
                 SMSMessage message = SMSMessageHandler.getInstance().parseMessage(smsContent, phoneNumber);
                 if (message != null && message.getApplicationID() == SMSHandler.getInstance(context).getApplicationCode()) {
-                    listener.onMessageReceived(message, context);
+                    if(listener != null) {
+                        listener.onMessageReceived(message, context);
+                    } else {
+                        Log.d("SMSReceiver", "Listener is null...");
+                    }
                 }
             }
         }
