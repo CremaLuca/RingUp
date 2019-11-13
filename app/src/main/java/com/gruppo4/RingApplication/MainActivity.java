@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
+    private static final int WAIT_TIME = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         final Button RING_BUTTON = findViewById(R.id.button);
         final Button STOP_BUTTON = findViewById(R.id.stop);
         final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.changePassword);
+        final Button DELETE_PASSWORD_BUTTON = findViewById(R.id.deletePassword);
 
         smsHandler.addReceivedMessageListener(new ReceivedMessageListener(context, RINGTONE));
 
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
         });
 
-        //Stop the ringtone
+        //Button used to stop the ringtone
         STOP_BUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
         });
 
-        //Open a dialog where the user can change the password
+        //Button used to open a dialog where the user can change the password
         CHANGE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +111,15 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
         });
 
+        //Button used to delete the stored password and then open new set password dialog
+        DELETE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PasswordManager.setPassword(context, null);
+                Toast.makeText(context, "Password deleted", Toast.LENGTH_LONG).show();
+                openDialog(SET_PASS_COMMAND);
+            }
+        });
     }
 
     @Override
@@ -120,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     @Override
     public void applyText(String password, Context context) {
         PasswordManager.setPassword(context, password);
-        checkPermission(context);
-        Toast.makeText(context, "Password saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
+        waitForPermissions(WAIT_TIME);
     }
 
     /**
@@ -151,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Create the dialog used to insert a valid password or exit/abort
+     *
+     * @param command to open the right dialog
      */
     private void openDialog(int command) {
         if (isCommandChangePass(command)) {
@@ -166,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Simple method used to check permissions
+     *
+     * @param context of the application
      */
     private void checkPermission(Context context) {
         if (!SMSHandler.checkReceivePermission(context))
@@ -173,14 +192,27 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * Check if the command is CHANGE_PASSWORD
+     * @param time to wait before checking permits
+     */
+    private void waitForPermissions(int time) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkPermission(getApplicationContext());
+            }
+        }, time);
+    }
+
+    /**
+     * @param command to check
      */
     public boolean isCommandChangePass(int command) {
         return command == CHANGE_PASS_COMMAND;
     }
 
     /**
-     * Check if the command is SET_PASSWORD
+     * @param command to check
      */
     public boolean isCommandSetPass(int command) {
         return command == SET_PASS_COMMAND;

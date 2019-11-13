@@ -3,21 +3,29 @@ package com.gruppo4.RingApplication.ringCommands.dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.InputQueue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.gruppo4.RingApplication.MainActivity;
 import com.gruppo4.RingApplication.R;
-
-import org.w3c.dom.Text;
 
 /**
  * @author Alberto Ursino
@@ -84,7 +92,10 @@ public class PasswordDialog extends AppCompatDialogFragment {
             }
         });
 
-        return builder.create();
+        //The alert dialog won't be closed if the user presses outside it
+        Dialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     @Override
