@@ -37,7 +37,7 @@ public class PasswordManager {
      * @return true if there's a password saved in memory, false otherwise
      */
     public static boolean isPassSaved(Context context) {
-        return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(""));
+        return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(PreferencesManager.DEFAULT_STRING_RETURN));
     }
 
     /**
