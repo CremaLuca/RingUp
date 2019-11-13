@@ -11,6 +11,7 @@ import com.gruppo4.sms.dataLink.SMSReceivedBroadcastReceiver;
 
 /**
  * Abstract class to implement in order to wake up the service when a message is received
+ * Service MUST be added to app manifest
  *
  * @author Luca Crema
  */
