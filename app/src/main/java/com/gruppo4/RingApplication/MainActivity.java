@@ -7,10 +7,7 @@ import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,6 +23,7 @@ import com.gruppo4.RingApplication.ringCommands.RingCommandHandler;
 import com.gruppo4.RingApplication.ringCommands.RingtoneHandler;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
+import com.gruppo4.RingApplication.ringCommands.exceptions.IllegalCommandException;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -170,14 +168,14 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @param command to open the right dialog
      */
     private void openDialog(int command) {
-        if (isCommandChangePass(command)) {
-            PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
-            passwordDialog.show(getSupportFragmentManager(), "Device Password");
-        } else if (isCommandSetPass(command)) {
+        if (PasswordDialog.isCommandSetPass(command)) {
             PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
+            passwordDialog.show(getSupportFragmentManager(), "Device Password");
+        } else if (PasswordDialog.isCommandChangePass(command)) {
+            PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Change Password");
         } else {
-            Log.d("Command: ", "Wrong command");
+            throw new IllegalCommandException();
         }
     }
 
@@ -204,17 +202,4 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }, time);
     }
 
-    /**
-     * @param command to check
-     */
-    public boolean isCommandChangePass(int command) {
-        return command == CHANGE_PASS_COMMAND;
-    }
-
-    /**
-     * @param command to check
-     */
-    public boolean isCommandSetPass(int command) {
-        return command == SET_PASS_COMMAND;
-    }
 }

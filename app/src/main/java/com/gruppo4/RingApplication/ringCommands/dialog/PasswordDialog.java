@@ -107,21 +107,21 @@ public class PasswordDialog extends AppCompatDialogFragment {
     /**
      * Check if the password is empty, true = yes, false = no
      */
-    private boolean passwordIsEmpty(String password) {
+    private static boolean passwordIsEmpty(String password) {
         return password.equals("");
     }
 
     /**
      * Check if the command is CHANGE_PASSWORD
      */
-    public boolean isCommandChangePass(int command) {
+    public static boolean isCommandChangePass(int command) {
         return command == CHANGE_PASS_COMMAND;
     }
 
     /**
      * Check if the command is SET_PASSWORD
      */
-    public boolean isCommandSetPass(int command) {
+    public static boolean isCommandSetPass(int command) {
         return command == SET_PASS_COMMAND;
     }
 
