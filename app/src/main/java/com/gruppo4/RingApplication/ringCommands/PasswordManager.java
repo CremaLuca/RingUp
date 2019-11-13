@@ -38,4 +38,13 @@ public class PasswordManager {
     public static boolean isPassSaved(Context context) {
         return !(PreferencesManager.getString(context, STRING_KEY) == null);
     }
+
+    /**
+     * Delete the password saved
+     *
+     * @param context of the application
+     */
+    public static void deletePassword(Context context){
+        PreferencesManager.removeValue(context, STRING_KEY);
+    }
 }

@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         DELETE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PasswordManager.setPassword(context, null);
+                PasswordManager.deletePassword(context);
                 Toast.makeText(context, "Password deleted", Toast.LENGTH_LONG).show();
                 openDialog(SET_PASS_COMMAND);
             }
