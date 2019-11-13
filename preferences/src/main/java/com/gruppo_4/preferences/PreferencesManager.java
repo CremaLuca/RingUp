@@ -12,9 +12,9 @@ import android.preference.PreferenceManager;
  */
 public class PreferencesManager {
 
-    protected static final int DEFAULT_INTEGER_RETURN = -1;
-    protected static final String DEFAULT_STRING_RETURN = "";
-    protected static final boolean DEFAULT_BOOLEAN_RETURN = false;
+    public static final int DEFAULT_INTEGER_RETURN = -1;
+    public static final String DEFAULT_STRING_RETURN = "";
+    public static final boolean DEFAULT_BOOLEAN_RETURN = false;
 
     protected static final int DEFAULT_UPDATE_INT_ADD = 1;
 
@@ -45,7 +45,7 @@ public class PreferencesManager {
     /**
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return the value of the resource if present, -1 otherwise
+     * @return the value of the resource if present, {@link #DEFAULT_INTEGER_RETURN} ({@value #DEFAULT_INTEGER_RETURN}) otherwise
      */
     public static int getInt(Context ctx, String key) {
         return getSharedPreferences(ctx).getInt(key, DEFAULT_INTEGER_RETURN);
@@ -54,7 +54,7 @@ public class PreferencesManager {
     /**
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return the value of the resource if present, null otherwise
+     * @return the value of the resource if present, {@link #DEFAULT_STRING_RETURN} ({@value #DEFAULT_STRING_RETURN}) otherwise
      */
     public static String getString(Context ctx, String key) {
         return getSharedPreferences(ctx).getString(key, DEFAULT_STRING_RETURN);
@@ -63,7 +63,7 @@ public class PreferencesManager {
     /**
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return the value of the resource if present, false otherwis
+     * @return the value of the resource if present, {@link #DEFAULT_BOOLEAN_RETURN} ({@value #DEFAULT_BOOLEAN_RETURN}) otherwise
      */
     public static boolean getBoolean(Context ctx, String key) {
         return getSharedPreferences(ctx).getBoolean(key, DEFAULT_BOOLEAN_RETURN);
@@ -124,7 +124,7 @@ public class PreferencesManager {
     }
 
     /**
-     * Sums the value to 1
+     * Sums the current value of the preference to {@value DEFAULT_UPDATE_INT_ADD}
      *
      * @param ctx context of an Activity or Service
      * @param key key for the resource
@@ -168,6 +168,7 @@ public class PreferencesManager {
      * Use with caution
      *
      * @param ctx context of an Activity or Service
+     * @return if all the values have been removed correctly
      */
     public static boolean removeAllValues(Context ctx) {
         SharedPreferences.Editor editor = getEditor(ctx);
