@@ -10,11 +10,18 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.gruppo4.communication.dataLink.CommunicationHandler;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
 import java.util.ArrayList;
 
+/**
+ * Handles communications between peers of a sms communication channel
+ * Every message has the applicationID to prevent interfering with other apps using the same library
+ *
+ * @author Gruppo4
+ */
 public class SMSHandler extends CommunicationHandler<SMSMessage> {
 
     public static final String SENT_MESSAGE_INTENT_ACTION = "SMS_SENT";
@@ -116,13 +123,6 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
     }
 
     /**
-     * Method used by SMSReceivedBroadcastReceiver to store a packet
-     */
-    protected void onReceive(SMSMessage message) {
-        callReceivedMessageListener(message);
-    }
-
-    /**
      * Gets the identifier application code from the memory.
      *
      * @return the current application code
@@ -154,9 +154,13 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
         this.sendMessage(message, null);
     }
 
-    @Override
-    protected void callReceivedMessageListener(SMSMessage message) {
-        if (this.receivedMessageListener != null)
-            this.receivedMessageListener.onMessageReceived(message);
+    /**
+     * Sets a listener service class to be instantiated and started on a message arrival
+     *
+     * @param service A class reference to a service that extends {@link SMSReceivedListener}
+     * @param <T>     The class type to be instantiated and started
+     */
+    public <T extends SMSReceivedListener> void setReceivedMessageListener(Class<T> service) {
+        SMSReceivedBroadcastReceiver.listener = service;
     }
 }

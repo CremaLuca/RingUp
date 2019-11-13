@@ -2,7 +2,9 @@ package com.gruppo4.communication.dataLink;
 
 import androidx.annotation.NonNull;
 
-public abstract class Peer<A> {
+import java.io.Serializable;
+
+public abstract class Peer<A> implements Serializable {
 
     protected A address;
 
