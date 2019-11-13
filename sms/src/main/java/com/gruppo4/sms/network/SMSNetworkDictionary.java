@@ -1,6 +1,5 @@
 package com.gruppo4.sms.network;
 
-import com.gruppo4.communication.dataLink.Peer;
 import com.gruppo4.communication.network.NetworkDictionary;
 import com.gruppo4.communication.network.Resource;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -19,7 +17,15 @@ import java.util.Set;
  */
 public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 
+    /**
+     * Sorted user list
+     */
     private ArrayList<SMSPeer> userList;
+
+    /**
+     * Dictionary for the pair (Peer, Resources Set)
+     * For every user there is a single pair (Peer, Resource)
+     */
     private HashMap<SMSPeer, Set<Resource>> resourcesDict;
 
     /**
@@ -36,13 +42,17 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * @param peer SMS user
      */
     @Override
-    public void addUser(SMSPeer peer) { //dict is sorted by address
-        for(int i = 0; i < userList.size(); i++){
-            if(Integer.parseInt(userList.get(i).getAddress()) > Integer.parseInt(peer.getAddress())){
+    public void addUser(SMSPeer peer) {
+        if (userList.contains(peer))
+            return;
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).compareTo(peer) > 0) {
                 userList.add(i, peer);
-                break;
+                return;
             }
         }
+        //If the array is empty or the element is the last one
+        userList.add(peer);
     }
 
     /**
@@ -118,6 +128,8 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
     @Override
     public ArrayList<Resource> getResourcesByUser(SMSPeer user) {
         Set<Resource> userResources = resourcesDict.get(user);
+        if (userResources == null)
+            return new ArrayList<>();
         return new ArrayList<>(userResources);
     }
 
@@ -135,7 +147,7 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
      * @return an array of all the resources available in the netwrok
      */
     @Override
-    public  ArrayList<Resource> getAllResources() {
+    public ArrayList<Resource> getAllResources() {
         Set<Resource> resourceList = new HashSet<>();
         for (Set<Resource> userResources : resourcesDict.values()) {
             resourceList.addAll(userResources);

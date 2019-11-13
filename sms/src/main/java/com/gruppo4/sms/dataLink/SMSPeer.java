@@ -7,7 +7,7 @@ import com.gruppo4.communication.dataLink.Peer;
 /**
  * @author Luca Crema
  */
-public class SMSPeer extends Peer<String> {
+public class SMSPeer extends Peer<String> implements Comparable<SMSPeer> {
 
     public static final int MAX_TELEPHONE_NUMBER_LENGTH = 20;
     public static final int MIN_TELEPHONE_NUMBER_LENGTH = 7;
@@ -54,6 +54,11 @@ public class SMSPeer extends Peer<String> {
      */
     public TelephoneNumberState checkPhoneNumber() {
         return checkPhoneNumber(this.getAddress());
+    }
+
+    @Override
+    public int compareTo(SMSPeer o) {
+        return address.compareTo(o.address);
     }
 
     public enum TelephoneNumberState {

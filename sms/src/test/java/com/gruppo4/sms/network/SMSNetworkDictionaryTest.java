@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -18,6 +19,8 @@ public class SMSNetworkDictionaryTest {
     private static final SMSPeer DEFAULT_USER_1 = new SMSPeer(DEFAULT_PEER_ADDRESS);
     private static final SMSPeer DEFAULT_USER_2 = new SMSPeer(DEFAULT_PEER_ADDRESS + "1");
     private static final SMSPeer DEFAULT_USER_3 = new SMSPeer(DEFAULT_PEER_ADDRESS + "2");
+    private static final SMSPeer DEFAULT_USER_4 = new SMSPeer("+393434444544");
+    private static final SMSPeer COPY_USER_1 = new SMSPeer(DEFAULT_PEER_ADDRESS);
     private static final TestResource DEFAULT_RESOURCE_1 = new TestResource(DEFAULT_RESOURCE_ID);
     private static final TestResource DEFAULT_RESOURCE_2 = new TestResource(DEFAULT_RESOURCE_ID + "1");
     private static final TestResource DEFAULT_RESOURCE_3 = new TestResource(DEFAULT_RESOURCE_ID + "2");
@@ -35,8 +38,8 @@ public class SMSNetworkDictionaryTest {
     @Before
     public void setUp() throws Exception {
         defaultDictionary = new SMSNetworkDictionary();
-        defaultDictionary.addUser(DEFAULT_USER_1);
         defaultDictionary.addUser(DEFAULT_USER_2);
+        defaultDictionary.addUser(DEFAULT_USER_1);
         defaultDictionary.addResource(DEFAULT_USER_1, DEFAULT_RESOURCE_1);
         defaultDictionary.addResource(DEFAULT_USER_1, DEFAULT_RESOURCE_2);
         defaultDictionary.addResource(DEFAULT_USER_2, DEFAULT_RESOURCE_1);
@@ -48,6 +51,18 @@ public class SMSNetworkDictionaryTest {
         return set1.equals(set2);
     }
 
+    private boolean compareArray(Object[] array1, ArrayList array2) {
+        HashSet<Object> set1 = new HashSet<>(Arrays.asList(array1));
+        HashSet set2 = new HashSet<>(array2);
+        return set1.equals(set2);
+    }
+
+    private boolean compareArray(ArrayList array1, ArrayList array2) {
+        HashSet set1 = new HashSet<>(array1);
+        HashSet set2 = new HashSet<>(array2);
+        return set1.equals(set2);
+    }
+
     @Test
     public void getAllUsers_user_isEquals() {
         Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
@@ -55,7 +70,7 @@ public class SMSNetworkDictionaryTest {
 
     @Test
     public void getAllResources_resources_areEquals() {
-        Resource[] allResources = defaultDictionary.getAllResources();
+        ArrayList<Resource> allResources = defaultDictionary.getAllResources();
         Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, allResources));
     }
 
@@ -143,6 +158,25 @@ public class SMSNetworkDictionaryTest {
     @Test
     public void getUsersByResource_users_isEmpty() {
         Assert.assertTrue(compareArray(new SMSPeer[0], defaultDictionary.getUsersByResource(DEFAULT_RESOURCE_3)));
+    }
+
+    @Test
+    public void addUser_duplicate_isNotInserted() {
+        defaultDictionary.addUser(DEFAULT_USER_1);
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void addUser_almostDuplicate_isNotInserted() {
+        defaultDictionary.addUser(COPY_USER_1);
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void getAllUsers_peers_areOrdered() {
+        defaultDictionary.addUser(DEFAULT_USER_4);
+        SMSPeer[] testOrderedArray = new SMSPeer[]{DEFAULT_USER_1, DEFAULT_USER_2, DEFAULT_USER_4};
+        Assert.assertArrayEquals(testOrderedArray, defaultDictionary.getAllUsers().toArray());
     }
 
     @Test

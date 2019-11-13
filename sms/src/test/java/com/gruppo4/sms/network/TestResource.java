@@ -1,14 +1,14 @@
-/*
+
 package com.gruppo4.sms.network;
 
 import com.gruppo4.communication.network.Resource;
 
-*/
+
 /**
  * Test resource used in unit tests
- *//*
+ */
 
-class TestResource implements Resource<String> {
+class TestResource extends Resource {
 
     private String resourceName;
 
@@ -17,25 +17,22 @@ class TestResource implements Resource<String> {
     }
 
     @Override
-    public String getID() {
-        return resourceName;
-    }
-
-    @Override
-    public boolean isEquals(Resource other) {
-        if (!(other instanceof TestResource))
-            return false;
-        TestResource otherResource = (TestResource) other;
-        return getID().equals(otherResource.getID());
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (!(other instanceof TestResource))
             return false;
-        return isEquals((TestResource) other);
+        TestResource otherResource = (TestResource) other;
+        return resourceName.equals(otherResource.resourceName);
+    }
+
+    @Override
+    public int hashCode() {
+        return resourceName.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return resourceName;
     }
 
 
 }
-*/
