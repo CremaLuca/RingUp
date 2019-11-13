@@ -1,6 +1,7 @@
 package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
+
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
@@ -11,14 +12,14 @@ import com.gruppo_4.preferences.PreferencesManager;
 
 public class PasswordManager {
 
-    private static final String STRING_KEY = "gruppo4_secret_password";
+    private static final String PREFERENCES_PASSWORD_KEY = "gruppo4_secret_password";
 
     /**
      * @param context  of the application
      * @param password password that want to be saved in memory
      */
     public static void setPassword(Context context, String password) {
-        PreferencesManager.setString(context, STRING_KEY, password);
+        PreferencesManager.setString(context, PREFERENCES_PASSWORD_KEY, password);
     }
 
     /**
@@ -26,25 +27,25 @@ public class PasswordManager {
      * @return the password saved in memory
      */
     public static String getPassword(Context context) {
-        return PreferencesManager.getString(context, STRING_KEY);
+        return PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY);
     }
 
     /**
      * Checks if there's a password saved in memory
-     * true = yes, false = not saved
      *
      * @param context of the application
+     * @return true if there's a password saved in memory, false otherwise
      */
     public static boolean isPassSaved(Context context) {
-        return !(PreferencesManager.getString(context, STRING_KEY) == null);
+        return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(""));
     }
 
     /**
-     * Delete the password saved
+     * Deletes the saved password
      *
      * @param context of the application
      */
     public static void deletePassword(Context context){
-        PreferencesManager.removeValue(context, STRING_KEY);
+        PreferencesManager.removeValue(context, PREFERENCES_PASSWORD_KEY);
     }
 }
