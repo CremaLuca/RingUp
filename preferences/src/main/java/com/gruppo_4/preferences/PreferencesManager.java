@@ -146,4 +146,17 @@ public class PreferencesManager {
         return nextValue;
     }
 
+    /**
+     * Removes a value of any type from the phone preferences
+     *
+     * @param ctx context of an Activity or Service
+     * @param key key for the resource
+     * @return if the value has been removed correctly
+     */
+    public static boolean removeValue(Context ctx, String key) {
+        SharedPreferences.Editor editor = getEditor(ctx);
+        editor.remove(key);
+        return editor.commit();
+    }
+
 }
