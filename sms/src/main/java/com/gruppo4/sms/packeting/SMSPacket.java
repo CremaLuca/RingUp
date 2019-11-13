@@ -4,6 +4,9 @@ import com.gruppo4.communication.packeting.Packet;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
+ *
+ * @author Luca Crema, Marco Mariotto
+ *
  * Represents a single SMS as a part of a bigger message
  */
 class SMSPacket extends Packet<String, SMSPeer> {

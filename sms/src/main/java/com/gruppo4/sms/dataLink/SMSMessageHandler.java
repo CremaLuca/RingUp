@@ -6,6 +6,10 @@ import com.gruppo4.communication.dataLink.MessageHandler;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 
+/**
+ * @author Luca Crema, Marco Mariotto
+ */
+
 public class SMSMessageHandler extends MessageHandler<SMSMessage> {
 
     public static final String SPLIT_CHARACTER = "_";

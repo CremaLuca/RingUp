@@ -6,6 +6,12 @@ import com.gruppo4.communication.dataLink.Message;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 
+
+/**
+ * @author Gruppo4
+ */
+
+
 public class SMSMessage extends Message<String, SMSPeer> {
 
     public static final int MAX_MSG_TEXT_LEN = 155;

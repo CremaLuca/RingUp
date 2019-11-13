@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Network dictionary for peers and resources on the SMS network
  *
- * @author Luca Crema
+ * @author Luca Crema, Marco Mariotto
  */
 public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
 

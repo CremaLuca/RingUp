@@ -6,7 +6,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 /**
  * Represent a message from the app that will be sent on the SMS network, and will be reconstructed on arrival
  *
- * @author Luca Crema
+ * @author Luca Crema, Mariotto Marco
  */
 public class SMSNetworkMessage extends NetworkMessage<String, SMSPeer> {
 

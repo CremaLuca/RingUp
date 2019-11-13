@@ -15,6 +15,10 @@ import com.gruppo_4.preferences.PreferencesManager;
 
 import java.util.ArrayList;
 
+/**
+ * @author Gruppo4
+ */
+
 public class SMSHandler extends CommunicationHandler<SMSMessage> {
 
     public static final String SENT_MESSAGE_INTENT_ACTION = "SMS_SENT";

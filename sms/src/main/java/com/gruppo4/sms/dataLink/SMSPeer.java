@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.gruppo4.communication.dataLink.Peer;
 
 /**
- * @author Luca Crema
+ * @author Luca Crema, Marco Mariotto
  */
 public class SMSPeer extends Peer<String> implements Comparable<SMSPeer> {
 

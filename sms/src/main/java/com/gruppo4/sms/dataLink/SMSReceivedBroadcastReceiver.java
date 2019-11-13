@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+/**
+ * @author Gruppo4
+ */
+
 class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
