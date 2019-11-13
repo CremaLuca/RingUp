@@ -4,7 +4,9 @@ package com.gruppo4.SMSApp;
  *@author Francesco Bau'
  */
 
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -61,3 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
+
+//TODO ADD BUTTONS TO TEST METHODS
+//TODO OPTIMIZE THE UTILITY
