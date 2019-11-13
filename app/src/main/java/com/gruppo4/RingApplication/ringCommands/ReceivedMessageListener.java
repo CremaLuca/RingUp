@@ -1,8 +1,7 @@
 package com.gruppo4.RingApplication.ringCommands;
 
-import android.content.Context;
-import android.media.Ringtone;
 import android.util.Log;
+
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
 
@@ -11,19 +10,18 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
  *
  * @author Alberto Ursino, Luca Crema
  */
-public class ReceivedMessageListener implements SMSReceivedListener {
-
-    private static Context context;
-    private static Ringtone ringtone;
-
+public class ReceivedMessageListener extends SMSReceivedListener {
     /**
-     * Set the context
+     * Creates an IntentService. Invoked by your subclass's constructor.
      *
-     * @param context application context
+     * @param name Used to name the worker thread, important only for debugging.
      */
-    public ReceivedMessageListener(Context context, Ringtone ringtone) {
-        this.context = context;
-        this.ringtone = ringtone;
+    public ReceivedMessageListener(String name) {
+        super(name);
+    }
+
+    public ReceivedMessageListener() {
+        super("ReceivedMessageListener");
     }
 
     /**
@@ -33,9 +31,10 @@ public class ReceivedMessageListener implements SMSReceivedListener {
      */
     @Override
     public void onMessageReceived(SMSMessage message) {
+        Log.d("ReceivedMessage", "Received a message in the service");
         RingCommand ringCommand = RingCommandHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
-            AppManager.onRingCommandReceived(context, ringCommand, ringtone);
+            AppManager.onRingCommandReceived(this, ringCommand, RingtoneHandler.getDefaultRingtone(this));
         else
             Log.d("Fail: ", "Message received is not a valid command for play the ringtone");
     }

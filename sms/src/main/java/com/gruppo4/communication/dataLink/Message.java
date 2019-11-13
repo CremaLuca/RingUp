@@ -1,6 +1,8 @@
 package com.gruppo4.communication.dataLink;
 
-public abstract class Message<D, P extends Peer> {
+import java.io.Serializable;
+
+public abstract class Message<D, P extends Peer> implements Serializable {
 
     protected D data;
     protected P peer;

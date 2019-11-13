@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.changePassword);
         final Button DELETE_PASSWORD_BUTTON = findViewById(R.id.deletePassword);
 
-        smsHandler.addReceivedMessageListener(new ReceivedMessageListener(context, RINGTONE));
+        smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
 
         //Send the ring command
         RING_BUTTON.setOnClickListener(new View.OnClickListener() {
