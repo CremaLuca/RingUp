@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 
 public class RingtoneHandler {
 
+    private static Ringtone defaultRingtone;
 
     /**
      * @param type a type from RingtoneManager API
@@ -41,7 +42,9 @@ public class RingtoneHandler {
      */
 
     public static Ringtone getDefaultRingtone(Context ctx) {
-        return getDefaultTone(ctx, RingtoneManager.TYPE_RINGTONE);
+        if(defaultRingtone == null)
+            defaultRingtone = getDefaultTone(ctx, RingtoneManager.TYPE_RINGTONE);
+        return defaultRingtone;
     }
 
 
@@ -54,7 +57,6 @@ public class RingtoneHandler {
     public static Ringtone getDefaultAlarmTone(Context ctx) {
         return getDefaultTone(ctx, RingtoneManager.TYPE_ALARM);
     }
-
 
     /**
      * User can decide in which mode he wants to play the ringtone
