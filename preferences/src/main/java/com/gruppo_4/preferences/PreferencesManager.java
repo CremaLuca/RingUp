@@ -5,12 +5,18 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
- * Class used to write and read configurations in Android
+ * Service that writes and reads configurations/preferences in Android memory
  *
  * @author Luca Crema
- * @version 1.1
+ * @version 2.0
  */
 public class PreferencesManager {
+
+    public static final int DEFAULT_INTEGER_RETURN = -1;
+    public static final String DEFAULT_STRING_RETURN = "";
+    public static final boolean DEFAULT_BOOLEAN_RETURN = false;
+
+    protected static final int DEFAULT_UPDATE_INT_ADD = 1;
 
     /**
      * @param context context of an Activity or Service
@@ -39,28 +45,28 @@ public class PreferencesManager {
     /**
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return the value of the resource if present, -1 otherwise
+     * @return the value of the resource if present, {@link #DEFAULT_INTEGER_RETURN} ({@value #DEFAULT_INTEGER_RETURN}) otherwise
      */
     public static int getInt(Context ctx, String key) {
-        return getSharedPreferences(ctx).getInt(key, -1);
+        return getSharedPreferences(ctx).getInt(key, DEFAULT_INTEGER_RETURN);
     }
 
     /**
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return the value of the resource if present, null otherwise
+     * @return the value of the resource if present, {@link #DEFAULT_STRING_RETURN} ({@value #DEFAULT_STRING_RETURN}) otherwise
      */
     public static String getString(Context ctx, String key) {
-        return getSharedPreferences(ctx).getString(key, null);
+        return getSharedPreferences(ctx).getString(key, DEFAULT_STRING_RETURN);
     }
 
     /**
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return the value of the resource if present, false otherwise
+     * @return the value of the resource if present, {@link #DEFAULT_BOOLEAN_RETURN} ({@value #DEFAULT_BOOLEAN_RETURN}) otherwise
      */
     public static boolean getBoolean(Context ctx, String key) {
-        return getSharedPreferences(ctx).getBoolean(key, false);
+        return getSharedPreferences(ctx).getBoolean(key, DEFAULT_BOOLEAN_RETURN);
     }
 
     /**
@@ -70,7 +76,7 @@ public class PreferencesManager {
      * @return if the value has been set correctly
      */
     public static boolean setInt(Context ctx, String key, int value) {
-        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
+        SharedPreferences.Editor editor = getEditor(ctx);
         editor.putInt(key, value);
         return editor.commit();
     }
@@ -82,7 +88,7 @@ public class PreferencesManager {
      * @return if the value has been set correctly
      */
     public static boolean setString(Context ctx, String key, String value) {
-        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
+        SharedPreferences.Editor editor = getEditor(ctx);
         editor.putString(key, value);
         return editor.commit();
     }
@@ -94,7 +100,7 @@ public class PreferencesManager {
      * @return if the value has been set correctly
      */
     public static boolean setBoolean(Context ctx, String key, boolean value) {
-        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
+        SharedPreferences.Editor editor = getEditor(ctx);
         editor.putBoolean(key, value);
         return editor.commit();
     }
@@ -109,23 +115,23 @@ public class PreferencesManager {
      */
     public static int updateInt(Context ctx, String key, int value) {
         int currentValue = getInt(ctx, key);
-        if (currentValue == -1)
+        if (currentValue == DEFAULT_INTEGER_RETURN)
             currentValue = 0;
-        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
+        SharedPreferences.Editor editor = getEditor(ctx);
         editor.putInt(key, currentValue + value);
         editor.commit();
         return currentValue + value;
     }
 
     /**
-     * Sums the value to 1
+     * Sums the current value of the preference to {@value DEFAULT_UPDATE_INT_ADD}
      *
      * @param ctx context of an Activity or Service
      * @param key key for the resource
      * @return if the value has been updated correctly
      */
     public static int updateInt(Context ctx, String key) {
-        return updateInt(ctx, key, 1);
+        return updateInt(ctx, key, DEFAULT_UPDATE_INT_ADD);
     }
 
     /**
@@ -133,16 +139,14 @@ public class PreferencesManager {
      *
      * @param ctx context of an Activity or Service
      * @param key key for the resource
-     * @return result of the shift
+     * @return result of the shift, between 1 and maxValue included
      */
     public static int shiftInt(Context ctx, String key, int maxValue) {
         int currentValue = getInt(ctx, key);
-        if (currentValue == -1)
+        if (currentValue == DEFAULT_INTEGER_RETURN)
             currentValue = 0;
-        int nextValue = (currentValue + 1) % maxValue;
-        SharedPreferences.Editor editor = getEditor(getSharedPreferences(ctx));
-        editor.putInt(key, nextValue);
-        editor.commit();
+        int nextValue = (currentValue % maxValue) + 1;
+        setInt(ctx, key, nextValue);
         return nextValue;
     }
 
@@ -157,6 +161,18 @@ public class PreferencesManager {
         SharedPreferences.Editor editor = getEditor(ctx);
         editor.remove(key);
         return editor.commit();
+    }
+
+    /**
+     * Remove all saved values from the device's preferences
+     * Use with caution
+     *
+     * @param ctx context of an Activity or Service
+     * @return if all the values have been removed correctly
+     */
+    public static boolean removeAllValues(Context ctx) {
+        SharedPreferences.Editor editor = getEditor(ctx);
+        return editor.clear().commit();
     }
 
 }
