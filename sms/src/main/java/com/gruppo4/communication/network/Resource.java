@@ -1,12 +1,10 @@
 package com.gruppo4.communication.network;
 
-import java.io.Serializable;
-
 /**
  * Identifies a resource in the network, this is NOT the actual resource.
  * It can contain details for the resource
  */
-public abstract class Resource{
+public abstract class Resource<K, V> {
 
     /**
      * Mandatory override for equals()

@@ -2,7 +2,6 @@ package com.gruppo4.sms.network;
 
 import android.content.Context;
 
-import com.gruppo4.communication.dataLink.Peer;
 import com.gruppo4.communication.network.NetworkManager;
 import com.gruppo4.communication.network.Resource;
 import com.gruppo4.sms.dataLink.SMSHandler;
@@ -30,7 +29,7 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
     private final String ADD_RESOURCE = "ADD-RES";
     private final String REMOVE_RESOURCE = "RMV-RES";
 
-    private static SMSNetworkDictionary dict = new SMSNetworkDictionary();
+    private static SMSNetworkDictionary dict = new SMSNetworkDictionary<SMSPeer, Resource>();
     private static SMSNetworkManager instance;
     private static SMSHandler handler;
     private static String networkName;
@@ -102,11 +101,11 @@ public class SMSNetworkManager implements NetworkManager<SMSPeer, Resource, SMSM
                 addUser(sourcePeer);
                 joinSent.remove(sourcePeer);
                 //send the whole dict to the newcomer
-                for(SMSPeer p: dict.getAllUsers()){
-                    for(Resource res: dict.getResourcesByUser(p)){
+                //for(SMSPeer p : dict.getAllUsers()){
+                //for(Resource res: dict.getResourcesByUser(p)){
                         //send peer and res
-                    }
-                }
+                //}
+                //}
             }
             else{
                 //ignore

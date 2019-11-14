@@ -1,32 +1,25 @@
 package com.gruppo4.sms.network;
 
+
 import com.gruppo4.communication.network.NetworkDictionary;
-import com.gruppo4.communication.network.Resource;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Network dictionary for peers and resources on the SMS network
  *
  * @author Luca Crema, Marco Mariotto
  */
-public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
+public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, RK, RV> {
 
     /**
      * Sorted user list
      */
     private ArrayList<SMSPeer> userList;
 
-    /**
-     * Dictionary for the pair (Peer, Resources Set)
-     * For every user there is a single pair (Peer, Resource)
-     */
-    private HashMap<SMSPeer, Set<Resource>> resourcesDict;
+    private HashMap<RK, RV> resourcesDict;
 
     /**
      * Constructor for the dictionary
@@ -51,26 +44,16 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
                 return;
             }
         }
-        //If the array is empty or the element is the last one
+        //If the array is empty or the position to insert the user is the last one
         userList.add(peer);
     }
 
     /**
-     * Registers the couple key value (user, resource) into the dictionary
-     * The user must not have already another copy of the resource
-     *
-     * @param user     the holder of the resource, must be already in the user list via {@link #addUser(SMSPeer) addUser}
-     * @param resource the resource identification and details
+     * @return a list of all current users in the network
      */
     @Override
-    public void addResource(SMSPeer user, Resource resource) {
-        Set<Resource> userResources = resourcesDict.get(user);
-        if (userResources == null)
-            resourcesDict.put(user, new HashSet<>(Arrays.asList(resource)));
-        else {
-            userResources.add(resource);
-            resourcesDict.put(user, userResources);
-        }
+    public ArrayList<SMSPeer> getAllUsers() {
+        return userList;
     }
 
     /**
@@ -81,77 +64,57 @@ public class SMSNetworkDictionary implements NetworkDictionary<SMSPeer> {
     @Override
     public void removeUser(SMSPeer peer) {
         userList.remove(peer);
-        resourcesDict.remove(peer);
     }
 
     /**
-     * Removes a resource availability from the network dictionary
+     * Sets the value of the key to the resource value
      *
-     * @param user     SMS user that had the resource
-     * @param resource resource no more available
+     * @param key   identification for the resource
+     * @param value of the resource
+     * @return the previous resource value if there was one, null otherwise
      */
     @Override
-    public void removeResource(SMSPeer user, Resource resource) {
-        Set<Resource> userResources = resourcesDict.get(user);
-        if (userResources != null) {
-            userResources.remove(resource);
-            resourcesDict.put(user, userResources);
-        }
+    public RV setResource(RK key, RV value) {
+        return resourcesDict.put(key, value);
     }
 
     /**
-     * Finds all the SMS network users that have that resource
+     * Remove the resource from the network
      *
-     * @param resource wanted resource
-     * @return array of SMS users
+     * @param resourceKey identification for the resource
+     * @return the removed resource value
      */
     @Override
-    public ArrayList<SMSPeer> getUsersByResource(Resource resource) {
-        ArrayList<SMSPeer> peers = new ArrayList<>();
-        for (SMSPeer user : resourcesDict.keySet()) {
-            for (Resource currentResource : resourcesDict.get(user)) {
-                if (resource.equals(currentResource)) {
-                    peers.add(user);
-                    break;//we don't have to look in this user's resources anymore, he can only have one
-                }
-            }
-        }
-        return peers;
+    public RV removeResource(RK resourceKey) {
+        return resourcesDict.remove(resourceKey);
     }
 
     /**
-     * Retrieves all the resources from a given SMS network user
+     * Get the value given a key
      *
-     * @param user SMS newtork user
-     * @return array of resources for the given SMS user
+     * @param resourceKey identification for the resource
+     * @return the requested value
      */
     @Override
-    public ArrayList<Resource> getResourcesByUser(SMSPeer user) {
-        Set<Resource> userResources = resourcesDict.get(user);
-        if (userResources == null)
-            return new ArrayList<>();
-        return new ArrayList<>(userResources);
+    public RV getValue(RK resourceKey) {
+        return resourcesDict.get(resourceKey);
     }
 
     /**
-     * @return an array of all the users in the network
+     * Retrieve all keys
+     * @return {@link ArrayList} of keys in the dictionary
      */
     @Override
-    public ArrayList<SMSPeer> getAllUsers() {
-        return userList;
+    public ArrayList<RK> getAllKeys() {
+        return new ArrayList<>(resourcesDict.keySet());
     }
 
     /**
-     * Could contain duplicates because multiple users can have the same resource
-     *
-     * @return an array of all the resources available in the netwrok
+     * Retrieve all values
+     * @return {@link ArrayList} of values in the dictionary
      */
     @Override
-    public ArrayList<Resource> getAllResources() {
-        Set<Resource> resourceList = new HashSet<>();
-        for (Set<Resource> userResources : resourcesDict.values()) {
-            resourceList.addAll(userResources);
-        }
-        return new ArrayList<>(resourceList);
+    public ArrayList<RV> getAllValues() {
+        return new ArrayList<>(resourcesDict.values());
     }
 }
