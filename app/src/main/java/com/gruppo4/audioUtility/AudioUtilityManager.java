@@ -183,17 +183,5 @@ public class AudioUtilityManager {
         setMaxVolume(context,RING);
     }
 
-    /**
-     * Sets the Volume for Alarm, Ringtone and Media Streams.
-     * @param context The current Context.
-     * @param percentage Target volume (expressed in %).
-     * @throws IllegalArgumentException if parameter Stream is illegal
-     */
-    public static void setAllVolumes(Context context,int percentage) throws IllegalArgumentException{
-        setVolume(context,ALARM,percentage);
-        setVolume(context,MUSIC,percentage);
-        setVolume(context,RING,percentage);
-    }
-
 }
 //TODO TESTING
