@@ -6,6 +6,7 @@ package com.gruppo4.SMSApp;
 
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -28,35 +29,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Action performed by clicking button0
-        // -> TEST the method getCurrentAlarmVolume(Context).
+        // -> TEST the method getVolume(Context,String).
+        // -> TEST the method setVolume(Context,String,int).
         findViewById(R.id.button0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Sets up the volume at default percentage.
-                AudioUtilityManager.setAlarmVolume(MainActivity.this, DEFAULT_APP_VOLUME);
-                int defaultVolume = AudioUtilityManager.getCurrentAlarmVolume(MainActivity.this);
+                AudioUtilityManager.setVolume(MainActivity.this, AudioUtilityManager.ALARM, DEFAULT_APP_VOLUME);
+                int defaultVolume = AudioUtilityManager.getVolume(MainActivity.this, AudioUtilityManager.ALARM);
                 Toast.makeText(MainActivity.this, "DEFAULT ALARM VOLUME: "+defaultVolume+" %.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Action performed by clicking button1
-        // -> TEST the method setMaxAlarmVolume(Context).
+        // -> TEST the method setMaxVolume(Context,String).
         findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.setMaxAlarmVolume(MainActivity.this);
-                int maxVolume = AudioUtilityManager.getCurrentAlarmVolume(MainActivity.this);
+                AudioUtilityManager.setMaxVolume(MainActivity.this, AudioUtilityManager.ALARM);
+                int maxVolume = AudioUtilityManager.getVolume(MainActivity.this, AudioUtilityManager.ALARM);
                 Toast.makeText(MainActivity.this, "MAXIMUM ALARM VOLUME: "+maxVolume+" %.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Action performed by clicking button2
-        // -> TEST the method setMinAlarmVolume(Context).
+        // -> TEST the method setMinVolume(Context,String).
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.setMinAlarmVolume(MainActivity.this);
-                int minVolume = AudioUtilityManager.getCurrentAlarmVolume(MainActivity.this);
+                AudioUtilityManager.setMinVolume(MainActivity.this,AudioUtilityManager.ALARM);
+                int minVolume = AudioUtilityManager.getVolume(MainActivity.this,AudioUtilityManager.ALARM);
                 Toast.makeText(MainActivity.this, "MINIMUM ALARM VOLUME: "+minVolume+" %.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -64,5 +66,4 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-//TODO ADD BUTTONS TO TEST METHODS
-//TODO OPTIMIZE THE UTILITY
+//TODO NEW LAYOUT - BUTTONS TO TEST UTILITY METHODS
