@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         final Button RING_BUTTON = findViewById(R.id.button);
         final Button STOP_BUTTON = findViewById(R.id.stop);
         final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.changePassword);
-        final Button DELETE_PASSWORD_BUTTON = findViewById(R.id.deletePassword);
 
         smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
 
@@ -108,15 +107,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
         });
 
-        //Button used to delete the stored password and then open new set password dialog
-        DELETE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PasswordManager.deletePassword(context);
-                Toast.makeText(context, "Password deleted", Toast.LENGTH_LONG).show();
-                openDialog(SET_PASS_COMMAND);
-            }
-        });
     }
 
     @Override

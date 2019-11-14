@@ -1,4 +1,4 @@
-package com.gruppo4.audioUtility;
+package com.gruppo4.RingApplication.ringCommands.audioUtility;
 
 /**
  * @author Francesco Bau'
@@ -14,7 +14,6 @@ public class AudioUtilityManager {
 
     public static final int MAX_PERCENTAGE = 100;
     public static final int MIN_PERCENTAGE = 0;
-
     public static final String ALARM = "ALARM";
     public static final String RING = "RING";
     public static final String MUSIC = "MUSIC";
