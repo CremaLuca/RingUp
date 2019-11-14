@@ -59,11 +59,11 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
     /**
      * Removes a SMS user from the network
      *
-     * @param peer SMS user
+     * @param user to be removed
      */
     @Override
-    public void removeUser(SMSPeer peer) {
-        userList.remove(peer);
+    public void removeUser(SMSPeer user) {
+        userList.remove(user);
     }
 
     /**
@@ -102,6 +102,7 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
 
     /**
      * Retrieve all keys
+     *
      * @return {@link ArrayList} of keys in the dictionary
      */
     @Override
@@ -111,6 +112,7 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
 
     /**
      * Retrieve all values
+     *
      * @return {@link ArrayList} of values in the dictionary
      */
     @Override

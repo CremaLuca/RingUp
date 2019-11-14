@@ -5,7 +5,9 @@ import com.gruppo4.communication.dataLink.Peer;
 import java.util.ArrayList;
 
 /**
- * @param <U> Peer for users in the network
+ * @param <U>  Peer for users in the network
+ * @param <RK> Key class identifier for the resource
+ * @param <RV> Value class for the resource
  * @author Group 4
  */
 public interface NetworkDictionary<U extends Peer, RK, RV> {
