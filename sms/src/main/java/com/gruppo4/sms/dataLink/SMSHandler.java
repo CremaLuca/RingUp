@@ -160,8 +160,4 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
         if (this.receivedMessageListener != null)
             this.receivedMessageListener.onMessageReceived(message);
     }
-
-    public void addCustomReceivedListener(SMSReceivedListener listener) {
-        SMSReceivedBroadcastReceiver.listener = listener;
-    }
 }

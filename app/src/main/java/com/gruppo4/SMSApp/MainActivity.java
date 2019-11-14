@@ -1,13 +1,12 @@
 package com.gruppo4.SMSApp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.sms.dataLink.SMSHandler;
@@ -22,8 +21,6 @@ public class MainActivity extends AppCompatActivity {
     public void setup() {
         //Initialize the receiver
         SMSHandler.getInstance(this).setup(123);
-        SMSHandler.getInstance(this).addReceivedMessageListener(new ActivityHelper());
-        SMSHandler.getInstance(this).addCustomReceivedListener(new ActivityHelper());
     }
 
     @Override
@@ -31,12 +28,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Start a service that keeps the ActivityHelperReceiver alive
+        Intent activityHelperIntent = new Intent(getApplicationContext(), ActivityHelperService.class);
+        startService(activityHelperIntent);
+
         setup();
 
         if(!SMSHandler.checkPermissions(this)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
         }else{
-            //sendTestMessage();
+
         }
     }
 
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //sendTestMessage();
     }
 
     private void sendTestMessage(){
