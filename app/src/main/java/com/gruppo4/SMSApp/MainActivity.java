@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gruppo4.sms.dataLink.SMSBackgroundHandler;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+        SMSBackgroundHandler.onAppCreate(this);
         setup();
 
         if(!SMSHandler.checkPermissions(this)) {
@@ -68,4 +70,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SMSBackgroundHandler.onAppDestroy(this);
+    }
 }

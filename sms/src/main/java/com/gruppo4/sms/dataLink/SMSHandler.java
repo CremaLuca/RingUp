@@ -33,7 +33,6 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
     public static SMSHandler getInstance(Context context) {
         if (instance == null)
             instance = new SMSHandler();
-
         instance.ctx = context;
         return instance;
     }
@@ -98,7 +97,6 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
     public void setup(int applicationCode) {
         if (!checkApplicationCodeIsValid(applicationCode))
             throw new IllegalStateException("Application code not valid, check it with checkApplicationCodeIsValid() first");
-
         setApplicationCode(ctx, applicationCode);
     }
 
