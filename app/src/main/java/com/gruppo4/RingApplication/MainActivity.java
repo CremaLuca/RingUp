@@ -2,13 +2,17 @@ package com.gruppo4.RingApplication;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     private static final int PERMISSION_CODE = 0;
     private static final int APPLICATION_CODE = 1;
-    private static final int CHANGE_PASS_COMMAND = 0;
+    static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
     private static final int WAIT_TIME = 2000;
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setTitle("Ring Application");
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         final EditText SEND_PASSWORD = findViewById(R.id.password);
         final Button RING_BUTTON = findViewById(R.id.button);
         final Button STOP_BUTTON = findViewById(R.id.stop);
-        final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.changePassword);
+        final ImageButton SETTINGS_BUTTON = findViewById(R.id.settingsButton);
 
         smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
 
@@ -99,14 +105,21 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
         });
 
-        //Button used to open a dialog where the user can change the password
-        CHANGE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
+        SETTINGS_BUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDialog(CHANGE_PASS_COMMAND);
+                openSettings();
             }
         });
 
+    }
+
+    /**
+     * Opens a new activity with the application settings
+     */
+    private void openSettings() {
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -152,15 +165,15 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * Create the dialog used to insert a valid password or exit/abort
+     * Creates the dialog used to insert a valid password or exit/abort
      *
      * @param command to open the right dialog
      */
-    private void openDialog(int command) {
+    void openDialog(int command) {
         if (PasswordDialog.isCommandSetPass(command)) {
             PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Device Password");
-        } else if (PasswordDialog.isCommandChangePass(command)) {
+        } else if(PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)){
             PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Change Password");
         } else {
@@ -173,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      *
      * @param context of the application
      */
-    private void checkPermission(Context context) {
+    void checkPermission(Context context) {
         if (!SMSHandler.checkReceivePermission(context))
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
     }
@@ -181,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     /**
      * @param time to wait before checking permits
      */
-    private void waitForPermissions(int time) {
+    void waitForPermissions(int time) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
