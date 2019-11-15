@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 // Sets up the volume at default percentage.
                 AudioUtilityManager.setVolume(MainActivity.this, stream, DEFAULT_APP_VOLUME);
                 int defaultVolume = AudioUtilityManager.getVolume(MainActivity.this, stream);
-                Toast.makeText(MainActivity.this, "DEFAULT ALARM VOLUME: " + defaultVolume + " %.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "DEFAULT " + stream + " VOLUME: " + defaultVolume + " %.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AudioUtilityManager.setMaxVolume(MainActivity.this, stream);
                 int maxVolume = AudioUtilityManager.getVolume(MainActivity.this, stream);
-                Toast.makeText(MainActivity.this, "MAXIMUM ALARM VOLUME: " + maxVolume + " %.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "MAXIMUM " + stream + " VOLUME: " + maxVolume + " %.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AudioUtilityManager.setMinVolume(MainActivity.this, stream);
                 int minVolume = AudioUtilityManager.getVolume(MainActivity.this, stream);
-                Toast.makeText(MainActivity.this, "MINIMUM ALARM VOLUME: " + minVolume + " %.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "MINIMUM " + stream + " VOLUME: " + minVolume + " %.", Toast.LENGTH_SHORT).show();
             }
         });
 
