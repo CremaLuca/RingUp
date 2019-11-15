@@ -9,7 +9,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class SMSNetworkDictionaryTest {
 
@@ -24,8 +26,11 @@ public class SMSNetworkDictionaryTest {
     private static final TestResource DEFAULT_RESOURCE_1 = new TestResource(DEFAULT_RESOURCE_ID);
     private static final TestResource DEFAULT_RESOURCE_2 = new TestResource(DEFAULT_RESOURCE_ID + "1");
     private static final TestResource DEFAULT_RESOURCE_3 = new TestResource(DEFAULT_RESOURCE_ID + "2");
+    private static final TestResource DEFAULT_RESOURCE_4 = new TestResource(DEFAULT_RESOURCE_ID + "3");
     private static final TestResource[] DEFAULT_RESOURCE_ARRAY = new TestResource[]{DEFAULT_RESOURCE_1, DEFAULT_RESOURCE_2};
     private static final SMSPeer[] DEFAULT_USER_ARRAY = new SMSPeer[]{DEFAULT_USER_1, DEFAULT_USER_2};
+    private static final SMSPeer[] DEFAULT_EXCLUDED_USER_ARRAY = new SMSPeer[]{DEFAULT_USER_3, DEFAULT_USER_4};
+    private static final SMSPeer[] ALL_USER_ARRAY = new SMSPeer[]{DEFAULT_USER_1, DEFAULT_USER_2, DEFAULT_USER_3, DEFAULT_USER_4};
 
     private SMSNetworkDictionary<SMSPeer, TestResource> defaultDictionary;
 
@@ -59,6 +64,16 @@ public class SMSNetworkDictionaryTest {
         return set1.equals(set2);
     }
 
+    private <K, V> boolean compareHashMaps(Map<K, V> map1, Map<K, V> map2) {
+        if (map1.values().size() != map2.values().size())
+            return false;
+        for (K key : map1.keySet()) {
+            if (!map2.containsKey(key))
+                return false;
+        }
+        return true;
+    }
+
     @Test
     public void getAllUsers_user_isEquals() {
         Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
@@ -66,7 +81,7 @@ public class SMSNetworkDictionaryTest {
 
     @Test
     public void getAllResources_resources_areEquals() {
-        ArrayList<TestResource> allResources = defaultDictionary.getAllValues();
+        ArrayList<TestResource> allResources = defaultDictionary.getValues();
         Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, allResources));
     }
 
@@ -132,18 +147,84 @@ public class SMSNetworkDictionaryTest {
     @Test
     public void removeResource_keys_areEquals() {
         Assert.assertNotNull(defaultDictionary.removeResource(DEFAULT_USER_2));
-        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_1}, defaultDictionary.getAllKeys()));
+        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_1}, defaultDictionary.getKeys()));
     }
 
     @Test
     public void removeResource_values_areEquals() {
         Assert.assertNotNull(defaultDictionary.removeResource(DEFAULT_USER_2));
-        Assert.assertTrue(compareArray(new TestResource[]{DEFAULT_RESOURCE_1}, defaultDictionary.getAllValues()));
+        Assert.assertTrue(compareArray(new TestResource[]{DEFAULT_RESOURCE_1}, defaultDictionary.getValues()));
     }
 
     @Test
     public void getAllKeys_keys_areEquals() {
-        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllKeys()));
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getKeys()));
+    }
+
+    @Test
+    public void addAllUsers_users_areEquals() {
+        defaultDictionary.addAllUsers(Arrays.asList(DEFAULT_EXCLUDED_USER_ARRAY));
+        Assert.assertTrue(compareArray(ALL_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void addAllUsers_emptyUsers_users_areEquals() {
+        defaultDictionary.addAllUsers(Arrays.asList(new SMSPeer[0]));
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void addAllUsers_sameUsers_users_areEquals() {
+        defaultDictionary.addAllUsers(Arrays.asList(DEFAULT_USER_1));
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void removeAllUsers_emptyList_users_areEquals() {
+        defaultDictionary.removeAllUsers(Arrays.asList(new SMSPeer[0]));
+        Assert.assertTrue(compareArray(DEFAULT_USER_ARRAY, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void removeAllUsers_users_areEquals() {
+        defaultDictionary.removeAllUsers(Arrays.asList(DEFAULT_USER_1));
+        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_2}, defaultDictionary.getAllUsers()));
+    }
+
+    @Test
+    public void setAllResources_resources_areEquals() {
+        HashMap<SMSPeer, TestResource> testResourceHashMap = new HashMap<>();
+        testResourceHashMap.put(DEFAULT_USER_3, DEFAULT_RESOURCE_3);
+        testResourceHashMap.put(DEFAULT_USER_4, DEFAULT_RESOURCE_4);
+
+        HashMap<SMSPeer, TestResource> resultHashMap = new HashMap<>();
+        resultHashMap.put(DEFAULT_USER_3, null);
+        resultHashMap.put(DEFAULT_USER_4, null);
+
+        Assert.assertTrue(compareHashMaps(resultHashMap, defaultDictionary.setAllResources(testResourceHashMap)));
+        Assert.assertTrue(compareArray(ALL_USER_ARRAY, defaultDictionary.getKeys()));
+    }
+
+    @Test
+    public void removeAllResources_resources_areEquals() {
+        defaultDictionary.removeAllResources(Arrays.asList(DEFAULT_USER_1));
+        Assert.assertTrue(compareArray(new SMSPeer[]{DEFAULT_USER_2}, defaultDictionary.getKeys()));
+    }
+
+    @Test
+    public void removeAllResources_allResources_resources_areEquals() {
+        defaultDictionary.removeAllResources(Arrays.asList(DEFAULT_USER_ARRAY));
+        Assert.assertTrue(compareArray(new SMSPeer[0], defaultDictionary.getKeys()));
+    }
+
+    @Test
+    public void getAllValues_allUsers_values_areEquals() {
+        Assert.assertTrue(compareArray(DEFAULT_RESOURCE_ARRAY, defaultDictionary.getAllValues(Arrays.asList(DEFAULT_USER_ARRAY))));
+    }
+
+    @Test
+    public void getAllValues_oneUser_values_areEquals() {
+        Assert.assertTrue(compareArray(new TestResource[]{DEFAULT_RESOURCE_1}, defaultDictionary.getAllValues(Arrays.asList(DEFAULT_USER_1))));
     }
 
     @Test

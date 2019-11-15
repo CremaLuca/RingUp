@@ -3,6 +3,8 @@ package com.gruppo4.communication.network;
 import com.gruppo4.communication.dataLink.Peer;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @param <U>  Peer for users in the network
@@ -20,6 +22,13 @@ public interface NetworkDictionary<U extends Peer, RK, RV> {
     void addUser(U user);
 
     /**
+     * Registers all the users from a collection to the network
+     *
+     * @param users new network users
+     */
+    void addAllUsers(Collection<U> users);
+
+    /**
      * Get the whole list of users from the network
      *
      * @return a list of users in the network
@@ -34,6 +43,13 @@ public interface NetworkDictionary<U extends Peer, RK, RV> {
     void removeUser(U user);
 
     /**
+     * Removes the users from the network
+     *
+     * @param users registered users
+     */
+    void removeAllUsers(Collection<U> users);
+
+    /**
      * Sets the value of the key to the resource value
      *
      * @param key   a resource key present in the dictionary
@@ -41,6 +57,14 @@ public interface NetworkDictionary<U extends Peer, RK, RV> {
      * @return the previous resource value if there was one, null otherwise
      */
     RV setResource(RK key, RV value);
+
+    /**
+     * Sets the value of the keys to the resources values
+     *
+     * @param resources a map of key and values
+     * @return the previous resource values if they were overwritten, empty map otherwise
+     */
+    Map<RK, RV> setAllResources(Map<RK, RV> resources);
 
     /**
      * Removes a resource availability from the network
@@ -51,6 +75,14 @@ public interface NetworkDictionary<U extends Peer, RK, RV> {
     RV removeResource(RK resourceKey);
 
     /**
+     * Removes a resource availability from the network
+     *
+     * @param resourcesKeys identification keys for the resources
+     * @return the removed resources values
+     */
+    ArrayList<RV> removeAllResources(Collection<RK> resourcesKeys);
+
+    /**
      * Get the value given a key
      *
      * @param resourceKey identification for the resource
@@ -59,16 +91,24 @@ public interface NetworkDictionary<U extends Peer, RK, RV> {
     RV getValue(RK resourceKey);
 
     /**
+     * Get the values given a collection of keys
+     *
+     * @param resourceKeys identifications for the resources
+     * @return requested resources if present
+     */
+    ArrayList<RV> getAllValues(Collection<RK> resourceKeys);
+
+    /**
      * Get the whole list of users from the network
      *
      * @return a list of users in the network
      */
-    ArrayList<RK> getAllKeys();
+    ArrayList<RK> getKeys();
 
     /**
      * Get all the resources available in the network
      *
      * @return a list of resources in the network
      */
-    ArrayList<RV> getAllValues();
+    ArrayList<RV> getValues();
 }

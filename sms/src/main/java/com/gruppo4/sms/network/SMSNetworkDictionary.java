@@ -5,7 +5,9 @@ import com.gruppo4.communication.network.NetworkDictionary;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Network dictionary for peers and resources on the SMS network
@@ -30,22 +32,34 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
     }
 
     /**
-     * Registers a SMS user to the network
+     * Registers a user to the network
      *
-     * @param peer SMS user
+     * @param user new network user
      */
     @Override
-    public void addUser(SMSPeer peer) {
-        if (userList.contains(peer))
+    public void addUser(SMSPeer user) {
+        if (userList.contains(user))
             return;
         for (int i = 0; i < userList.size(); i++) {
-            if (userList.get(i).compareTo(peer) > 0) {
-                userList.add(i, peer);
+            if (userList.get(i).compareTo(user) > 0) {
+                userList.add(i, user);
                 return;
             }
         }
         //If the array is empty or the position to insert the user is the last one
-        userList.add(peer);
+        userList.add(user);
+    }
+
+    /**
+     * Adds a collection of users to the network
+     *
+     * @param users new network users
+     */
+    @Override
+    public void addAllUsers(Collection<SMSPeer> users) {
+        for (SMSPeer user : users) {
+            addUser(user);
+        }
     }
 
     /**
@@ -67,6 +81,18 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
     }
 
     /**
+     * Removes a collection of SMS users from the network
+     *
+     * @param users registered users
+     */
+    @Override
+    public void removeAllUsers(Collection<SMSPeer> users) {
+        for (SMSPeer user : users) {
+            removeUser(user);
+        }
+    }
+
+    /**
      * Sets the value of the key to the resource value
      *
      * @param key   identification for the resource
@@ -76,6 +102,21 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
     @Override
     public RV setResource(RK key, RV value) {
         return resourcesDict.put(key, value);
+    }
+
+    /**
+     * Sets the value for the keys for the entries of a map
+     *
+     * @param resources a map of key and values
+     * @return {@link Map} of edited values, each key contains the previous resource if there was one, null otherwise
+     */
+    @Override
+    public Map<RK, RV> setAllResources(Map<RK, RV> resources) {
+        Map<RK, RV> editedMap = new HashMap<>();
+        for (Map.Entry entry : resources.entrySet()) {
+            editedMap.put((RK) entry.getKey(), setResource((RK) entry.getKey(), (RV) entry.getValue()));
+        }
+        return editedMap;
     }
 
     /**
@@ -90,14 +131,38 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
     }
 
     /**
+     * Removes a resource collection from the network
+     *
+     * @param resourcesKeys identification keys for the resources
+     * @return {@link ArrayList} of removed resources
+     */
+    @Override
+    public ArrayList<RV> removeAllResources(Collection<RK> resourcesKeys) {
+        ArrayList<RV> removedResources = new ArrayList<>();
+        for (RK key : resourcesKeys) {
+            removedResources.add(removeResource(key));
+        }
+        return removedResources;
+    }
+
+    /**
      * Get the value given a key
      *
      * @param resourceKey identification for the resource
-     * @return the requested value
+     * @return the requested value, null if not present
      */
     @Override
     public RV getValue(RK resourceKey) {
         return resourcesDict.get(resourceKey);
+    }
+
+    @Override
+    public ArrayList<RV> getAllValues(Collection<RK> resourceKeys) {
+        ArrayList<RV> values = new ArrayList<>();
+        for (RK key : resourceKeys) {
+            values.add(getValue(key));
+        }
+        return values;
     }
 
     /**
@@ -106,7 +171,7 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
      * @return {@link ArrayList} of keys in the dictionary
      */
     @Override
-    public ArrayList<RK> getAllKeys() {
+    public ArrayList<RK> getKeys() {
         return new ArrayList<>(resourcesDict.keySet());
     }
 
@@ -116,7 +181,7 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
      * @return {@link ArrayList} of values in the dictionary
      */
     @Override
-    public ArrayList<RV> getAllValues() {
+    public ArrayList<RV> getValues() {
         return new ArrayList<>(resourcesDict.values());
     }
 }
