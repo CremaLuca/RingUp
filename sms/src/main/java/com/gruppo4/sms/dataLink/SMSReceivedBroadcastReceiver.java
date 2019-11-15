@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
+
 public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public static final String INTENT_MESSAGE_NAME = "SMSMessage";
@@ -32,6 +34,11 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
                 Log.v("SMSReceiver", "Parsing the message");
                 SMSMessage message = SMSMessageHandler.getInstance().parseMessage(sms.getMessageBody(), sms.getOriginatingAddress());
                 if (message != null && message.getApplicationID() == SMSHandler.getInstance(context).getApplicationCode()) {
+
+                    //Create intent and send a SMSMessage to the App Layer
+                    Intent activityHelperI = new Intent("SMSApp");
+                    activityHelperI.putExtra("Message", message);
+                    context.sendBroadcast(activityHelperI);
                     Log.v("SMSReceiver", "Message is for this application");
                     if (listener != null) {
                         Log.v("SMSReceiver", "Calling service");
@@ -43,6 +50,4 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
             }
         }
     }
-
-
 }

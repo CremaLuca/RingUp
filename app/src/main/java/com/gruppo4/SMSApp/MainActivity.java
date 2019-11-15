@@ -1,16 +1,11 @@
 package com.gruppo4.SMSApp;
 
 import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gruppo4.sms.dataLink.SMSBackgroundHandler;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -31,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
-        SMSBackgroundHandler.onAppCreate(this);
+
+        //Start a service that keeps the ActivityHelperReceiver alive
+        Intent activityHelperIntent = new Intent(getApplicationContext(), ActivityHelperService.class);
+        startService(activityHelperIntent);
+
         setup();
 
         if(!SMSHandler.checkPermissions(this)) {
@@ -70,9 +69,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SMSBackgroundHandler.onAppDestroy(this);
-    }
 }
