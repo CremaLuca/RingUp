@@ -6,16 +6,14 @@ package com.gruppo4.SMSApp;
 
 import com.gruppo4.audioUtility.AudioUtilityManager;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.gruppo4.audioUtility.AudioUtilityManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -70,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Action performed by clicking button3
-        // -> TEST the "Vibrator".
+        // -> TEST the "Vibrator". (One-shot)
         findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.vibrate(MainActivity.this);
-                Toast.makeText(MainActivity.this, "VIBRATION IS IN PROGRESS...", Toast.LENGTH_SHORT).show();
+                AudioUtilityManager.singleVibrate(MainActivity.this);
+                Toast.makeText(MainActivity.this, "SINGLE VIBRATION IS IN PROGRESS...", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -111,9 +109,30 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.vibrateButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-                am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                 Toast.makeText(MainActivity.this, "ENABLED ONLY-VIBRATE MODE", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Action performed by clicking button4
+        // -> TEST the "Vibrator" (Multiple)
+        findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioUtilityManager.multipleVibrate(MainActivity.this);
+                Toast.makeText(MainActivity.this, "MULTIPLE VIBRATION IS IN PROGRESS...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Action performad by clicking button5
+        // -> STOP VIBRATOR.
+        findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.cancel();
+                Toast.makeText(MainActivity.this, "STOPPING VIBRATION...", Toast.LENGTH_SHORT).show();
             }
         });
 

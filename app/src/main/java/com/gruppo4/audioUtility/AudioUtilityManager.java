@@ -135,17 +135,33 @@ public class AudioUtilityManager {
      * Makes the target device vibrate.
      * @param context The current Context.
      */
-    public static void vibrate(Context context){
+    public static void singleVibrate(Context context){
         // Vibrate for 5000 milliseconds
         // HARDWIRING
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getVibrator(context).vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            getVibrator(context).vibrate(VibrationEffect.createOneShot(5000, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             //deprecated in API 26
             getVibrator(context).vibrate(5000);
         }
     }
 
+    /**
+     * Makes the target device vibrate.
+     * @param context The current Context.
+     */
+    public static void multipleVibrate(Context context){
+        // Multiple vibration works from API 26+, otherwise it would do the same thing done by singleVibrate(Context).
+        // HARDWIRING
+        long[] x = {500,500,500,500};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getVibrator(context).vibrate(VibrationEffect.createWaveform(x, 1));
+        } else {
+            //deprecated in API 26
+            getVibrator(context).vibrate(5000);
+        }
+    }
+
+
 }
-//TODO ADD VIBRATION TRIGGER
 //TODO TESTING
