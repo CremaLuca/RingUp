@@ -12,6 +12,8 @@ import com.gruppo4.sms.SMSMessage;
 
 /**
  * @author Alessandra Tonin
+ *
+ * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 public class MainActivity extends AppCompatActivity {

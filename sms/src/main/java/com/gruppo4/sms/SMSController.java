@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 /**
  * @author Alessandra Tonin
+ *
+ * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 public class SMSController {

@@ -2,6 +2,8 @@ package com.gruppo4.sms;
 
 /**
  * @author Alessandra Tonin
+ *
+ * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 /**

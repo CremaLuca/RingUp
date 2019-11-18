@@ -8,6 +8,8 @@ import android.telephony.SmsMessage;
 
 /**
  * @author Alessandra Tonin, Luca Crema
+ *
+ * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 public class SMSReceiver extends BroadcastReceiver {
