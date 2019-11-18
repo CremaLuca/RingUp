@@ -13,7 +13,7 @@ public class SMSMessage {
     private static final int MIN_DESTINATIONADDRESS_LENGTH = 5;
 
     /**
-     * Creates the message and handles exceptions during creation
+     * Creates the message checking body and address
      * @param msgBody
      * @param destinationAddress
      */
@@ -33,7 +33,7 @@ public class SMSMessage {
     /**
      * Checks if the Body length of the message is correct
      * @param msgBody
-     * @return
+     * @return null if length is wrong
      */
     private String checkMsgBody(String msgBody) {
         if(msgBody.length() > MAX_MSGBODY_LENGTH)
@@ -44,7 +44,7 @@ public class SMSMessage {
     /**
      * Checks if the Address length of the message is correct
      * @param destinationAddress
-     * @return
+     * @return null if length is wrong
      */
     private String checkDestinationAddress(String destinationAddress) {
         if(destinationAddress.length() > MAX_DESTINATIONADDRESS_LENGTH || destinationAddress.length() < MIN_DESTINATIONADDRESS_LENGTH)

@@ -47,8 +47,6 @@ public class SMSController {
         PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, sentI, 0);
         PendingIntent deliveredPI = PendingIntent.getBroadcast(context, 0, deliveredI, 0);
 
-
-
         SmsManager.getDefault().sendTextMessage(
                 msg.getDestinationAddress(),
                 null,
