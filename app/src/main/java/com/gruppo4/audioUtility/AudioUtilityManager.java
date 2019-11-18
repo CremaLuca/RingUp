@@ -170,4 +170,5 @@ public class AudioUtilityManager {
 
 }
 //TODO TESTING
-//TODO USAGE OF 1 RINGTONE (?)
+//TODO method to stop Vibration in utility class
+//TODO edit methods' name: setMinVolume and setMaxVolume
