@@ -2,6 +2,7 @@ package com.gruppo4.sms;
 
 /**
  * @author Tommasini Marco
+ *
  * Code Review for Raimondi and Martignago
  */
 public class SMSMessage {

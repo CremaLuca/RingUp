@@ -8,6 +8,7 @@ import android.telephony.SmsManager;
 
 /**
  * @author Tommasini Marco
+ *
  * Code Review for Raimondi and Martignago
  */
 
