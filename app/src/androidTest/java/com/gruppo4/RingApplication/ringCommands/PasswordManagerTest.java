@@ -16,13 +16,13 @@ public class PasswordManagerTest {
     @Before
     public void init() {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        passwordManager = new PasswordManager();
+        passwordManager = new PasswordManager(context);
     }
 
     @Test
     public void setPassword_isOk() {
         try {
-            passwordManager.setPassword(context, VALID_PASSWORD);
+            passwordManager.setPassword(VALID_PASSWORD);
             //Success
         } catch (Exception e) {
             Assert.fail(SHOULD_NOT);
@@ -32,7 +32,7 @@ public class PasswordManagerTest {
     @Test
     public void deletePassword_isOk() {
         try{
-            passwordManager.deletePassword(context);
+            passwordManager.deletePassword();
             //Success
         }catch(Exception e){
             Assert.fail(SHOULD_NOT);
@@ -41,20 +41,20 @@ public class PasswordManagerTest {
 
     @Test
     public void getPassword_passwords_areEquals() {
-        passwordManager.setPassword(context, VALID_PASSWORD);
-        Assert.assertEquals(VALID_PASSWORD, PasswordManager.getPassword(context));
+        passwordManager.setPassword(VALID_PASSWORD);
+        Assert.assertEquals(VALID_PASSWORD, PasswordManager.getPassword());
     }
 
     @Test
     public void isPassSaved_password_isSaved() {
-        passwordManager.setPassword(context, VALID_PASSWORD);
-        Assert.assertEquals(true, passwordManager.isPassSaved(context));
+        passwordManager.setPassword(VALID_PASSWORD);
+        Assert.assertEquals(true, passwordManager.isPassSaved());
     }
 
     @Test
     public void isPassSaved_password_isNotSaved(){
-        passwordManager.deletePassword(context);
-        Assert.assertEquals(false, passwordManager.isPassSaved(context));
+        passwordManager.deletePassword();
+        Assert.assertEquals(false, passwordManager.isPassSaved());
     }
 
 
