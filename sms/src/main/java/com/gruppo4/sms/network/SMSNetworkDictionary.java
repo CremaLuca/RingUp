@@ -12,6 +12,8 @@ import java.util.Map;
 /**
  * Network dictionary for peers and resources on the SMS network
  *
+ * Edited to be reviewed
+ *
  * @author Luca Crema, Marco Mariotto
  */
 public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, RK, RV> {

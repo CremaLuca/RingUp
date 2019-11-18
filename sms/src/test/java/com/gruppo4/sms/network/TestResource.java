@@ -4,8 +4,9 @@ package com.gruppo4.sms.network;
 
 /**
  * Test resource used in unit tests
+ *
+ * Edited to be reviewed
  */
-
 class TestResource {
 
     private String resourceName;

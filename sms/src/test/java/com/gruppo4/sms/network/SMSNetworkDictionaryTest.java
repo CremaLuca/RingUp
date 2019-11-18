@@ -16,6 +16,8 @@ import java.util.Map;
 /**
  * Unit tests class for SMSNetworkDictionary
  *
+ * Edited to be reviewed
+ *
  * @author Luca Crema
  */
 public class SMSNetworkDictionaryTest {

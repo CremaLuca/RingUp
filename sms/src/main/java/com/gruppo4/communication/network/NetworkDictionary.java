@@ -10,6 +10,9 @@ import java.util.Map;
  * @param <U>  Peer for users in the network
  * @param <RK> Key class identifier for the resource
  * @param <RV> Value class for the resource
+ *
+ * Edited to be reviewed
+ *
  * @author Group 4
  */
 public interface NetworkDictionary<U extends Peer, RK, RV> {
