@@ -54,7 +54,7 @@ public class AudioUtilityManager {
      * @return The maximum stream volume (real value).
      */
     private static int getMaxVolume(Context context, AUMStream stream) {
-        return getAudioManager(context).getStreamMaxVolume(getStream(context, stream));
+        return getAudioManager(context).getStreamMaxVolume(getStream(stream));
     }
 
     /**
@@ -79,7 +79,7 @@ public class AudioUtilityManager {
 
         // Sets the Volume.
         getAudioManager(context).setStreamVolume(
-                getStream(context, stream),
+                getStream(stream),
                 newVolume,
                 AudioManager.FLAG_SHOW_UI
         );
@@ -170,3 +170,4 @@ public class AudioUtilityManager {
 
 }
 //TODO TESTING
+//TODO USAGE OF 1 RINGTONE (?)
