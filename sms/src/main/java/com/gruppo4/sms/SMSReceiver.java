@@ -9,7 +9,6 @@ import android.util.Log;
 
 /**
  * @author Tommasini Marco
- * Code Review for Raimondi and Martignago
  */
 
 public class SMSReceiver extends BroadcastReceiver {
