@@ -1,6 +1,5 @@
 package com.gruppo4.sms.network;
 
-import com.gruppo4.communication.network.Resource;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 import org.junit.Assert;
@@ -13,6 +12,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+
+/**
+ * Unit tests class for SMSNetworkDictionary
+ *
+ * @author Luca Crema
+ */
 public class SMSNetworkDictionaryTest {
 
     private static final String DEFAULT_PEER_ADDRESS = "+393434444543";
@@ -46,6 +51,13 @@ public class SMSNetworkDictionaryTest {
         defaultDictionary.setResource(DEFAULT_USER_2, DEFAULT_RESOURCE_2);
     }
 
+    /**
+     * Compares the elements of two arrays as a set (doesn't care about position)
+     *
+     * @param array1
+     * @param array2
+     * @return
+     */
     private boolean compareArray(Object[] array1, Object[] array2) {
         HashSet<Object> set1 = new HashSet<>(Arrays.asList(array1));
         HashSet<Object> set2 = new HashSet<>(Arrays.asList(array2));
@@ -229,7 +241,7 @@ public class SMSNetworkDictionaryTest {
 
     @Test
     public void test_compareArray_isCorrect() {
-        Resource[] arr1 = new TestResource[]{DEFAULT_RESOURCE_1, DEFAULT_RESOURCE_2};
+        TestResource[] arr1 = new TestResource[]{DEFAULT_RESOURCE_1, DEFAULT_RESOURCE_2};
         TestResource[] arr2 = new TestResource[]{DEFAULT_RESOURCE_2, DEFAULT_RESOURCE_1};
         Assert.assertTrue(compareArray(arr1, arr2));
     }

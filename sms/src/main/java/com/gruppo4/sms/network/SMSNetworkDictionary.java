@@ -2,7 +2,6 @@ package com.gruppo4.sms.network;
 
 
 import com.gruppo4.communication.network.NetworkDictionary;
-import com.gruppo4.communication.network.SerializableObject;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Map;
  *
  * @author Luca Crema, Marco Mariotto
  */
-public class SMSNetworkDictionary<RK extends SerializableObject, RV extends SerializableObject> implements NetworkDictionary<SMSPeer, RK, RV> {
+public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, RK, RV> {
 
     /**
      * Sorted user list

@@ -1,14 +1,12 @@
 
 package com.gruppo4.sms.network;
 
-import com.gruppo4.communication.network.Resource;
-
 
 /**
  * Test resource used in unit tests
  */
 
-class TestResource extends Resource {
+class TestResource {
 
     private String resourceName;
 
