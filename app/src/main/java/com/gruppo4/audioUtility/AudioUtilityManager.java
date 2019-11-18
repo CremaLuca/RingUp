@@ -18,6 +18,10 @@ public class AudioUtilityManager {
     public static final int MAX_PERCENTAGE = 100;
     public static final int MIN_PERCENTAGE = 0;
 
+    private static final int VIBRATION_TIME = 500;
+    private static final int VIBRATION_DELAY = 500;
+    private static final int VIBRATION_REPEAT_CODE = 1;
+
     public enum AUMStream {
         ALARM,
         RING,
@@ -34,40 +38,40 @@ public class AudioUtilityManager {
 
     /**
      * @param context The current Context.
-     * @param AUMStream  The chosen AUMStream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
-     * @return The current AUMStream Volume (in percentage).
+     * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
+     * @return The current stream Volume (in percentage).
      */
-    public static int getVolume(Context context, AUMStream AUMStream) {
-        int currentVolume = getAudioManager(context).getStreamVolume(getStream(context, AUMStream));
+    public static int getVolume(Context context, AUMStream stream) {
+        int currentVolume = getAudioManager(context).getStreamVolume(getStream(stream));
 
-        int maxVolume = getMaxVolume(context, AUMStream);
+        int maxVolume = getMaxVolume(context, stream);
         return Math.round(MAX_PERCENTAGE * currentVolume / maxVolume);
     }
 
     /**
      * @param context The current Context.
-     * @param AUMStream  The chosen AUMStream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
-     * @return The maximum AUMStream volume (real value).
+     * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
+     * @return The maximum stream volume (real value).
      */
-    private static int getMaxVolume(Context context, AUMStream AUMStream) {
-        return getAudioManager(context).getStreamMaxVolume(getStream(context, AUMStream));
+    private static int getMaxVolume(Context context, AUMStream stream) {
+        return getAudioManager(context).getStreamMaxVolume(getStream(context, stream));
     }
 
     /**
-     * Sets up the AUMStream Volume, given a certain percentage.
+     * Sets up the stream Volume, given a certain percentage.
      *
      * @param context    The current Context.
-     * @param AUMStream     The chosen AUMStream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
+     * @param stream     The chosen stream (should be ALARM, RING or MUSIC).
      * @param percentage Target volume (expressed in %).
      * @throws IllegalArgumentException if percentage is not between 0 and 100.
      */
-    public static void setVolume(Context context, AUMStream AUMStream, int percentage) throws IllegalArgumentException {
+    public static void setVolume(Context context, AUMStream stream, int percentage) throws IllegalArgumentException {
         if (percentage < MIN_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too low. Please insert a value between 0 and 100.");
         else if (percentage > MAX_PERCENTAGE) {
             throw new IllegalArgumentException(" Your value is too high. Please insert a value between 0 and 100.");
         }
-        int maxVolume = getMaxVolume(context, AUMStream);
+        int maxVolume = getMaxVolume(context, stream);
 
         // Calculate the real value of the new volume
         int newVolume = maxVolume * percentage;
@@ -75,7 +79,7 @@ public class AudioUtilityManager {
 
         // Sets the Volume.
         getAudioManager(context).setStreamVolume(
-                getStream(context, AUMStream),
+                getStream(context, stream),
                 newVolume,
                 AudioManager.FLAG_SHOW_UI
         );
@@ -84,34 +88,33 @@ public class AudioUtilityManager {
     }
 
     /**
-     * Sets up the AUMStream Volume to its maximum value (in percentage).
+     * Sets up the stream Volume to its maximum value (in percentage).
      *
      * @param context The current Context.
-     * @param AUMStream  The chosen AUMStream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
+     * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
      */
-    public static void setMaxVolume(Context context, AUMStream AUMStream) {
-        setVolume(context, AUMStream, MAX_PERCENTAGE);
+    public static void setMaxVolume(Context context, AUMStream stream) {
+        setVolume(context, stream, MAX_PERCENTAGE);
     }
 
     /**
-     * Sets up the AUMStream Volume to its minimum value (in percentage).
+     * Sets up the Stream Volume to its minimum value (in percentage).
      *
      * @param context The current Context.
-     * @param AUMStream  The chosen AUMStream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
+     * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
      */
-    public static void setMinVolume(Context context, AUMStream AUMStream) {
-        setVolume(context, AUMStream, MIN_PERCENTAGE);
+    public static void setMinVolume(Context context, AUMStream stream) {
+        setVolume(context, stream, MIN_PERCENTAGE);
     }
 
     /**
-     * @param context The current Context.
-     * @param AUMStream  The chosen AUMStream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
-     * @return The constant representing the AUMStream.
-     * @throws IllegalArgumentException if AUMStream is not valid (It shouldn't happen the enum).
+     * @param stream The chosen Stream (should be ALARM, RING or MUSIC, otherwise an exception is thrown).
+     * @return The constant representing the Stream.
+     * @throws IllegalArgumentException if stream is not valid (It shouldn't happen, thanks to the enum type).
      */
-    private static int getStream(Context context, AUMStream AUMStream) throws IllegalArgumentException {
+    private static int getStream(AUMStream stream) throws IllegalArgumentException {
 
-        switch (AUMStream) {
+        switch (stream) {
             case ALARM:
                 return AudioManager.STREAM_ALARM;
             case RING:
@@ -119,7 +122,7 @@ public class AudioUtilityManager {
             case MUSIC:
                 return AudioManager.STREAM_MUSIC;
             default:
-                throw new IllegalArgumentException("\nIllegal AUMStream. It should be ALARM, RING or MUSIC .");
+                throw new IllegalArgumentException("\nIllegal Stream. It should be ALARM, RING or MUSIC .");
         }
     }
 
@@ -133,32 +136,34 @@ public class AudioUtilityManager {
 
     /**
      * Makes the target device vibrate.
+     *
      * @param context The current Context.
      */
-    public static void singleVibrate(Context context){
-        // Vibrate for 5000 milliseconds
-        // HARDWIRING
+    public static void singleVibrate(Context context) {
+        int time = VIBRATION_TIME + VIBRATION_DELAY;
+        // Check if API version is >26 or not
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getVibrator(context).vibrate(VibrationEffect.createOneShot(5000, VibrationEffect.DEFAULT_AMPLITUDE));
+            getVibrator(context).vibrate(VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             //deprecated in API 26
-            getVibrator(context).vibrate(5000);
+            getVibrator(context).vibrate(time);
         }
     }
 
     /**
      * Makes the target device vibrate.
+     *
      * @param context The current Context.
      */
-    public static void multipleVibrate(Context context){
-        // Multiple vibration works from API 26+, otherwise it would do the same thing done by singleVibrate(Context).
-        // HARDWIRING
-        long[] x = {500,500,500,500};
+    public static void multipleVibrate(Context context) {
+        // Vibration pattern
+        long[] x = {VIBRATION_DELAY, VIBRATION_TIME, VIBRATION_DELAY, VIBRATION_TIME};
+        // Check if API version is >26 or not
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getVibrator(context).vibrate(VibrationEffect.createWaveform(x, 1));
+            getVibrator(context).vibrate(VibrationEffect.createWaveform(x, VIBRATION_REPEAT_CODE));
         } else {
             //deprecated in API 26
-            getVibrator(context).vibrate(5000);
+            getVibrator(context).vibrate(x, VIBRATION_REPEAT_CODE);
         }
     }
 
