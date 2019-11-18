@@ -8,6 +8,7 @@
 
     <Button
         android:id="@+id/button"
+        android:onClick="sendRingCommand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
@@ -51,6 +52,7 @@
 
     <Button
         android:id="@+id/stop"
+        android:onClick="stopRingtone"
         android:layout_width="176dp"
         android:layout_height="93dp"
         android:layout_marginStart="70dp"
@@ -65,6 +67,7 @@
 
     <ImageButton
         android:id="@+id/settingsButton"
+        android:onClick="openSettings"
         android:layout_width="54dp"
         android:layout_height="49dp"
         android:layout_marginEnd="25dp"
