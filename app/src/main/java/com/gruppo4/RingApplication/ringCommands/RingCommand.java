@@ -6,6 +6,8 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * Class that encapsulates the RingCommand
  *
  * @author Alberto Ursino, Luca Crema
+ *
+ * Code review for Bortoletti and Barca
  */
 
 public class RingCommand {

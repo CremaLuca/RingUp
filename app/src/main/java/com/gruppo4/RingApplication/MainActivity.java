@@ -8,16 +8,12 @@ import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.gruppo4.RingApplication.ringCommands.AppManager;
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
 import com.gruppo4.RingApplication.ringCommands.ReceivedMessageListener;
@@ -36,6 +32,8 @@ import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 /**
  * @author Alberto Ursino, Alessandra Tonin
+ *
+ * Code review for Bortoletti and Barca
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
