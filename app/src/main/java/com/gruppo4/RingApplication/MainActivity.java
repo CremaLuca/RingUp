@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
+        PasswordManager passwordManager = new PasswordManager(context);
 
         RINGTONE = RingtoneHandler.getDefaultRingtone(getApplicationContext());
         PHONE_NUMBER = findViewById(R.id.telephoneNumber);
@@ -60,11 +61,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
          */
 
         //If there's a password stored and the permissions are granted -> setup the SMSHandler
-        if (PasswordManager.isPassSaved(context) && SMSHandler.checkReceivePermission(context))
+        if (PasswordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
             smsHandler.setup(APPLICATION_CODE);
 
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
-        if (!PasswordManager.isPassSaved(context)) {
+        if (!PasswordManager.isPassSaved()) {
             openDialog(SET_PASS_COMMAND);
         } else {
             checkPermission(context);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     @Override
     public void applyText(String password, Context context) {
-        PasswordManager.setPassword(context, password);
+        PasswordManager.setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
         waitForPermissions(WAIT_TIME);
     }

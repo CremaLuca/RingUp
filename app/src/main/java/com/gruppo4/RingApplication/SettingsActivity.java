@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void applyText(String password, Context context) {
-        PasswordManager.setPassword(context, password);
+        new PasswordManager(context).setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
         waitForPermissions(WAIT_TIME);
     }
