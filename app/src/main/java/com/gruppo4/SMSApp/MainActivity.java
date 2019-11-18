@@ -12,6 +12,8 @@ import com.gruppo4.ringtonePlayer.RingtoneHandler;
 
 /**
  * @author Alessandra Tonin
+ *
+ * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 public class MainActivity extends AppCompatActivity {
