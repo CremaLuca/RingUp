@@ -3,8 +3,10 @@ package com.gruppo4.communication.network;
 import androidx.annotation.NonNull;
 
 /**
- * Identifies a resource in the network, this is NOT the actual resource.
- * It can contain details for the resource
+ * A resource key or value has to be represented by a string in order to be sent by a sms.
+ * Thus every user-defined key or value extends this class, which force the user to override equals()
+ * and toString().
+ * @author Marco Mariotto
  */
 public abstract class SerializableObject{
 
