@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private Ringtone RINGTONE;
     private EditText PHONE_NUMBER;
     private EditText SEND_PASSWORD;
+    private static PasswordManager passwordManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
-        PasswordManager passwordManager = new PasswordManager(context);
+        passwordManager = new PasswordManager(context);
 
         RINGTONE = RingtoneHandler.getDefaultRingtone(getApplicationContext());
         PHONE_NUMBER = findViewById(R.id.telephoneNumber);
@@ -61,11 +62,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
          */
 
         //If there's a password stored and the permissions are granted -> setup the SMSHandler
-        if (PasswordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
+        if (passwordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
             smsHandler.setup(APPLICATION_CODE);
 
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
-        if (!PasswordManager.isPassSaved()) {
+        if (!passwordManager.isPassSaved()) {
             openDialog(SET_PASS_COMMAND);
         } else {
             checkPermission(context);
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     @Override
     public void applyText(String password, Context context) {
-        PasswordManager.setPassword(password);
+        passwordManager.setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
         waitForPermissions(WAIT_TIME);
     }
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * Creates the dialog used to insert a valid password or exit/abort
      *
      * @param command to open the right dialog
-     * @exception IllegalCommandException
+     * @throws IllegalCommandException
      */
     void openDialog(int command) throws IllegalCommandException {
         if (PasswordDialog.isCommandSetPass(command)) {

@@ -18,8 +18,8 @@ public class RingCommand {
     /**
      * Constructor of the class
      *
-     * @param peer     sender/receiver of the RingCommand
-     * @param password a valid password
+     * @param peer     sender/receiver of the ring command
+     * @param password of the ring command
      */
     public RingCommand(SMSPeer peer, String password) {
         this.peer = peer;
