@@ -7,12 +7,16 @@ import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.gruppo4.RingApplication.ringCommands.*;
 import com.gruppo4.RingApplication.ringCommands.dialog.*;
@@ -24,7 +28,9 @@ import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 /**
  * @author Alberto Ursino, Alessandra Tonin
  * <p>
- * Code review for Bortoletti and Barca
+ * Reviewed for Bortoletti and Barca
+ * <p>
+ * Usefull help: https://www.youtube.com/watch?v=j-3L3CgYXkU
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
@@ -38,13 +44,14 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private EditText PHONE_NUMBER;
     private EditText SEND_PASSWORD;
     private static PasswordManager passwordManager = null;
+    private static final String SETTINGS_NAME = "Settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setTitle("Ring Application");
+        setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
@@ -56,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         /**
          * Two cases can occur:
-         * 1st) The user open the app for the 1st time -> set a valid password -> grant permissions.
-         * 2nd) The user open the app for the 1st time -> set a valid password -> DON'T grant permissions -> Re-enter the application -> Has the possibility to grant permits again ↺
+         * 1st) The user open the app for the 1st time -> set a not empty password -> grant permissions.
+         * 2nd) The user open the app for the 1st time -> set a not empty password -> DON'T grant permissions -> Re-enter the application -> Has the possibility to grant permits again ↺
          * Both satisfied by the following if:
          */
 
@@ -74,6 +81,20 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getTitle().toString().equals(SETTINGS_NAME))
+            openSettings();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -102,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * Creates the dialog used to insert a valid password or exit/abort
+     * Creates the dialog used to insert a non empty password or exit/abort
      *
      * @param command to open the right dialog
      * @throws IllegalCommandException
@@ -170,10 +191,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Opens a new activity with the application settings
-     *
-     * @param view of the application
      */
-    public void openSettings(View view) {
+    public void openSettings() {
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
