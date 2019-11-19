@@ -169,6 +169,3 @@ public class AudioUtilityManager {
 
 
 }
-//TODO TESTING
-//TODO method to stop Vibration in utility class
-//TODO edit methods' name: setMinVolume and setMaxVolume

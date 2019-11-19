@@ -138,6 +138,3 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
-
-//TODO Specify action performed by each button
-//TODO Identification of the buttons
