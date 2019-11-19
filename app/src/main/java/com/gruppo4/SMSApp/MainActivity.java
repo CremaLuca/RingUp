@@ -137,4 +137,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 }
+
+//TODO USAGE OF 1 RINGTONE (?)
+//TODO Specify action performed by each button
+//TODO Identification of the buttons
