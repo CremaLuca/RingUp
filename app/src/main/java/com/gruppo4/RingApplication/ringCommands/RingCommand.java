@@ -7,7 +7,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  *
  * @author Alberto Ursino, Luca Crema
  * <p>
- * Code review for Bortoletti and Barca
+ * Code reviewed by Bortoletti and Barca
  */
 
 public class RingCommand {

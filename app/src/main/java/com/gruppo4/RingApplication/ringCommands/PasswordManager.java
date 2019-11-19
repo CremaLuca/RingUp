@@ -9,7 +9,7 @@ import com.gruppo_4.preferences.PreferencesManager;
  *
  * @author Alberto Ursino, Luca Crema
  * <p>
- * Code review for Bortoletti and Barca
+ * Code reviewed by Bortoletti and Barca
  */
 
 public class PasswordManager {

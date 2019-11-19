@@ -28,7 +28,7 @@ import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 /**
  * @author Alberto Ursino, Alessandra Tonin
  * <p>
- * Reviewed for Bortoletti and Barca
+ * Code reviewed by Bortoletti and Barca
  * <p>
  * Usefull help: https://www.youtube.com/watch?v=j-3L3CgYXkU
  */
