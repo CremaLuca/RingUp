@@ -38,6 +38,6 @@ public class RingCommandHandler {
      * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
      */
     public static boolean checkPassword(Context context, RingCommand ringCommand) {
-        return ringCommand.getPassword().equals(PasswordManager.getPassword(context));
+        return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
     }
 }

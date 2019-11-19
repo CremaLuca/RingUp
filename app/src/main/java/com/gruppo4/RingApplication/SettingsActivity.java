@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void applyText(String password, Context context) {
-        PasswordManager.setPassword(context, password);
+        new PasswordManager(context).setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
         waitForPermissions(WAIT_TIME);
     }
@@ -83,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
      * @param command to open the right dialog
      */
     void openDialog(int command) {
-        if(PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)){
+        if (PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)) {
             PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Change Password");
         } else {

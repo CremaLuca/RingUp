@@ -7,35 +7,30 @@ import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import com.gruppo4.RingApplication.ringCommands.AppManager;
-import com.gruppo4.RingApplication.ringCommands.PasswordManager;
-import com.gruppo4.RingApplication.ringCommands.ReceivedMessageListener;
-import com.gruppo4.RingApplication.ringCommands.RingCommand;
-import com.gruppo4.RingApplication.ringCommands.RingCommandHandler;
-import com.gruppo4.RingApplication.ringCommands.RingtoneHandler;
-import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
-import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
-import com.gruppo4.RingApplication.ringCommands.exceptions.IllegalCommandException;
-import com.gruppo4.sms.dataLink.SMSHandler;
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSPeer;
-import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
-import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
+import com.gruppo4.RingApplication.ringCommands.*;
+import com.gruppo4.RingApplication.ringCommands.dialog.*;
+import com.gruppo4.RingApplication.ringCommands.exceptions.*;
+import com.gruppo4.sms.dataLink.*;
+import com.gruppo4.sms.dataLink.exceptions.*;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 
 /**
  * @author Alberto Ursino, Alessandra Tonin
+ * <p>
+ * Code reviewed by Bortoletti and Barca
+ * <p>
+ * Usefull help: https://www.youtube.com/watch?v=j-3L3CgYXkU
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
@@ -45,81 +40,61 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final int SET_PASS_COMMAND = 1;
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
     private static final int WAIT_TIME = 2000;
+    private Ringtone RINGTONE;
+    private EditText PHONE_NUMBER;
+    private EditText SEND_PASSWORD;
+    private static PasswordManager passwordManager = null;
+    private static final String SETTINGS_NAME = "Settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setTitle("Ring Application");
+        setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
+        passwordManager = new PasswordManager(context);
+
+        RINGTONE = RingtoneHandler.getDefaultRingtone(getApplicationContext());
+        PHONE_NUMBER = findViewById(R.id.telephoneNumber);
+        SEND_PASSWORD = findViewById(R.id.password);
 
         /**
          * Two cases can occur:
-         * 1st) The user open the app for the 1st time -> set a valid password -> grant permissions.
-         * 2nd) The user open the app for the 1st time -> set a valid password -> DON'T grant permissions -> Re-enter the application -> Has the possibility to grant permits again ↺
+         * 1st) The user open the app for the 1st time -> set a not empty password -> grant permissions.
+         * 2nd) The user open the app for the 1st time -> set a not empty password -> DON'T grant permissions -> Re-enter the application -> Has the possibility to grant permits again ↺
          * Both satisfied by the following if:
          */
 
         //If there's a password stored and the permissions are granted -> setup the SMSHandler
-        if (PasswordManager.isPassSaved(context) && SMSHandler.checkReceivePermission(context))
+        if (passwordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
             smsHandler.setup(APPLICATION_CODE);
 
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
-        if (!PasswordManager.isPassSaved(context)) {
+        if (!passwordManager.isPassSaved()) {
             openDialog(SET_PASS_COMMAND);
         } else {
             checkPermission(context);
         }
 
-        final Ringtone RINGTONE = RingtoneHandler.getDefaultRingtone(context);
-        final EditText PHONE_NUMBER = findViewById(R.id.telephoneNumber);
-        final EditText SEND_PASSWORD = findViewById(R.id.password);
-        final Button RING_BUTTON = findViewById(R.id.button);
-        final Button STOP_BUTTON = findViewById(R.id.stop);
-        final ImageButton SETTINGS_BUTTON = findViewById(R.id.settingsButton);
-
         smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
-
-        //Send the ring command
-        RING_BUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    sendRingCommand(PHONE_NUMBER.getText().toString(), SEND_PASSWORD.getText().toString(), context);
-                } catch (InvalidSMSMessageException e) {
-                    e.printStackTrace();
-                } catch (InvalidTelephoneNumberException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //Button used to stop the ringtone
-        STOP_BUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RingtoneHandler.stopRingtone(RINGTONE);
-            }
-        });
-
-        SETTINGS_BUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSettings();
-            }
-        });
 
     }
 
-    /**
-     * Opens a new activity with the application settings
-     */
-    private void openSettings() {
-        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-        startActivity(intent);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getTitle().toString().equals(SETTINGS_NAME))
+            openSettings();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -134,26 +109,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     @Override
     public void applyText(String password, Context context) {
-        PasswordManager.setPassword(context, password);
+        passwordManager.setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
         waitForPermissions(WAIT_TIME);
-    }
-
-    /**
-     * @param destination the telephone number of the person you want to send the ring command
-     * @param password    to send
-     * @param context     of the application
-     * @throws InvalidSMSMessageException
-     * @throws InvalidTelephoneNumberException
-     */
-    private void sendRingCommand(String destination, String password, Context context) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        final RingCommand ringCommand = new RingCommand(new SMSPeer(destination), createPassword(password));
-        AppManager.sendCommand(context, ringCommand, new SMSSentListener() {
-            @Override
-            public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
-                Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     /**
@@ -165,15 +123,16 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * Creates the dialog used to insert a valid password or exit/abort
+     * Creates the dialog used to insert a non empty password or exit/abort
      *
      * @param command to open the right dialog
+     * @throws IllegalCommandException
      */
-    void openDialog(int command) {
+    void openDialog(int command) throws IllegalCommandException {
         if (PasswordDialog.isCommandSetPass(command)) {
             PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Device Password");
-        } else if(PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)){
+        } else if (PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)) {
             PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Change Password");
         } else {
@@ -204,4 +163,37 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }, time);
     }
 
+    /**
+     * Method used to stop the ringtone when the user presses on the button
+     *
+     * @param view of the application
+     */
+    public void stopRingtone(View view) {
+        RingtoneHandler.stopRingtone(RINGTONE);
+    }
+
+    /**
+     * Method used to send the ring command when the user presses on the "RING" button
+     *
+     * @param view of the application
+     * @throws InvalidTelephoneNumberException
+     * @throws InvalidSMSMessageException
+     */
+    public void sendRingCommand(View view) throws InvalidTelephoneNumberException, InvalidSMSMessageException {
+        final RingCommand ringCommand = new RingCommand(new SMSPeer(PHONE_NUMBER.getText().toString()), createPassword(SEND_PASSWORD.getText().toString()));
+        AppManager.sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
+            @Override
+            public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
+                Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Opens a new activity with the application settings
+     */
+    public void openSettings() {
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
 }

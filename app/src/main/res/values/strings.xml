@@ -4,10 +4,12 @@
     <string name="button_ring">Ringtone</string>
     <string name="button_stop">Stop ringing!</string>
     <string name="button_alarm">Alarm</string>
+    <string name="settings_name">Settings</string>
 
     <string-array name="seconds">
         <item>30 seconds</item>
         <item>45 seconds</item>
         <item>60 seconds</item>
     </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
