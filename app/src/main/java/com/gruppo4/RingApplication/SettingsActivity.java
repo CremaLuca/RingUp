@@ -76,6 +76,10 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+
+        //Set the previous selected item
+        spinner.setSelection(findCurrentTimeoutSpinnerIndex());
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -84,6 +88,7 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
                 int selectedTime = timerValues.getInt(position, DEFAULT_TIMER_VALUE);
                 Log.d("SettingsActivity", "Selected timer value " + selectedTime);
                 PreferencesManager.setInt(getApplicationContext(), MainActivity.TIMEOUT_TIME_PREFERENCES_KEY, selectedTime);
+                timerValues.recycle();
             }
 
             @Override
@@ -92,6 +97,22 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
                 Log.v("SettingsActivity", "Nothing selected in timer spinner");
             }
         });
+    }
+
+    /**
+     * Looks into preferences and finds the current timeout time, checks every timer_values resources array and
+     * finds the index of the current timeout time
+     *
+     * @return
+     */
+    private int findCurrentTimeoutSpinnerIndex() {
+        int[] resourcesTimerValues = getResources().getIntArray(R.array.timer_values);
+        int currentTimeoutTime = PreferencesManager.getInt(getApplicationContext(), MainActivity.TIMEOUT_TIME_PREFERENCES_KEY);
+        for (int i = 0; i < resourcesTimerValues.length; i++) {
+            if (currentTimeoutTime == resourcesTimerValues[i])
+                return i;
+        }
+        return 0;
     }
 
     /**
