@@ -36,13 +36,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        setTitle("Settings");
-
         Context context = getApplicationContext();
 
         final Spinner TIMER_SPINNER = findViewById(R.id.timer);
         final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.changePassword);
-        final RadioButton VIBRATE_RADIO_BUTTON = findViewById(R.id.Vibrate);
         final RadioButton RINGTONE_RADIO_BUTTON = findViewById(R.id.Ringtone);
 
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(context, R.array.seconds, android.R.layout.simple_spinner_item);
@@ -64,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        
     }
 
     @Override

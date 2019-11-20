@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
+        setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
