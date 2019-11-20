@@ -2,6 +2,7 @@ package com.gruppo4.RingApplication;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -28,12 +29,13 @@ import static java.lang.Integer.parseInt;
 /**
  * @author Alberto Ursino
  */
-public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, PasswordDialogListener {
+public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener {
 
+    public static final int DEFAULT_TIMER_VALUE = 30;
     private static final int WAIT_TIME = 2000;
     private static final int PERMISSION_CODE = 0;
-    private Spinner TIMER_SPINNER = null;
     private final static String TIMER_STRING_KEY = "Timer";
+    private Spinner TIMER_SPINNER = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,32 +44,54 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         Context context = getApplicationContext();
 
-        TIMER_SPINNER = findViewById(R.id.timer_selection);
-        final Button CHANGE_PASSWORD_BUTTON = findViewById(R.id.change_password);
-        final RadioButton RINGTONE_RADIO_BUTTON = findViewById(R.id.ringtone_mode);
+        final Button changePasswordButton = findViewById(R.id.change_password_button);
+        final RadioButton ringtoneRadioButton = findViewById(R.id.radio_ringtone_mode);
 
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(context, R.array.seconds, android.R.layout.simple_spinner_item);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        TIMER_SPINNER.setAdapter(arrayAdapter);
-        TIMER_SPINNER.setOnItemSelectedListener(this);
+        setupTimeSpinner();
 
         /**
          * If a value of timer is actually stored in memory then updates it
          */
-        if(!(PreferencesManager.getInt(context, TIMER_STRING_KEY) == PreferencesManager.DEFAULT_INTEGER_RETURN)) {
+        if (!(PreferencesManager.getInt(context, TIMER_STRING_KEY) == PreferencesManager.DEFAULT_INTEGER_RETURN)) {
             //TODO
         }
 
-        RINGTONE_RADIO_BUTTON.toggle();
+        ringtoneRadioButton.toggle();
 
         //Button used to open a dialog where the user can change the password
-        CHANGE_PASSWORD_BUTTON.setOnClickListener(new View.OnClickListener() {
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDialog();
             }
         });
 
+    }
+
+    private void setupTimeSpinner() {
+        Spinner spinner = findViewById(R.id.timeout_time_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.timer_names, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.v("SettingsActivity", "Selected " + position + "^ element on timer spinner");
+                TypedArray timerValues = getResources().obtainTypedArray(R.array.timer_values);
+                int selectedTime = timerValues.getInt(position, DEFAULT_TIMER_VALUE);
+                Log.d("SettingsActivity", "Selected timer value " + selectedTime);
+                PreferencesManager.setInt(getApplicationContext(), MainActivity.TIMEOUT_TIME_PREFERENCES_KEY, selectedTime);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //Nothing to do, nothing to update
+                Log.v("SettingsActivity", "Nothing selected in timer spinner");
+            }
+        });
     }
 
     /**
@@ -78,15 +102,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         saveTimer((String) TIMER_SPINNER.getSelectedItem());
         Log.d("saveTimer, timer val: ", "" + TIMER_SPINNER.getSelectedItem());
         super.onPause();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
     }
 
     @Override
@@ -139,4 +154,5 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     public void saveTimer(String timer) {
         PreferencesManager.setInt(getApplicationContext(), "Timer", parseInt(timer, 10));
     }
+
 }

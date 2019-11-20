@@ -23,21 +23,21 @@ public class PasswordManager {
      * @param context of the application
      */
     public PasswordManager(Context context) {
-        this.context = context;
-    }
-
-    /**
-     * @param password password that want to be saved in memory
-     */
-    public static void setPassword(String password) {
-        PreferencesManager.setString(context, PREFERENCES_PASSWORD_KEY, password);
+        PasswordManager.context = context;
     }
 
     /**
      * @return the password saved in memory
      */
-    public static String getPassword() {
+    public String getPassword() {
         return PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY);
+    }
+
+    /**
+     * @param password password that want to be saved in memory
+     */
+    public void setPassword(String password) {
+        PreferencesManager.setString(context, PREFERENCES_PASSWORD_KEY, password);
     }
 
     /**
@@ -45,14 +45,14 @@ public class PasswordManager {
      *
      * @return true if there's a password saved in memory, false otherwise
      */
-    public static boolean isPassSaved() {
+    public boolean isPassSaved() {
         return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(PreferencesManager.DEFAULT_STRING_RETURN));
     }
 
     /**
      * Deletes the saved password
      */
-    public static void deletePassword() {
+    public void deletePassword() {
         PreferencesManager.removeValue(context, PREFERENCES_PASSWORD_KEY);
     }
 }

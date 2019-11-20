@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private EditText phoneNumberField;
     private EditText passwordField;
     private static PasswordManager passwordManager = null;
-    private static final String SETTINGS_NAME = "Settings";
-    private final static String TIMER_STRING_KEY = "Timer";
+    public static final String SETTINGS_NAME = "Settings";
+    public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         final Context context = getApplicationContext();
         SMSHandler smsHandler = SMSHandler.getInstance(context);
+
+        passwordManager = new PasswordManager(this);
 
         setupTimerValue();
 
@@ -83,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
          */
 
         //If there's a password stored and the permissions are granted -> setup the SMSHandler
-        if (PasswordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
+        if (passwordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
             smsHandler.setup(APPLICATION_CODE);
 
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
-        if (!PasswordManager.isPassSaved()) {
+        if (!passwordManager.isPassSaved()) {
             openDialog();
         } else {
             checkPermission();
@@ -102,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      */
     private void setupTimerValue() {
 
-        if (PreferencesManager.getInt(getApplicationContext(), TIMER_STRING_KEY) == (PreferencesManager.DEFAULT_INTEGER_RETURN)) {
-            PreferencesManager.setInt(getApplicationContext(), TIMER_STRING_KEY, WAIT_TIME_RINGTONE);
+        if (PreferencesManager.getInt(getApplicationContext(), TIMEOUT_TIME_PREFERENCES_KEY) == (PreferencesManager.DEFAULT_INTEGER_RETURN)) {
+            PreferencesManager.setInt(getApplicationContext(), TIMEOUT_TIME_PREFERENCES_KEY, WAIT_TIME_RINGTONE);
         }
     }
 
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     @Override
     public void onPasswordSet(String password, Context context) {
-        PasswordManager.setPassword(password);
+        passwordManager.setPassword(password);
         Toast.makeText(getApplicationContext(), "Password set", Toast.LENGTH_SHORT).show();
         //Ask for permisssion after a short period of time
         waitForPermissions(WAIT_TIME_PERMISSION);

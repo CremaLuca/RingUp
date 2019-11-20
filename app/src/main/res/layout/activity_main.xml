@@ -35,7 +35,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="70dp"
         android:background="#504C4C"
-        android:onClick="sendRingCommand"
+        android:onClick="stopRingtone"
         android:text="stop"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"

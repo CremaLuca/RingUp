@@ -5,21 +5,8 @@
     android:layout_height="match_parent"
     android:background="@color/activity_background_color">
 
-    <Spinner
-        android:id="@+id/timer_selection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="100dp"
-        android:background="@color/activity_background_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_timer_text" />
-
     <TextView
-        android:id="@+id/command_select"
+        android:id="@+id/identification_type_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
@@ -31,54 +18,76 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/select_timer_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="100dp"
-        android:text="Select a timer (seconds)"
-        android:textColor="@color/text_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vibration_mode" />
-
     <RadioButton
-        android:id="@+id/vibration_mode"
-        android:layout_width="102dp"
+        android:id="@+id/radio_vibration_mode"
+        android:layout_width="0dp"
         android:layout_height="31dp"
-        android:layout_marginStart="102dp"
-        android:layout_marginTop="16dp"
-        android:text="Vibration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/command_select" />
-
-    <Button
-        android:id="@+id/change_password"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="100dp"
-        android:background="@color/buttons_color"
-        android:text="change password"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Only vibration"
+        app:layout_constraintEnd_toStartOf="@+id/radio_ringtone_mode"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timer_selection" />
+        app:layout_constraintTop_toBottomOf="@+id/identification_type_text" />
 
     <RadioButton
-        android:id="@+id/ringtone_mode"
-        android:layout_width="99dp"
+        android:id="@+id/radio_ringtone_mode"
+        android:layout_width="0dp"
         android:layout_height="31dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="102dp"
         android:text="Ringtone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/vibration_mode"
-        app:layout_constraintTop_toBottomOf="@+id/command_select" />
+        app:layout_constraintTop_toBottomOf="@+id/identification_type_text" />
+
+    <TextView
+        android:id="@+id/select_timeout_time_text"
+        android:layout_width="176dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="100dp"
+        android:text="Select the ring timeout time"
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radio_vibration_mode" />
+
+    <TextView
+        android:id="@+id/timeout_time_explaination_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="80dp"
+        android:text="The ringtone will stop automatically after the selected amount of seconds"
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeout_time_spinner" />
+
+    <Spinner
+        android:id="@+id/timeout_time_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_timeout_time_text" />
+
+    <Button
+        android:id="@+id/change_password_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        android:background="@color/buttons_color"
+        android:text="change password"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

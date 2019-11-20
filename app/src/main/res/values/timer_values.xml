@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="timer_names">
+        <item>30 s</item>
+        <item>45 s</item>
+        <item>60 s</item>
+    </string-array>
+    <array name="timer_values">
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+    </array>
+</resources>
