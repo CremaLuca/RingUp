@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -15,12 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/nice_grey"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="Select the command"
         android:textAlignment="center"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/actionBar"
-        android:textColor="@color/white"/>
+        app:layout_constraintTop_toBottomOf="@+id/actionBar" />
 
     <RadioButton
         android:id="@+id/radio_vibration_mode"
@@ -28,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="Only vibration"
         app:layout_constraintEnd_toStartOf="@+id/radio_ringtone_mode"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,10 +39,12 @@
         android:id="@+id/radio_ringtone_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="102dp"
         android:text="Ringtone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/radio_vibration_mode"
         app:layout_constraintTop_toBottomOf="@+id/identification_type_text" />
 
     <TextView
@@ -48,9 +52,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
+        android:background="@color/nice_grey"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="Select the ring timeout time"
         android:textAlignment="center"
-        android:background="@color/nice_grey"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,9 +67,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
+        android:background="@color/nice_grey"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="Change you device password"
         android:textAlignment="center"
-        android:background="@color/nice_grey"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

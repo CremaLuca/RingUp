@@ -9,14 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
@@ -34,7 +33,6 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
     public static final int DEFAULT_TIMER_VALUE = 30;
     private static final int WAIT_TIME = 2000;
     private static final int PERMISSION_CODE = 0;
-    private static Button changePasswordButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +41,9 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
 
         setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
 
-        Context context = getApplicationContext();
-
         setupTimeSpinner();
 
-        changePasswordButton = findViewById(R.id.change_password_button);
+        FloatingActionButton changePasswordButton = findViewById(R.id.change_password_button);
 
         //Button used to open a dialog where the user can change the password
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
