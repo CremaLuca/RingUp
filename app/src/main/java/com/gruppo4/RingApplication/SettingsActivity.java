@@ -40,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         setContentView(R.layout.activity_settings);
 
         setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setupTimeSpinner();
 
