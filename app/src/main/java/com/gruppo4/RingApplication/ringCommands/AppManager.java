@@ -5,20 +5,26 @@ import android.media.Ringtone;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gruppo4.RingApplication.SettingsActivity;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
+import com.gruppo_4.preferences.PreferencesManager;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * @author Alberto Ursino, Luca Crema, Alessandra Tonin, Marco Mariotto
  */
 public class AppManager {
 
-    private final static int TIME = 15 * 1000;
+    private final static String WRONG_PASSWORD = "Wrong Password";
+    private final static String TIMER_STRING_KEY = "Timer";
 
     /**
      * If the password of the message received is valid then play ringtone for fixed amount of time
@@ -28,19 +34,16 @@ public class AppManager {
      */
     public static void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
         if (RingCommandHandler.checkPassword(context, ringCommand)) {
-            Log.d("AppManager", "The password is correct");
             RingtoneHandler.playRingtone(ringtone);
-            Log.d("AppManager", "Played ringtone");
             //Timer: the ringtone is playing for TIME seconds.
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("AppManager", "Stopping ringtone");
                     RingtoneHandler.stopRingtone(ringtone);
                 }
-            }, TIME);
+            }, PreferencesManager.getInt(context, TIMER_STRING_KEY));
         } else {
-            Toast.makeText(context, "Wrong Password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, WRONG_PASSWORD, Toast.LENGTH_SHORT).show();
         }
     }
 

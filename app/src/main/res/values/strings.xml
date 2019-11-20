@@ -7,9 +7,9 @@
     <string name="settings_name">Settings</string>
 
     <string-array name="seconds">
-        <item>30 seconds</item>
-        <item>45 seconds</item>
-        <item>60 seconds</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
     </string-array>
     <string name="title_activity_main2">Main2Activity</string>
 </resources>

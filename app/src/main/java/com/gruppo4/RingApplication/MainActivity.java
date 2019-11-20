@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import com.gruppo4.RingApplication.ringCommands.exceptions.*;
 import com.gruppo4.sms.dataLink.*;
 import com.gruppo4.sms.dataLink.exceptions.*;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
+import com.gruppo_4.preferences.PreferencesManager;
 
 /**
  * @author Alberto Ursino, Alessandra Tonin
@@ -39,12 +41,14 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
-    private static final int WAIT_TIME = 2000;
+    private static final int WAIT_TIME_PERMISSION = 2000;
+    private static final int WAIT_TIME_RINGTONE = 30 * 1000; //30 seconds by default
     private Ringtone RINGTONE;
     private EditText PHONE_NUMBER;
     private EditText SEND_PASSWORD;
     private static PasswordManager passwordManager = null;
     private static final String SETTINGS_NAME = "Settings";
+    private final static String TIMER_STRING_KEY = "Timer";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +61,16 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         SMSHandler smsHandler = SMSHandler.getInstance(context);
         passwordManager = new PasswordManager(context);
 
+        /**
+         * Controls if a timer value is present on memory, if not we need a default value -> 30 seconds
+         */
+        if (PreferencesManager.getInt(context, TIMER_STRING_KEY) == (PreferencesManager.DEFAULT_INTEGER_RETURN)) {
+            PreferencesManager.setInt(context, TIMER_STRING_KEY, WAIT_TIME_RINGTONE);
+        }
+
         RINGTONE = RingtoneHandler.getDefaultRingtone(getApplicationContext());
-        PHONE_NUMBER = findViewById(R.id.telephoneNumber);
-        SEND_PASSWORD = findViewById(R.id.password);
+        PHONE_NUMBER = findViewById(R.id.phone_number_field);
+        SEND_PASSWORD = findViewById(R.id.password_field);
 
         /**
          * Two cases can occur:
@@ -74,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
         if (!passwordManager.isPassSaved()) {
-            openDialog(SET_PASS_COMMAND);
+            openDialog();
         } else {
             checkPermission(context);
         }
@@ -82,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public void applyText(String password, Context context) {
         passwordManager.setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
-        waitForPermissions(WAIT_TIME);
+        waitForPermissions(WAIT_TIME_PERMISSION);
     }
 
     /**
@@ -125,16 +137,12 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     /**
      * Creates the dialog used to insert a non empty password or exit/abort
      *
-     * @param command to open the right dialog
      * @throws IllegalCommandException
      */
-    void openDialog(int command) throws IllegalCommandException {
-        if (PasswordDialog.isCommandSetPass(command)) {
+    void openDialog() throws IllegalCommandException {
+        if (PasswordDialog.isCommandSetPass(SET_PASS_COMMAND)) {
             PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
             passwordDialog.show(getSupportFragmentManager(), "Device Password");
-        } else if (PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)) {
-            PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
-            passwordDialog.show(getSupportFragmentManager(), "Change Password");
         } else {
             throw new IllegalCommandException();
         }
@@ -180,13 +188,23 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @throws InvalidSMSMessageException
      */
     public void sendRingCommand(View view) throws InvalidTelephoneNumberException, InvalidSMSMessageException {
-        final RingCommand ringCommand = new RingCommand(new SMSPeer(PHONE_NUMBER.getText().toString()), createPassword(SEND_PASSWORD.getText().toString()));
-        AppManager.sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
-            @Override
-            public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
-                Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show();
+        if (SEND_PASSWORD.getText().toString().equals(""))
+            Toast.makeText(getApplicationContext(), "Password is empty", Toast.LENGTH_SHORT).show();
+        else {
+            final RingCommand ringCommand = new RingCommand(new SMSPeer(PHONE_NUMBER.getText().toString()), createPassword(SEND_PASSWORD.getText().toString()));
+            try {
+                AppManager.sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
+                    @Override
+                    public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
+                        Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (InvalidTelephoneNumberException e) {
+                Toast.makeText(getApplicationContext(), "Invalid phone number", Toast.LENGTH_SHORT).show();
+            } catch (InvalidSMSMessageException e) {
+                Toast.makeText(getApplicationContext(), "Invalid SMSMessage", Toast.LENGTH_SHORT).show();
             }
-        });
+        }
     }
 
     /**

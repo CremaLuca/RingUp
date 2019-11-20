@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/activity_background_color">
+    android:background="@color/activity_background_color"
+    tools:context=".MainActivity">
 
     <include
         android:id="@+id/actionBar"
         layout="@layout/action_bar"></include>
 
     <EditText
-        android:id="@+id/telephoneNumber"
+        android:id="@+id/phone_number_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/actionBar" />
 
     <Button
-        android:id="@+id/stop"
+        android:id="@+id/stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -39,11 +39,11 @@
         android:text="stop"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintStart_toEndOf="@+id/ring_button"
+        app:layout_constraintTop_toBottomOf="@+id/password_field" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/password_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
@@ -56,10 +56,10 @@
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/telephoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_number_field" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/ring_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
@@ -67,11 +67,11 @@
         android:layout_marginEnd="5dp"
         android:background="#504C4C"
         android:onClick="sendRingCommand"
-        android:text="RING"
+        android:text="ring"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/stop"
+        app:layout_constraintEnd_toStartOf="@+id/stop_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/password_field" />
 
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
