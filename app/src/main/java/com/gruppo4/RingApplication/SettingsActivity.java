@@ -24,7 +24,6 @@ import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo_4.preferences.PreferencesManager;
 
 import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
-import static java.lang.Integer.parseInt;
 
 /**
  * @author Alberto Ursino
@@ -115,16 +114,6 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         return 0;
     }
 
-    /**
-     * Before returning to the mainActivity we save the value set on timer
-     */
-    @Override
-    protected void onPause() {
-        saveTimer((String) TIMER_SPINNER.getSelectedItem());
-        Log.d("saveTimer, timer val: ", "" + TIMER_SPINNER.getSelectedItem());
-        super.onPause();
-    }
-
     @Override
     public void onPasswordSet(String password, Context context) {
         new PasswordManager(context).setPassword(password);
@@ -167,13 +156,6 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
     void checkPermission(Context context) {
         if (!SMSHandler.checkReceivePermission(context))
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
-    }
-
-    /**
-     * @param timer value taken from the list of timer values
-     */
-    public void saveTimer(String timer) {
-        PreferencesManager.setInt(getApplicationContext(), "Timer", parseInt(timer, 10));
     }
 
 }
