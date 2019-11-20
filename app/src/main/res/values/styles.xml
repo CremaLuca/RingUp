@@ -5,12 +5,12 @@
 
     <!-- Customize your theme here. -->
     <style name="CustomToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/activity_background_color</item>
+        <item name="android:background">@color/nice_green</item>
     </style>
 
     <!-- Menu item theme -->
     <style name="CustomPopupMenuStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/menu_items</item>
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

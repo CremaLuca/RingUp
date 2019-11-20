@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private Ringtone ringtone;
     private EditText phoneNumberField;
     private EditText passwordField;
+    private Button ringButton;
     private static PasswordManager passwordManager = null;
     public static final String SETTINGS_NAME = "Settings";
     public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
@@ -65,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
 
-        final Context context = getApplicationContext();
+        Context context = getApplicationContext();
+
         SMSHandler smsHandler = SMSHandler.getInstance(context);
 
         passwordManager = new PasswordManager(this);
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         ringtone = RingtoneHandler.getDefaultRingtone(getApplicationContext());
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
-
+        ringButton = findViewById(R.id.ring_button);
 
         /**
          * Two cases can occur:
@@ -96,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }
 
         smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
+
+        ringButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendRingCommand();
+            }
+        });
 
     }
 

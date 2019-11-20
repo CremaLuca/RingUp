@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="activity_background_color">#FFFFFF</color>
-    <color name="menu_items">#FFFFFF</color>
-    <color name="dialog_color">#504C4C</color>
-    <color name="buttons_color">#504C4C</color>
-    <color name="text_color">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="nice_grey">#504C4C</color>
+    <color name="black">#000000</color>
+    <color name="nice_green">#4CAF50</color>
 </resources>

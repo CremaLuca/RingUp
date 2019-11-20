@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
@@ -33,29 +34,20 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
     public static final int DEFAULT_TIMER_VALUE = 30;
     private static final int WAIT_TIME = 2000;
     private static final int PERMISSION_CODE = 0;
-    private final static String TIMER_STRING_KEY = "Timer";
-    private Spinner TIMER_SPINNER = null;
+    private static Button changePasswordButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Context context = getApplicationContext();
+        setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
 
-        final Button changePasswordButton = findViewById(R.id.change_password_button);
-        final RadioButton ringtoneRadioButton = findViewById(R.id.radio_ringtone_mode);
+        Context context = getApplicationContext();
 
         setupTimeSpinner();
 
-        /**
-         * If a value of timer is actually stored in memory then updates it
-         */
-        if (!(PreferencesManager.getInt(context, TIMER_STRING_KEY) == PreferencesManager.DEFAULT_INTEGER_RETURN)) {
-            //TODO
-        }
-
-        ringtoneRadioButton.toggle();
+        changePasswordButton = findViewById(R.id.change_password_button);
 
         //Button used to open a dialog where the user can change the password
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
