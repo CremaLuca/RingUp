@@ -6,5 +6,5 @@ import android.content.Context;
  * listener used to put in communication the main activity with the dialog
  */
 public interface PasswordDialogListener {
-    void applyText(String password, Context context);
+    void onPasswordSet(String password, Context context);
 }

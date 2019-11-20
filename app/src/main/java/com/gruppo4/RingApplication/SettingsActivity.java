@@ -1,7 +1,5 @@
 package com.gruppo4.RingApplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,8 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
@@ -91,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public void applyText(String password, Context context) {
+    public void onPasswordSet(String password, Context context) {
         new PasswordManager(context).setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
         waitForPermissions(WAIT_TIME);
