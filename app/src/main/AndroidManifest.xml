@@ -7,9 +7,15 @@
 
     <application
         android:allowBackup="true"
+<<<<<<< HEAD
         android:icon="@mipmap/ic_launcher"
         android:label="ringUp"
         android:roundIcon="@mipmap/ic_launcher_round"
+=======
+        android:icon="@mipmap/first_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/first_icon_round"
+>>>>>>> 0a06b46c27112decc578a22cf440ba27566656be
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".SettingsActivity" android:parentActivityName=".MainActivity"/>
