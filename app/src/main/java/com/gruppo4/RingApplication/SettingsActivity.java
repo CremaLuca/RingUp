@@ -30,7 +30,7 @@ import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
  */
 public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener {
 
-    public static final int DEFAULT_TIMER_VALUE = 30;
+    public static final int DEFAULT_TIMER_VALUE = 30000;
     private static final int WAIT_TIME = 2000;
     private static final int PERMISSION_CODE = 0;
 

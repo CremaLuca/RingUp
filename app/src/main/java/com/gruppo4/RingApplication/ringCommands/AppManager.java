@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gruppo4.RingApplication.MainActivity;
 import com.gruppo4.RingApplication.SettingsActivity;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
@@ -24,7 +25,6 @@ import static java.lang.Integer.parseInt;
 public class AppManager {
 
     private final static String WRONG_PASSWORD = "Wrong Password";
-    private final static String TIMER_STRING_KEY = "Timer";
 
     /**
      * If the password of the message received is valid then play ringtone for fixed amount of time
@@ -35,13 +35,14 @@ public class AppManager {
     public static void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
         if (RingCommandHandler.checkPassword(context, ringCommand)) {
             RingtoneHandler.playRingtone(ringtone);
+            Log.d("Timer value saved: ", ""+PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
             //Timer: the ringtone is playing for TIME seconds.
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     RingtoneHandler.stopRingtone(ringtone);
                 }
-            }, PreferencesManager.getInt(context, TIMER_STRING_KEY));
+            }, PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
         } else {
             Toast.makeText(context, WRONG_PASSWORD, Toast.LENGTH_SHORT).show();
         }
