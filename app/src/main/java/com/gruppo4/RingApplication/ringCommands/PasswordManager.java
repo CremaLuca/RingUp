@@ -19,9 +19,9 @@ public class PasswordManager implements PasswordManagerInterface {
     private Context context;
 
     /**
-     * Constructor: captures the context that will be used in the methods
+     * Constructor: it captures the context which will be used in methods
      *
-     * @param context of the application
+     * @param context
      */
     public PasswordManager(Context context) {
         this.context = context;

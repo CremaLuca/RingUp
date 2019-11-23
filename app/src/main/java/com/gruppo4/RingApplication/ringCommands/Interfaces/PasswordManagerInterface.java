@@ -8,20 +8,19 @@ public interface PasswordManagerInterface {
     String getPassword();
 
     /**
-     * @param password password that want to be saved in memory
+     * @param password that want to be saved in memory
      */
     void setPassword(String password);
 
     /**
-     * Checks if there's a password saved in memory
-     *
-     * @return true if there's a password saved in memory, false otherwise
-     */
-    boolean isPassSaved();
-
-    /**
-     * Deletes the saved password
+     * Deletes the password saved in memory
      */
     void deletePassword();
 
+    /**
+     * Checks if there's a password saved in memory
+     *
+     * @return true if is it present, false otherwise
+     */
+    boolean isPassSaved();
 }

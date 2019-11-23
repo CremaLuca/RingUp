@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         SMSHandler smsHandler = SMSHandler.getInstance(context);
 
-        passwordManager = new PasswordManager(this);
+        passwordManager = new PasswordManager(context);
 
         setupTimerValue();
 
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         else {
             final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumberField.getText().toString()), createPassword(passwordField.getText().toString()));
             try {
-                AppManager.sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
+                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
                     @Override
                     public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
                         Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show();

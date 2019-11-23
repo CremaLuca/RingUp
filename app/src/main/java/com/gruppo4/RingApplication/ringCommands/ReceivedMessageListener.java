@@ -34,7 +34,7 @@ public class ReceivedMessageListener extends SMSReceivedListener {
         Log.d("ReceivedMessage", "Received a message in the service");
         RingCommand ringCommand = RingCommandHandler.parseContent(message.getPeer(), message.getData());
         if (ringCommand != null)
-            AppManager.onRingCommandReceived(this, ringCommand, RingtoneHandler.getDefaultRingtone(this));
+            AppManager.getInstance().onRingCommandReceived(this, ringCommand, RingtoneHandler.getDefaultRingtone(this));
         else
             Log.d("Fail: ", "Message received is not a valid command for play the ringtone");
     }
