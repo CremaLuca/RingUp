@@ -26,6 +26,8 @@ public class PasswordDialog extends AppCompatDialogFragment {
     private static int command;
     private static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
+    private static final String SET_DELIVERY = "Set your device password";
+    private static final String CHANGE_DELIVERY = "Change your password device";
 
     public PasswordDialog(int command) {
         PasswordDialog.command = command;
@@ -41,43 +43,41 @@ public class PasswordDialog extends AppCompatDialogFragment {
         builder.setView(view);
 
         final Context context = getContext();
-        final TextView DELIVERY_MESSAGE = view.findViewById(R.id.delivery);
-        final EditText DEVICE_PASSWORD = view.findViewById(R.id.devicePassword);
-        final Button SET_BUTTON = view.findViewById(R.id.setPass);
-        final Button EXIT_BUTTON = view.findViewById(R.id.exit);
+        final TextView delivery_message = view.findViewById(R.id.delivery);
+        final EditText device_password = view.findViewById(R.id.devicePassword);
+        final Button set_button = view.findViewById(R.id.setPass);
+        final Button close_button = view.findViewById(R.id.exit); //It can be the "EXIT" or the "ABORT" button
 
-        //Fix the dialog relying to the command received in the constructor
+        /**
+         * Fix the dialog interface depending on the command received in the constructor
+         */
         if (isCommandSetPass(command)) {
-            EXIT_BUTTON.setText("Exit");
-            DELIVERY_MESSAGE.setText("Set your device password");
+            close_button.setText("Exit");
+            delivery_message.setText(SET_DELIVERY);
         } else if (isCommandChangePass(command)) {
-            EXIT_BUTTON.setText("Abort");
-            DELIVERY_MESSAGE.setText("Change your password device");
+            close_button.setText("Abort");
+            delivery_message.setText(CHANGE_DELIVERY);
         }
 
-        SET_BUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String password = DEVICE_PASSWORD.getText().toString();
-                if (passwordIsEmpty(password)) {
-                    Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    passwordDialogListener.onPasswordSet(password, context);
-                    //Close the dialog
-                    dismiss();
-                }
+        set_button.setOnClickListener(v -> {
+            String password = device_password.getText().toString();
+            if (passwordIsEmpty(password)) {
+                Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show();
+            } else {
+                passwordDialogListener.onPasswordSet(password, context);
+                Toast.makeText(context, "Password saved", Toast.LENGTH_SHORT).show();
+                //Close the dialog
+                dismiss();
             }
         });
 
-        EXIT_BUTTON.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isCommandSetPass(command))
-                    System.exit(0);
-                else if (isCommandChangePass(command)) {
-                    //Do nothing
-                    dismiss();
-                }
+        close_button.setOnClickListener(v -> {
+            if (isCommandSetPass(command))
+                System.exit(0);
+            else if (isCommandChangePass(command)) {
+                //Do nothing
+                Toast.makeText(context, "Nothing changed", Toast.LENGTH_SHORT).show();
+                dismiss();
             }
         });
 

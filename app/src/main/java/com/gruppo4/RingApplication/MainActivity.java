@@ -147,8 +147,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     @Override
     public void onPasswordSet(String password, Context context) {
         passwordManager.setPassword(password);
-        Toast.makeText(getApplicationContext(), "Password set", Toast.LENGTH_SHORT).show();
-        //Ask for permisssion after a short period of time
+        //Ask for permission after a short period of time
         waitForPermissions(WAIT_TIME_PERMISSION);
     }
 
