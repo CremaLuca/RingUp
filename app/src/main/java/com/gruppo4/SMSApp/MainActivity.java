@@ -45,10 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         //this is a toast to notify the message's sending
         Context context = getApplicationContext();
-        CharSequence text = mySentFeedback;
         int duration = Toast.LENGTH_SHORT;
 
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(context, mySentFeedback, duration);
         toast.show();
 
     }

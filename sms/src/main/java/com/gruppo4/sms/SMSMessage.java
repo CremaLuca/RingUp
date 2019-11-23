@@ -2,14 +2,16 @@ package com.gruppo4.sms;
 
 /**
  * @author Alessandra Tonin
- *
+ * <p>
  * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 public class SMSMessage {
 
-    private String number = "";
-    private String text = "";
+    private String number;
+    private String text;
+    final static int SMS_CHAR_NUMBER = 160;
+
 
     /**
      * Constructor for SMSMessage object
@@ -18,8 +20,10 @@ public class SMSMessage {
      * @param smsTxt   the text of the message
      */
     public SMSMessage(String phoneNum, String smsTxt) {
-        number = phoneNum;
-        text = smsTxt;
+        if (!(smsTxt.length() > SMS_CHAR_NUMBER)) {
+            number = phoneNum;
+            text = smsTxt;
+        }
     }
 
     /**

@@ -6,12 +6,13 @@ import java.util.ArrayList;
 
 /**
  * @author Alessandra Tonin
- *
+ * <p>
  * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
 public class SMSController {
 
+    final static int SMS_CHAR_NUMBER = 160;
     private static ArrayList<SMSReceivedListener> receivedListeners = new ArrayList<>();
     private static ArrayList<SMSSentListener> sentListeners = new ArrayList<>();
 
@@ -20,9 +21,7 @@ public class SMSController {
      * Constructor for SMSController object
      */
     public SMSController() {
-    }
-
-    ;
+    };
 
     /**
      * Send a SMS message
@@ -31,9 +30,10 @@ public class SMSController {
      */
     public void sendMessage(SMSMessage message) {
 
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(message.getPhoneNumber(), null, message.getTextMessage(), null, null);
-
+        if (!(message.getTextMessage().length() > SMS_CHAR_NUMBER)) {
+            SmsManager sms = SmsManager.getDefault();
+            sms.sendTextMessage(message.getPhoneNumber(), null, message.getTextMessage(), null, null);
+        }
     }
 
     /**
@@ -59,7 +59,7 @@ public class SMSController {
      *
      * @param message a SMSMessage object
      */
-    public static void callReceivedListeners(SMSMessage message) {
+    static void callReceivedListeners(SMSMessage message) {
         for (SMSReceivedListener listener : receivedListeners) {
             listener.onMessageReceived(message);
         }
