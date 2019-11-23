@@ -205,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Method used to send the ring command when the user presses on the "RING" button
-     *
      */
     public void sendRingCommand() {
         if (passwordField.getText().toString().equals(""))
