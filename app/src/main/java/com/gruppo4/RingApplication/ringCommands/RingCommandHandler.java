@@ -1,6 +1,8 @@
 package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
+
+import com.gruppo4.RingApplication.ringCommands.Interfaces.RingCommandHandlerInterface;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
@@ -9,9 +11,24 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * @author Alberto Ursino, Luca Crema, Marco Mariotto
  */
 
-public class RingCommandHandler {
+public class RingCommandHandler implements RingCommandHandlerInterface {
 
     public static final String SPLIT_CHARACTER = "_";
+
+    private static RingCommandHandler ringCommandHandler = new RingCommandHandler();
+
+    /**
+     * Private constructor
+     */
+    private RingCommandHandler() {
+    }
+
+    /**
+     * @return the singleton
+     */
+    public static RingCommandHandler getInstance() {
+        return ringCommandHandler;
+    }
 
     /**
      * Extracts the password from the message received and create a RingCommand, null if the command is not valid
@@ -20,7 +37,7 @@ public class RingCommandHandler {
      * @param content command
      * @return a RingCommand
      */
-    protected static RingCommand parseContent(SMSPeer peer, String content) {
+    protected RingCommand parseContent(SMSPeer peer, String content) {
         if ((content.charAt(0) + "").equals(SPLIT_CHARACTER)) {
             String[] parts = content.split(SPLIT_CHARACTER);
             //parts[0] is empty, parts[1] contains the password
@@ -30,14 +47,9 @@ public class RingCommandHandler {
         return null;
     }
 
-    /**
-     * Verify that the password in the RingCommand is the same as the one in memory
-     *
-     * @param context     a valid context
-     * @param ringCommand a valid RingCommand object
-     * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
-     */
-    public static boolean checkPassword(Context context, RingCommand ringCommand) {
+    @Override
+    public boolean checkPassword(Context context, RingCommand ringCommand) {
         return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
     }
+
 }

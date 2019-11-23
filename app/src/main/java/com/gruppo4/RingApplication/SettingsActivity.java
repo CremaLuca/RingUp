@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.gruppo4.RingApplication.ringCommands.Interfaces.PermissionInterface;
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
@@ -28,7 +29,7 @@ import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
 /**
  * @author Alberto Ursino
  */
-public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener {
+public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener, PermissionInterface {
 
     public static final int DEFAULT_TIMER_VALUE = 30000;
     private static final int WAIT_TIME = 2000;
@@ -47,12 +48,7 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         FloatingActionButton changePasswordButton = findViewById(R.id.change_password_button);
 
         //Button used to open a dialog where the user can change the password
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialog();
-            }
-        });
+        changePasswordButton.setOnClickListener(v -> openDialog());
 
     }
 
@@ -124,27 +120,16 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         }
     }
 
-    /**
-     * @param time to wait before checking permits
-     */
-    void waitForPermissions(int time) {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                checkPermission(getApplicationContext());
-            }
-        }, time);
+    @Override
+    public void checkPermission() {
+        if (!SMSHandler.checkReceivePermission(getApplicationContext()))
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
     }
 
-    /**
-     * Simple method used to check permissions
-     *
-     * @param context of the application
-     */
-    void checkPermission(Context context) {
-        if (!SMSHandler.checkReceivePermission(context))
-            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
+    @Override
+    public void waitForPermissions(int time) {
+        Handler handler = new Handler();
+        handler.postDelayed(() -> checkPermission(), time);
     }
 
 }

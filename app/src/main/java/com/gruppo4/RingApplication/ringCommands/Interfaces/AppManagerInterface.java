@@ -28,13 +28,4 @@ public interface AppManagerInterface {
      */
     void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException;
 
-    /**
-     * @param context     of the application
-     * @param ringCommand to transform
-     * @return an SMSMessage object created from the ring command
-     * @throws InvalidTelephoneNumberException
-     * @throws InvalidSMSMessageException
-     */
-    SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException;
-
 }

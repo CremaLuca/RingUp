@@ -24,15 +24,10 @@ import static java.lang.Integer.parseInt;
 public class AppManager implements AppManagerInterface {
 
     private final static String WRONG_PASSWORD = "Wrong Password";
+    private RingCommandHandler ringCommandHandler = RingCommandHandler.getInstance();
+    private RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
 
     private static AppManager appManager = new AppManager();
-
-    /**
-     * @return the instance of the class
-     */
-    public static AppManager getInstance() {
-        return appManager;
-    }
 
     /**
      * Private constructor
@@ -40,16 +35,23 @@ public class AppManager implements AppManagerInterface {
     private AppManager() {
     }
 
+    /**
+     * @return the singleton
+     */
+    public static AppManager getInstance() {
+        return appManager;
+    }
+
     @Override
     public void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
-        if (RingCommandHandler.checkPassword(context, ringCommand)) {
-            RingtoneHandler.playRingtone(ringtone);
+        if (ringCommandHandler.checkPassword(context, ringCommand)) {
+            ringtoneHandler.playRingtone(ringtone);
             Log.d("Timer value saved: ", "" + PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
             //Timer: the ringtone is playing for TIME seconds.
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    RingtoneHandler.stopRingtone(ringtone);
+                    ringtoneHandler.stopRingtone(ringtone);
                 }
             }, PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
         } else {
@@ -63,8 +65,14 @@ public class AppManager implements AppManagerInterface {
         SMSHandler.getInstance(context).sendMessage(message, listener);
     }
 
-    @Override
-    public SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    /**
+     * @param context     of the application
+     * @param ringCommand to transform
+     * @return an SMSMessage object created from the ring command
+     * @throws InvalidTelephoneNumberException
+     * @throws InvalidSMSMessageException
+     */
+    private SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         return new SMSMessage(context, ringCommand.getPeer().toString(), ringCommand.getPassword());
     }
 }
