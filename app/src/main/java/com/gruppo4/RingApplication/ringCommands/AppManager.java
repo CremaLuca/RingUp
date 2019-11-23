@@ -60,9 +60,9 @@ public class AppManager implements AppManagerInterface {
     }
 
     @Override
-    public void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        SMSMessage message = commandToMessage(context, ringCommand);
-        SMSHandler.getInstance(context).sendMessage(message, listener);
+    public void sendCommand(Context context, RingCommand ringCommand, SMSSentListener smsSentListener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+        SMSMessage smsMessage = commandToMessage(context, ringCommand);
+        SMSHandler.getInstance(context).sendMessage(smsMessage, smsSentListener);
     }
 
     /**

@@ -20,6 +20,8 @@ public interface AppManagerInterface {
     void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone);
 
     /**
+     * Calls the class SMS Handler and passed to it an SMS Message object, built with the ring command
+     *
      * @param context     of the application
      * @param ringCommand to send
      * @param listener
