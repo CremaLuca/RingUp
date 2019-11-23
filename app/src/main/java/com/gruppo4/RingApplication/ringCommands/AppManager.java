@@ -5,11 +5,9 @@ import android.media.Ringtone;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gruppo4.RingApplication.MainActivity;
-import com.gruppo4.RingApplication.SettingsActivity;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
@@ -35,7 +33,7 @@ public class AppManager {
     public static void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
         if (RingCommandHandler.checkPassword(context, ringCommand)) {
             RingtoneHandler.playRingtone(ringtone);
-            Log.d("Timer value saved: ", ""+PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
+            Log.d("Timer value saved: ", "" + PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
             //Timer: the ringtone is playing for TIME seconds.
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
@@ -58,6 +56,11 @@ public class AppManager {
         SMSHandler.getInstance(context).sendMessage(message, listener);
     }
 
+    /**
+     * @param context     of the application
+     * @param ringCommand to transform
+     * @return an SMSMessage object created from the ring command
+     */
     private static SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         return new SMSMessage(context, ringCommand.getPeer().toString(), ringCommand.getPassword());
     }
