@@ -17,6 +17,7 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
         <service
             android:name=".dataLink.background.SMSKeepAliveService"
             android:enabled="true"
@@ -29,6 +30,13 @@
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".dataLink.SMSAutoStartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETE"/>
             </intent-filter>
         </receiver>
     </application>
