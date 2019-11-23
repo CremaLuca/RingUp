@@ -11,12 +11,16 @@
 
         <service
             android:name=".notifications.SMSNotificationCaptureService"
-            android:label="SMSApp"
+            android:label="SMSNotificationCaptureService"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <service
+            android:name=".dataLink.SMSKillerService"
+            android:enabled="true"
+            android:label="SMSKillerService"></service>
 
         <receiver
             android:name=".dataLink.SMSReceivedBroadcastReceiver"

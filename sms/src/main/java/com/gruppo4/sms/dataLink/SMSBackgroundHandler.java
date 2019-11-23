@@ -2,6 +2,7 @@ package com.gruppo4.sms.dataLink;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * Keeps the broadcast receiver alive while the app is closed
@@ -10,12 +11,14 @@ import android.content.Intent;
  */
 public class SMSBackgroundHandler {
 
-    public static void onAppCreate(Context context) {
+    public static void onAppDestroy(Context context) {
+        Log.d("SMSBackHandler", "Called onAppDestroy");
         Intent service = new Intent(context, SMSKillerService.class);
         context.startService(service);
     }
 
-    public static void onAppDestroy(Context context) {
+    public static void onAppCreate(Context context) {
+        Log.d("SMSBackHandler", "Called onAppCreate");
         Intent service = new Intent(context, SMSKillerService.class);
         context.stopService(service);
     }

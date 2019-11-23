@@ -1,11 +1,16 @@
 package com.gruppo4.SMSApp;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gruppo4.sms.dataLink.SMSBackgroundHandler;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -25,20 +30,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createNotificationChannel();
+        SMSBackgroundHandler.onAppCreate(this);
 
-        //Start a service that keeps the ActivityHelperReceiver alive
-        Intent activityHelperIntent = new Intent(getApplicationContext(), ActivityHelperService.class);
-        startService(activityHelperIntent);
+        createNotificationChannel();
 
         setup();
 
         if(!SMSHandler.checkPermissions(this)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
         }else{
-            Log.d("MainActivity", "You have the right permissions");
-            sendTestMessage();
+            Log.d("MainActivity", "You have the right permissions for this app");
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SMSBackgroundHandler.onAppDestroy(this);
     }
 
     @Override

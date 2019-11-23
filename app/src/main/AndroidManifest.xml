@@ -21,7 +21,5 @@
             </intent-filter>
         </activity>
 
-        <service android:enabled="true" android:name=".ActivityHelperService"/>
-
     </application>
 </manifest>

@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
-
 public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public static final String INTENT_MESSAGE_NAME = "SMSMessage";

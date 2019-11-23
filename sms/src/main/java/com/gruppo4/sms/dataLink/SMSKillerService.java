@@ -1,13 +1,12 @@
 package com.gruppo4.sms.dataLink;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
-class SMSKillerService extends Service {
+public class SMSKillerService extends Service {
 
     private static SMSReceivedBroadcastReceiver m_ScreenOffReceiver;
 
@@ -18,6 +17,7 @@ class SMSKillerService extends Service {
 
     @Override
     public void onCreate() {
+        Log.v("SMSKillerSVC", "Service onCreate");
         registerScreenOffReceiver();
     }
 
@@ -25,18 +25,14 @@ class SMSKillerService extends Service {
     public void onDestroy() {
         unregisterReceiver(m_ScreenOffReceiver);
         m_ScreenOffReceiver = null;
+        Log.v("SMSKillerSVC", "Service destroyed");
     }
 
     private void registerScreenOffReceiver() {
-        m_ScreenOffReceiver = new SMSReceivedBroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d("SMSBackground", "ACTION_SCREEN_OFF");
-                // do something, e.g. send Intent to main app
-            }
-        };
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        m_ScreenOffReceiver = new SMSReceivedBroadcastReceiver();
+        IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+        filter.setPriority(100);
         registerReceiver(m_ScreenOffReceiver, filter);
+        Log.v("SMSKillerSVC", "Service registered the receiver");
     }
 }
