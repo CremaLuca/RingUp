@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".ActivityHelper"
+            android:name=".MessageReceivedService"
             android:enabled="true"
             android:label="ActivityHelper" />
     </application>

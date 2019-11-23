@@ -18,7 +18,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".dataLink.SMSKillerService"
+            android:name=".dataLink.background.SMSKeepAliveService"
             android:enabled="true"
             android:label="SMSKillerService" />
 

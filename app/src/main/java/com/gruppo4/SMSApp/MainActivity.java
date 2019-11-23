@@ -12,10 +12,10 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gruppo4.sms.dataLink.SMSBackgroundHandler;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
+import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
 
 /**
  * @author Gruppo 4
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public void setup() {
         //Initialize the receiver
         SMSHandler.getInstance(this).setup(123);
-        SMSHandler.getInstance(this).setReceivedMessageListener(ActivityHelper.class);
+        SMSHandler.getInstance(this).setReceivedMessageListener(MessageReceivedService.class);
     }
 
     @Override

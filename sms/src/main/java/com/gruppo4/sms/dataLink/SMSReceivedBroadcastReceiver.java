@@ -10,7 +10,8 @@ import android.util.Log;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
- * BroadcastReceiver for
+ * BroadcastReceiver for received messages
+ * @author Luca Crema
  */
 public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 

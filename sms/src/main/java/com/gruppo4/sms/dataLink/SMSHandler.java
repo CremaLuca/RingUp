@@ -1,6 +1,7 @@
 package com.gruppo4.sms.dataLink;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.gruppo4.communication.dataLink.CommunicationHandler;
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
@@ -18,7 +19,15 @@ import java.util.ArrayList;
 
 /**
  * Handles communications between peers of a sms communication channel
- * Every message has the applicationID to prevent interfering with other apps using the same library
+ * Every message has the applicationID to prevent interfering with other apps using the same library<br/>
+ *
+ * If you need notifications to be captured you have to call
+ * {@link com.gruppo4.sms.notifications.SMSNotificationHandler#automaticNotificationListenerSetup(Activity)}<br/>
+ *
+ * If you want to keep the receiver alive on app closed you have to call the two methods of {@link com.gruppo4.sms.dataLink.background.SMSBackgroundHandler}:
+ * {@link com.gruppo4.sms.dataLink.background.SMSBackgroundHandler#onAppCreate(Context)}
+ * {@link com.gruppo4.sms.dataLink.background.SMSBackgroundHandler#onAppDestroy(Context)}
+ * when app is created and when app is closed
  *
  * @author Gruppo4
  */
@@ -155,10 +164,10 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
     /**
      * Sets a listener service class to be instantiated and started on a message arrival
      *
-     * @param service A class reference to a service that extends {@link SMSReceivedListener}
+     * @param service A class reference to a service that extends {@link SMSReceivedListenerService}
      * @param <T>     The class type to be instantiated and started
      */
-    public <T extends SMSReceivedListener> void setReceivedMessageListener(Class<T> service) {
+    public <T extends SMSReceivedListenerService> void setReceivedMessageListener(Class<T> service) {
         Log.v("SMSHandler", "Setting the received message listener");
         PreferencesManager.setString(ctx, SMSReceivedBroadcastReceiver.SERVICE_CLASS_PREFERENCES_KEY, service.getName());
     }

@@ -4,12 +4,15 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
 
-public class ActivityHelper extends SMSReceivedListener {
+/**
+ * @author Luca Crema
+ */
+public class MessageReceivedService extends SMSReceivedListenerService {
 
-    public ActivityHelper() {
-        super("ActivityHelper");
+    public MessageReceivedService() {
+        super("MessageReceivedService");
     }
 
     @Override

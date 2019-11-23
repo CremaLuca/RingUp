@@ -14,14 +14,14 @@ import com.gruppo4.sms.dataLink.SMSReceivedBroadcastReceiver;
  *
  * @author Luca Crema
  */
-public abstract class SMSReceivedListener extends IntentService implements ReceivedMessageListener<SMSMessage> {
+public abstract class SMSReceivedListenerService extends IntentService implements ReceivedMessageListener<SMSMessage> {
 
     /**
      * Creates an IntentService. Invoked by your subclass's constructor.
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public SMSReceivedListener(String name) {
+    public SMSReceivedListenerService(String name) {
         super(name);
     }
 
