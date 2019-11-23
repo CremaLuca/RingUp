@@ -16,7 +16,7 @@ public class SMSMessage extends Message<String, SMSPeer> implements Serializable
     /**
      * Wrap for a text message, used to check the parameters validity
      *
-     * @param applicationID the current application identifier
+     * @param applicationID the current valid application identifier
      * @param peer          a valid peer
      * @param messageText   the message content
      * @throws InvalidSMSMessageException      if checkMessageText is different from MESSAGE_TEXT_VALID
