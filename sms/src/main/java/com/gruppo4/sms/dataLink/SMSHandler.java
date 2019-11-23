@@ -159,6 +159,7 @@ public class SMSHandler extends CommunicationHandler<SMSMessage> {
      * @param <T>     The class type to be instantiated and started
      */
     public <T extends SMSReceivedListener> void setReceivedMessageListener(Class<T> service) {
-        SMSReceivedBroadcastReceiver.listener = service;
+        Log.v("SMSHandler", "Setting the received message listener");
+        PreferencesManager.setString(ctx, SMSReceivedBroadcastReceiver.SERVICE_CLASS_PREFERENCES_KEY, service.getName());
     }
 }

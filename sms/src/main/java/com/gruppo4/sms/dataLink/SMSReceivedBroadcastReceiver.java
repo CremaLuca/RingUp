@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.gruppo_4.preferences.PreferencesManager;
+
+/**
+ * BroadcastReceiver for
+ */
 public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
 
     public static final String INTENT_MESSAGE_NAME = "SMSMessage";
-
-    public static Class listener;
+    public static final String SERVICE_CLASS_PREFERENCES_KEY = "ApplicationServiceClass";
 
     /**
      * Method called on message reception, parses the data and if the message is correctly formatted calls the receiver
@@ -26,26 +30,49 @@ public class SMSReceivedBroadcastReceiver extends BroadcastReceiver {
         if (extras != null) {
             Object[] smsExtra = (Object[]) extras.get("pdus");
             String format = (String) extras.get("format");
-            Log.v("SMSReceiver", "Extras length: " + smsExtra.length);
             for (int i = 0; i < smsExtra.length; i++) {
                 SmsMessage sms = SmsMessage.createFromPdu((byte[]) smsExtra[i], format);
                 Log.v("SMSReceiver", "Parsing the message");
-                SMSMessage message = SMSMessageHandler.getInstance().parseMessage(sms.getMessageBody(), sms.getOriginatingAddress());
-                if (message != null && message.getApplicationID() == SMSHandler.getInstance(context).getApplicationCode()) {
-
-                    //Create intent and send a SMSMessage to the App Layer
-                    Intent activityHelperI = new Intent("SMSApp");
-                    activityHelperI.putExtra("Message", message);
-                    context.sendBroadcast(activityHelperI);
-                    Log.v("SMSReceiver", "Message is for this application");
-                    if (listener != null) {
-                        Log.v("SMSReceiver", "Calling service");
-                        Intent serviceIntent = new Intent(context, listener);
-                        serviceIntent.putExtra(INTENT_MESSAGE_NAME, message);
-                        context.startService(serviceIntent);
-                    }
-                }
+                reconstructMessage(context, sms.getOriginatingAddress(), sms.getMessageBody());
             }
+        }
+    }
+
+    /**
+     * Builds an SMSMessage from intent data
+     *
+     * @param context
+     * @param address
+     * @param messageBody
+     */
+    private void reconstructMessage(Context context, String address, String messageBody) {
+        SMSMessage message = SMSMessageHandler.getInstance().parseMessage(messageBody, address);
+        if (message != null && message.getApplicationID() == SMSHandler.getInstance(context).getApplicationCode()) {
+            Log.v("SMSReceiver", "Message is for this application");
+            callApplicationService(context, message);
+        }
+    }
+
+    /**
+     * Calls the current subscribed app service
+     *
+     * @param context
+     * @param message
+     */
+    private void callApplicationService(Context context, SMSMessage message) {
+        Class<?> listener = null;
+        try {
+            listener = Class.forName(PreferencesManager.getString(context, SERVICE_CLASS_PREFERENCES_KEY));
+        } catch (ClassNotFoundException e) {
+            Log.e("SMSReceiver", "Class searched could not be found");
+        }
+        if (listener != null) {
+            Log.v("SMSReceiver", "Calling service");
+            Intent serviceIntent = new Intent(context, listener);
+            serviceIntent.putExtra(INTENT_MESSAGE_NAME, message);
+            context.startService(serviceIntent);
+        } else {
+            Log.v("SMSReceiver", "The listener is null, nothing to perform then");
         }
     }
 }

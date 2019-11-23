@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
 
         setup();
 
+        final Button button = findViewById(R.id.test_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendTestMessage();
+            }
+        });
+
         if(!SMSHandler.checkPermissions(this)) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
         }else{
@@ -56,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void sendTestMessage(){
+    public void sendTestMessage() {
         Log.d("MainActivity", "Sending test message");
         SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,new SMSPeer("+393467965447"),"Test message"));
     }
