@@ -20,7 +20,7 @@
         <service
             android:name=".dataLink.SMSKillerService"
             android:enabled="true"
-            android:label="SMSKillerService"></service>
+            android:label="SMSKillerService" />
 
         <receiver
             android:name=".dataLink.SMSReceivedBroadcastReceiver"

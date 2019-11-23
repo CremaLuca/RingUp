@@ -12,13 +12,13 @@ import android.util.Log;
 public class SMSBackgroundHandler {
 
     public static void onAppDestroy(Context context) {
-        Log.d("SMSBackHandler", "Called onAppDestroy");
+        Log.v("SMSBackHandler", "Called onAppDestroy");
         Intent service = new Intent(context, SMSKillerService.class);
         context.startService(service);
     }
 
     public static void onAppCreate(Context context) {
-        Log.d("SMSBackHandler", "Called onAppCreate");
+        Log.v("SMSBackHandler", "Called onAppCreate");
         Intent service = new Intent(context, SMSKillerService.class);
         context.stopService(service);
     }
