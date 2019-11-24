@@ -1,6 +1,6 @@
 [submodule "android-preferences"]
 	path = android-preferences
 	url = https://github.com/CremaLuca/android-preferences.git
-[submodule "smslibrary"]
-	path = smslibrary
+[submodule "smslibrary-submodule"]
+	path = smslibrary-submodule
 	url = https://github.com/Cogno-IDU/smslibrary
