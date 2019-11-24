@@ -1,6 +1,9 @@
 package com.gruppo4.audioUtility;
 
 /**
+ * This is an Utility class used to manage main Audio Streams (Alarm, Music, and Ring),
+ * and to manage Vibration
+ *
  * @author Francesco Bau'
  */
 
@@ -68,9 +71,8 @@ public class AudioUtilityManager {
     public static void setVolume(Context context, AUMStream stream, int percentage) throws IllegalArgumentException {
         if (percentage < MIN_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too low. Please insert a value between 0 and 100.");
-        else if (percentage > MAX_PERCENTAGE) {
+        if (percentage > MAX_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too high. Please insert a value between 0 and 100.");
-        }
         int maxVolume = getMaxVolume(context, stream);
 
         // Calculate the real value of the new volume
@@ -93,7 +95,7 @@ public class AudioUtilityManager {
      * @param context The current Context.
      * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
      */
-    public static void setMaxVolume(Context context, AUMStream stream) {
+    public static void setVolumeToMax(Context context, AUMStream stream) {
         setVolume(context, stream, MAX_PERCENTAGE);
     }
 
@@ -103,7 +105,7 @@ public class AudioUtilityManager {
      * @param context The current Context.
      * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
      */
-    public static void setMinVolume(Context context, AUMStream stream) {
+    public static void setVolumeToMin(Context context, AUMStream stream) {
         setVolume(context, stream, MIN_PERCENTAGE);
     }
 
@@ -167,8 +169,15 @@ public class AudioUtilityManager {
         }
     }
 
+    /**
+     * This method stop the vibration.
+     *
+     * @param context The current Context.
+     */
+    public static void stopVibrate(Context context) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.cancel();
+    }
+
 
 }
-//TODO TESTING
-//TODO method to stop Vibration in utility class
-//TODO edit methods' name: setMinVolume and setMaxVolume
