@@ -30,15 +30,4 @@ public class RingCommandHandler {
         //Message received is not a command for play the ringtone
         return null;
     }
-
-    /**
-     * Verify that the password in the RingCommand is the same as the one in memory
-     *
-     * @param context     a valid context
-     * @param ringCommand a valid RingCommand object
-     * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
-     */
-    public static boolean checkPassword(Context context, RingCommand ringCommand) {
-        return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
-    }
 }

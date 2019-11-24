@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
+        setSupportActionBar(findViewById(R.id.actionBar));
 
         Context context = getApplicationContext();
 
