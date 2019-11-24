@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // -> Sets DEFAULT Volume for the current Stream
         // -> TEST the method getVolume(Context,String).
         // -> TEST the method setVolume(Context,String,int).
-        findViewById(R.id.button0).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_defaultVolume).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Sets up the volume at default percentage.
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // Action performed by clicking button1
         // -> Sets MAXIMUM Volume for the current Stream
         // -> TEST the method setVolumeToMax(Context,String).
-        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_maxVolume).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AudioUtilityManager.setVolumeToMax(MainActivity.this, stream);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // Action performed by clicking button2
         // -> Sets MINIMUM Volume for the current Stream.
         // -> TEST the method setVolumeToMin(Context,String).
-        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_minVolume).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AudioUtilityManager.setVolumeToMin(MainActivity.this, stream);
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         // Action performed by clicking button3
         // -> SINGLE Vibration
         // -> TEST the "Vibrator". (One-shot)
-        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_singleVibrate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AudioUtilityManager.singleVibrate(MainActivity.this);
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         // Action performed by clicking button4
         // -> MULTIPLE Vibration
         // -> TEST the "Vibrator" (Multiple)
-        findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_multipleVibrate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AudioUtilityManager.multipleVibrate(MainActivity.this);
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Action performad by clicking button5
         // -> STOP Vibration.
-        findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_stopVibrate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AudioUtilityManager.stopVibrate(MainActivity.this);
