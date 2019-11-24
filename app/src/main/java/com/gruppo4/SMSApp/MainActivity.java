@@ -6,10 +6,8 @@ package com.gruppo4.SMSApp;
 
 import com.gruppo4.audioUtility.AudioUtilityManager;
 
-import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         stream = AudioUtilityManager.AUMStream.ALARM;
 
         // Action performed by clicking button0
+        // -> Sets DEFAULT Volume for the current Stream
         // -> TEST the method getVolume(Context,String).
         // -> TEST the method setVolume(Context,String,int).
         findViewById(R.id.button0).setOnClickListener(new View.OnClickListener() {
@@ -46,28 +45,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Action performed by clicking button1
-        // -> TEST the method setMaxVolume(Context,String).
+        // -> Sets MAXIMUM Volume for the current Stream
+        // -> TEST the method setVolumeToMax(Context,String).
         findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.setMaxVolume(MainActivity.this, stream);
+                AudioUtilityManager.setVolumeToMax(MainActivity.this, stream);
                 int maxVolume = AudioUtilityManager.getVolume(MainActivity.this, stream);
                 Toast.makeText(MainActivity.this, "MAXIMUM " + stream + " VOLUME: " + maxVolume + " %.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Action performed by clicking button2
-        // -> TEST the method setMinVolume(Context,String).
+        // -> Sets MINIMUM Volume for the current Stream.
+        // -> TEST the method setVolumeToMin(Context,String).
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioUtilityManager.setMinVolume(MainActivity.this, stream);
+                AudioUtilityManager.setVolumeToMin(MainActivity.this, stream);
                 int minVolume = AudioUtilityManager.getVolume(MainActivity.this, stream);
                 Toast.makeText(MainActivity.this, "MINIMUM " + stream + " VOLUME: " + minVolume + " %.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Action performed by clicking button3
+        // -> SINGLE Vibration
         // -> TEST the "Vibrator". (One-shot)
         findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Action performed by clicking button4
+        // -> MULTIPLE Vibration
         // -> TEST the "Vibrator" (Multiple)
         findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,12 +129,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Action performad by clicking button5
-        // -> STOP VIBRATOR.
+        // -> STOP Vibration.
         findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.cancel();
+                AudioUtilityManager.stopVibrate(MainActivity.this);
                 Toast.makeText(MainActivity.this, "STOPPING VIBRATION...", Toast.LENGTH_SHORT).show();
             }
         });

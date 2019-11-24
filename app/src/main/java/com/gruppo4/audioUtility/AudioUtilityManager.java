@@ -93,7 +93,7 @@ public class AudioUtilityManager {
      * @param context The current Context.
      * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
      */
-    public static void setMaxVolume(Context context, AUMStream stream) {
+    public static void setVolumeToMax(Context context, AUMStream stream) {
         setVolume(context, stream, MAX_PERCENTAGE);
     }
 
@@ -103,7 +103,7 @@ public class AudioUtilityManager {
      * @param context The current Context.
      * @param stream  The chosen stream (should be ALARM, RING or MUSIC).
      */
-    public static void setMinVolume(Context context, AUMStream stream) {
+    public static void setVolumeToMin(Context context, AUMStream stream) {
         setVolume(context, stream, MIN_PERCENTAGE);
     }
 
@@ -165,6 +165,15 @@ public class AudioUtilityManager {
             //deprecated in API 26
             getVibrator(context).vibrate(x, VIBRATION_REPEAT_CODE);
         }
+    }
+
+    /**
+     * This method stop the vibration.
+     * @param context The current Context.
+     */
+    public static void stopVibrate(Context context){
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.cancel();
     }
 
 
