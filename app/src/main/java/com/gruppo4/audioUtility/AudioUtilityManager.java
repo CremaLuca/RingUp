@@ -71,9 +71,8 @@ public class AudioUtilityManager {
     public static void setVolume(Context context, AUMStream stream, int percentage) throws IllegalArgumentException {
         if (percentage < MIN_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too low. Please insert a value between 0 and 100.");
-        else if (percentage > MAX_PERCENTAGE) {
+        if (percentage > MAX_PERCENTAGE)
             throw new IllegalArgumentException(" Your value is too high. Please insert a value between 0 and 100.");
-        }
         int maxVolume = getMaxVolume(context, stream);
 
         // Calculate the real value of the new volume
@@ -172,9 +171,10 @@ public class AudioUtilityManager {
 
     /**
      * This method stop the vibration.
+     *
      * @param context The current Context.
      */
-    public static void stopVibrate(Context context){
+    public static void stopVibrate(Context context) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.cancel();
     }

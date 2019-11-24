@@ -2,6 +2,7 @@ package com.gruppo4.SMSApp;
 
 /**
  * The MainActivity's scope is to test AudioUtilityManager's methods.
+ *
  * @author Francesco Bau'
  */
 
