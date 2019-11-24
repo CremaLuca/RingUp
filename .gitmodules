@@ -1,0 +1,3 @@
+[submodule "android-preferences"]
+	path = android-preferences
+	url = https://github.com/CremaLuca/android-preferences
