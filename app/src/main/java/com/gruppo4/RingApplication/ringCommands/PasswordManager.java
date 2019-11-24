@@ -9,8 +9,10 @@ import it.lucacrema.preferences.PreferencesManager;
  * Class used to save and read the password from memory
  *
  * @author Alberto Ursino, Luca Crema
+ *
  * <p>
  * Code reviewed by Bortoletti and Barca
+ * </p>
  */
 
 public class PasswordManager implements PasswordManagerInterface {
