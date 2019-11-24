@@ -156,6 +156,12 @@ public class SMSNetworkDictionary<RK, RV> implements NetworkDictionary<SMSPeer, 
         return resourcesDict.get(resourceKey);
     }
 
+    /**
+     * Get the values given a collection of keys
+     *
+     * @param resourceKeys identifications for the resources
+     * @return requested resources if present
+     */
     @Override
     public ArrayList<RV> getAllValues(Collection<RK> resourceKeys) {
         ArrayList<RV> values = new ArrayList<>();
