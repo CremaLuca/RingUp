@@ -4,4 +4,5 @@
     <string name="button_ring">Ringtone</string>
     <string name="button_stop">Stop ringing!</string>
     <string name="button_alarm">Alarm</string>
+    <string name="already_playing">The alarm tone is already playing, please stop it and retry!</string>
 </resources>

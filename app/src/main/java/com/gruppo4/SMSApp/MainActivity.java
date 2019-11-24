@@ -12,7 +12,7 @@ import com.gruppo4.ringtonePlayer.RingtoneHandler;
 
 /**
  * @author Alessandra Tonin
- *
+ * <p>
  * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * when button "ringtone" clicked, plays the ringtone if the alarm isn't ringing
+     * when button "ringtone" is clicked, plays the ringtone if the alarm isn't ringing
      *
      * @param view the layout button
      */
@@ -45,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
         if (!(alarmtone.isPlaying()))
             RingtoneHandler.playRingtone(ringtone);
         else
-            Toast.makeText(this, "The alarm tone is already playing, please stop it and retry!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.already_playing, Toast.LENGTH_SHORT).show();
 
     }
 
     /**
-     * when button "alarm" clicked, plays the alarm tone if the ringtone isn't ringing
+     * when button "alarm" is clicked, plays the alarm tone if the ringtone isn't ringing
      *
      * @param view the layout button
      */
@@ -58,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
         if (!(ringtone.isPlaying()))
             RingtoneHandler.playRingtone(alarmtone);
         else
-            Toast.makeText(this, "The ringtone is already playing, please stop it and retry!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.already_playing, Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * when button "stop ringing!" clicked, stops the sound that's playing
+     * when button "stop ringing!" is clicked, stops the sound that's playing
      *
      * @param view the layout button
      */

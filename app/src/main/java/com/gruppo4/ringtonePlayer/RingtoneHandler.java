@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 /**
  * @author Alessandra Tonin
- *
+ * <p>
  * CODE REVIEW FOR VELLUDO AND TURCATO
  */
 
@@ -28,10 +28,11 @@ public class RingtoneHandler {
     /**
      * get the tone of the specified type
      *
-     * @param ctx the current application context
+     * @param ctx  the current application context
+     * @param type an integer that represents the type of tone
      * @return the requested tone
      */
-    public static Ringtone getDefaultTone(Context ctx, int type) {
+    private static Ringtone getDefaultTone(Context ctx, int type) {
         return RingtoneManager.getRingtone(ctx, getDefaultToneUri(type));
     }
 
@@ -60,18 +61,18 @@ public class RingtoneHandler {
 
 
     /**
-     * user can decide in which mode he wants to play the ringtone
+     * user can decide in which mode to play the ringtone
      *
      * @param ringtone   the sound to be played
      * @param USAGE_CODE from AudioAttributes
      */
-    static void playRingtone(@NonNull Ringtone ringtone, final int USAGE_CODE) {
+    public static void playRingtone(@NonNull Ringtone ringtone, final int USAGE_CODE) {
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(USAGE_CODE).build());
         ringtone.play();
     }
 
     /**
-     * plays a ringtone (overload di ringtonePlay(Ringtone ringtone, final int USAGE_CODE))
+     * plays a ringtone (overload of ringtonePlay(Ringtone ringtone, final int USAGE_CODE))
      *
      * @param ringtone the default ringtone
      */
