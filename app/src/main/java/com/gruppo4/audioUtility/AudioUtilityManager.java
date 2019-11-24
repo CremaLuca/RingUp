@@ -1,6 +1,9 @@
 package com.gruppo4.audioUtility;
 
 /**
+ * This is an Utility class used to manage main Audio Streams (Alarm, Music, and Ring),
+ * and to manage Vibration
+ *
  * @author Francesco Bau'
  */
 
