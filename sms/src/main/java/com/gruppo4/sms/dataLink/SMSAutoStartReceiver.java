@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.gruppo4.sms.dataLink.background.SMSKeepAliveService;
-
 /**
  * Starts service and keeps broadcastReceiver alive even if the app is force stopped and the phone restarted
  *
@@ -19,7 +17,7 @@ public class SMSAutoStartReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v("SMSAutoStartReceiver", "Called onReceive");
-        Intent service = new Intent(context, SMSKeepAliveService.class);
+        Intent service = new Intent(context, SMSKillerService.class);
         context.startService(service);
     }
 }

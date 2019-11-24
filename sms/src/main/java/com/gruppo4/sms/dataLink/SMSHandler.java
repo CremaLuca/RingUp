@@ -13,7 +13,7 @@ import android.util.Log;
 import com.gruppo4.communication.dataLink.CommunicationHandler;
 import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
-import it.lucacrema.preferences.PreferencesManager;
+import com.gruppo_4.preferences.PreferencesManager;
 
 import java.util.ArrayList;
 

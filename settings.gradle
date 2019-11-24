@@ -1,5 +1,2 @@
-include ':app', ':sms', ':preferences', ':sms-library', ':smslibrary'
+include ':app', ':sms', ':preferences'
 rootProject.name='SMSApp'
-project(':preferences').projectDir = new File('android-preferences/preferences')
-project(':sms-library').projectDir = new File('smslibrary/smslibrary')
-project(':smslibrary').projectDir = new File('smslibrary-submodule/smslibrary')
