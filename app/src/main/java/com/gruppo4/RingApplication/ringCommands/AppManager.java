@@ -13,7 +13,7 @@ import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
-import com.gruppo_4.preferences.PreferencesManager;
+import it.lucacrema.preferences.PreferencesManager;
 
 import static java.lang.Integer.parseInt;
 

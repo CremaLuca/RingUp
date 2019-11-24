@@ -1,2 +1,3 @@
 include ':app', ':sms', ':preferences'
 rootProject.name='SMSApp'
+project(':preferences').projectDir = new File('android-preferences/preferences')
