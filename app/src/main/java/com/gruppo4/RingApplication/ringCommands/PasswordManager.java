@@ -3,7 +3,7 @@ package com.gruppo4.RingApplication.ringCommands;
 import android.content.Context;
 
 import com.gruppo4.RingApplication.ringCommands.Interfaces.PasswordManagerInterface;
-import it.lucacrema.preferences.PreferencesManager;
+import com.gruppo_4.preferences.PreferencesManager;
 
 /**
  * Class used to save and read the password from memory
