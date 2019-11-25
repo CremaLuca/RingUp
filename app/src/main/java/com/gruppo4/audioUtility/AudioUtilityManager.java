@@ -153,24 +153,40 @@ public class AudioUtilityManager {
     }
 
     /**
-     * Makes the target device vibrate.
+     * Makes the target device vibrate multiple times, with default pattern
      *
      * @param context The current Context.
      */
     public static void multipleVibrate(Context context) {
         // Vibration pattern
-        long[] x = {VIBRATION_DELAY, VIBRATION_TIME, VIBRATION_DELAY, VIBRATION_TIME};
+        long[] pattern = {VIBRATION_DELAY, VIBRATION_TIME, VIBRATION_DELAY, VIBRATION_TIME};
         // Check if API version is >26 or not
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getVibrator(context).vibrate(VibrationEffect.createWaveform(x, VIBRATION_REPEAT_CODE));
+            getVibrator(context).vibrate(VibrationEffect.createWaveform(pattern, VIBRATION_REPEAT_CODE));
         } else {
             //deprecated in API 26
-            getVibrator(context).vibrate(x, VIBRATION_REPEAT_CODE);
+            getVibrator(context).vibrate(pattern, VIBRATION_REPEAT_CODE);
         }
     }
 
     /**
-     * This method stop the vibration.
+     * Makes the target device vibrate multiple times, with a certain pattern
+     *
+     * @param context The current Context.
+     * @param pattern The pattern of the vibration, created in couples of pause-vibration.
+     */
+    public static void multipleVibrate(Context context, long[] pattern) {
+        // Check if API version is >26 or not
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getVibrator(context).vibrate(VibrationEffect.createWaveform(pattern, VIBRATION_REPEAT_CODE));
+        } else {
+            //deprecated in API 26
+            getVibrator(context).vibrate(pattern, VIBRATION_REPEAT_CODE);
+        }
+    }
+
+    /**
+     * This method stops the vibration.
      *
      * @param context The current Context.
      */
