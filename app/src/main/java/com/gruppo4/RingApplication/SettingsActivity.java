@@ -13,7 +13,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gruppo4.RingApplication.ringCommands.PasswordManager;
@@ -21,7 +20,7 @@ import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.ringCommands.exceptions.IllegalCommandException;
 import com.gruppo4.sms.dataLink.SMSHandler;
-import it.lucacrema.preferences.PreferencesManager;
+import com.gruppo_4.preferences.PreferencesManager;
 
 import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
 
@@ -39,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.actionBar));
+        setSupportActionBar(findViewById(R.id.actionBar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setupTimeSpinner();
