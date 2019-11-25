@@ -55,6 +55,10 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
 
     }
 
+    /**
+     * Sets up the timer spinner by populating it and set default to previous selection
+     * Also adds the callback for spinner value changed
+     */
     private void setupTimeSpinner() {
         Spinner spinner = findViewById(R.id.timeout_time_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -74,8 +78,9 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
                 TypedArray timerValues = getResources().obtainTypedArray(R.array.timer_values);
                 int selectedTime = timerValues.getInt(position, DEFAULT_TIMER_VALUE);
                 Log.d("SettingsActivity", "Selected timer value " + selectedTime);
+                //Save the value in memory
                 PreferencesManager.setInt(getApplicationContext(), MainActivity.TIMEOUT_TIME_PREFERENCES_KEY, selectedTime);
-                timerValues.recycle();
+                timerValues.recycle(); //So that timer values can be used again (required)
             }
 
             @Override
