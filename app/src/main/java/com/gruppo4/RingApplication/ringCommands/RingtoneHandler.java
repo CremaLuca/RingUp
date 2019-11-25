@@ -6,7 +6,6 @@ import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 
 /**
@@ -43,7 +42,7 @@ public class RingtoneHandler {
      */
 
     public static Ringtone getDefaultRingtone(Context ctx) {
-        if (defaultRingtone == null)
+        if(defaultRingtone == null)
             defaultRingtone = getDefaultTone(ctx, RingtoneManager.TYPE_RINGTONE);
         return defaultRingtone;
     }
