@@ -1,5 +1,6 @@
 package com.gruppo4.RingApplication.ringCommands;
 
+import com.gruppo4.RingApplication.ringCommands.Interfaces.RingCommandInterface;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
@@ -10,7 +11,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * Code reviewed by Bortoletti and Barca
  */
 
-public class RingCommand {
+public class RingCommand implements RingCommandInterface {
 
     private SMSPeer peer;
     private String password;
@@ -26,16 +27,12 @@ public class RingCommand {
         this.password = password;
     }
 
-    /**
-     * @return a SMSPeer object
-     */
+    @Override
     public SMSPeer getPeer() {
         return peer;
     }
 
-    /**
-     * @return a password
-     */
+    @Override
     public String getPassword() {
         return password;
     }

@@ -21,7 +21,7 @@ public class PasswordManager implements PasswordManagerInterface {
     private Context context;
 
     /**
-     * Constructor: captures the context that will be used in the methods
+     * Constructor captures the context which will be used in this class' methods
      *
      * @param context of the application
      */

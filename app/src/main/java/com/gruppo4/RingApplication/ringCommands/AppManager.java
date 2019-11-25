@@ -31,7 +31,7 @@ public class AppManager {
      * @param ringCommand a ring command not null
      */
     public static void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
-        if (checkPassword(context, ringCommand)) {
+        if (RingCommandHandler.checkPassword(context, ringCommand)) {
             RingtoneHandler.playRingtone(ringtone);
             Log.d("Timer value saved: ", "" + PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
             //Timer: the ringtone is playing for TIME seconds.
@@ -63,16 +63,5 @@ public class AppManager {
      */
     private static SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         return new SMSMessage(context, ringCommand.getPeer().toString(), ringCommand.getPassword());
-    }
-
-    /**
-     * Verify that the password in the RingCommand is the same as the one in memory
-     *
-     * @param context     a valid context
-     * @param ringCommand a valid RingCommand object
-     * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
-     */
-    public static boolean checkPassword(Context context, RingCommand ringCommand) {
-        return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
     }
 }

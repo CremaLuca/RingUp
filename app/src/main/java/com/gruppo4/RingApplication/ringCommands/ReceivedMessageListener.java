@@ -11,6 +11,9 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListener;
  * @author Alberto Ursino, Luca Crema
  */
 public class ReceivedMessageListener extends SMSReceivedListener {
+
+    private RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
+
     /**
      * Creates an IntentService. Invoked by your subclass's constructor.
      *
@@ -27,14 +30,14 @@ public class ReceivedMessageListener extends SMSReceivedListener {
     /**
      * Creation of the command upon receipt of the message
      *
-     * @param message received
+     * @param smsMessage received
      */
     @Override
-    public void onMessageReceived(SMSMessage message) {
+    public void onMessageReceived(SMSMessage smsMessage) {
         Log.d("ReceivedMessage", "Received a message in the service");
-        RingCommand ringCommand = RingCommandHandler.parseContent(message.getPeer(), message.getData());
+        RingCommand ringCommand = RingCommandHandler.getInstance().parseContent(smsMessage.getPeer(), smsMessage.getData());
         if (ringCommand != null)
-            AppManager.onRingCommandReceived(this, ringCommand, RingtoneHandler.getDefaultRingtone(this));
+            AppManager.getInstance().onRingCommandReceived(this, ringCommand, ringtoneHandler.getDefaultRingtone(this));
         else
             Log.d("Fail: ", "Message received is not a valid command for play the ringtone");
     }
