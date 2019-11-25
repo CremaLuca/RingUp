@@ -39,6 +39,11 @@ public class PasswordManager implements PasswordManagerInterface {
         PreferencesManager.setString(context, PREFERENCES_PASSWORD_KEY, password);
     }
 
+    /**
+     * Checks if there's a password saved in memory
+     *
+     * @return true if is it present, false otherwise
+     */
     @Override
     public boolean isPassSaved() {
         return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(PreferencesManager.DEFAULT_STRING_RETURN));

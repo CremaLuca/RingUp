@@ -1,6 +1,7 @@
 package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
+
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
@@ -12,6 +13,20 @@ import com.gruppo4.sms.dataLink.SMSPeer;
 public class RingCommandHandler {
 
     public static final String SPLIT_CHARACTER = "_";
+    private static RingCommandHandler ringCommandHandler = new RingCommandHandler();
+
+    /**
+     * Private constructor
+     */
+    private RingCommandHandler() {
+    }
+
+    /**
+     * @return the singleton
+     */
+    public static RingCommandHandler getInstance() {
+        return ringCommandHandler;
+    }
 
     /**
      * Extracts the password from the message received and create a RingCommand, null if the command is not valid
@@ -30,14 +45,4 @@ public class RingCommandHandler {
         return null;
     }
 
-    /**
-     * Verify that the password in the RingCommand is the same as the one in memory
-     *
-     * @param context     a valid context
-     * @param ringCommand a valid RingCommand object
-     * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
-     */
-    public static boolean checkPassword(Context context, RingCommand ringCommand) {
-        return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
-    }
 }

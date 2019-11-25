@@ -42,11 +42,23 @@ public class RingtoneHandler implements RingtoneHandlerInterface {
         return RingtoneManager.getDefaultUri(type);
     }
 
+    /**
+     * Get the tone of the specified type
+     *
+     * @param ctx the current application context
+     * @return the requested tone
+     */
     @Override
     public Ringtone getDefaultTone(Context ctx, int type) {
         return RingtoneManager.getRingtone(ctx, getDefaultToneUri(type));
     }
 
+    /**
+     * Get the default ringtone
+     *
+     * @param ctx the current application context
+     * @return the actual ringtone
+     */
     @Override
     public Ringtone getDefaultRingtone(Context ctx) {
         if (defaultRingtone == null)

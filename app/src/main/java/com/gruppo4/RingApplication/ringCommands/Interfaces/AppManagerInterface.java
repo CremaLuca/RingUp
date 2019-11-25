@@ -30,4 +30,13 @@ public interface AppManagerInterface {
      */
     void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException;
 
+    /**
+     * Verify that the password in the RingCommand is the same as the one in memory
+     *
+     * @param context     a valid context
+     * @param ringCommand a valid RingCommand object
+     * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
+     */
+    boolean checkPassword(Context context, RingCommand ringCommand);
+
 }
