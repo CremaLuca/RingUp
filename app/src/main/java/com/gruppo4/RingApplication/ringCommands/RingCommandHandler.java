@@ -2,6 +2,7 @@ package com.gruppo4.RingApplication.ringCommands;
 
 import android.content.Context;
 
+import com.gruppo4.RingApplication.ringCommands.Interfaces.RingCommandHandlerInterface;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
@@ -10,7 +11,7 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * @author Alberto Ursino, Luca Crema, Marco Mariotto
  */
 
-public class RingCommandHandler {
+public class RingCommandHandler implements RingCommandHandlerInterface {
 
     public static final String SPLIT_CHARACTER = "_";
     private static RingCommandHandler ringCommandHandler = new RingCommandHandler();
@@ -35,7 +36,7 @@ public class RingCommandHandler {
      * @param content command
      * @return a RingCommand
      */
-    protected static RingCommand parseContent(SMSPeer peer, String content) {
+    public RingCommand parseContent(SMSPeer peer, String content) {
         if ((content.charAt(0) + "").equals(SPLIT_CHARACTER)) {
             String[] parts = content.split(SPLIT_CHARACTER);
             //parts[0] is empty, parts[1] contains the password
