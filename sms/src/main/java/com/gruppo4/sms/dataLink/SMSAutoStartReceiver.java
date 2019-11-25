@@ -8,7 +8,7 @@ import android.util.Log;
 import com.gruppo4.sms.dataLink.background.SMSKeepAliveService;
 
 /**
- * Starts service and keeps broadcastReceiver alive even if the app is force stopped and the phone restarted
+ * Starts service and keeps broadcastReceiver alive even if the phone is restarted
  *
  * @author Marco Tommasini
  */
