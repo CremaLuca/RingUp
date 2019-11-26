@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands;
+package com.gruppo4.RingApplication.structure;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands.exceptions;
+package com.gruppo4.RingApplication.structure.exceptions;
 
 /**
  * Usually thrown when the timer value cannot be parsed correctly

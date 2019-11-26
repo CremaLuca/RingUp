@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands;
+package com.gruppo4.RingApplication.structure;
 
 import com.gruppo4.sms.dataLink.SMSPeer;
 import org.junit.Assert;

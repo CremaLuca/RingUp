@@ -15,11 +15,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.gruppo4.RingApplication.ringCommands.Interfaces.PermissionInterface;
-import com.gruppo4.RingApplication.ringCommands.PasswordManager;
-import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
-import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
-import com.gruppo4.RingApplication.ringCommands.exceptions.IllegalCommandException;
+import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
+import com.gruppo4.RingApplication.structure.PasswordManager;
+import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
+import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
+import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo_4.preferences.PreferencesManager;
 

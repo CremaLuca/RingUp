@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands.Interfaces;
+package com.gruppo4.RingApplication.structure.Interfaces;
 
 public interface PermissionInterface {
 

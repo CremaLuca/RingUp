@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands;
+package com.gruppo4.RingApplication.structure;
 
 
 import android.content.Context;
@@ -9,13 +9,11 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import com.gruppo4.RingApplication.ringCommands.Interfaces.RingtoneHandlerInterface;
-
 /**
  * @author Alessandra Tonin, Luca Crema
  */
 
-public class RingtoneHandler implements RingtoneHandlerInterface {
+public class RingtoneHandler {
 
     private static Ringtone defaultRingtone;
 
@@ -48,7 +46,6 @@ public class RingtoneHandler implements RingtoneHandlerInterface {
      * @param ctx the current application context
      * @return the requested tone
      */
-    @Override
     public Ringtone getDefaultTone(Context ctx, int type) {
         return RingtoneManager.getRingtone(ctx, getDefaultToneUri(type));
     }
@@ -59,24 +56,36 @@ public class RingtoneHandler implements RingtoneHandlerInterface {
      * @param ctx the current application context
      * @return the actual ringtone
      */
-    @Override
     public Ringtone getDefaultRingtone(Context ctx) {
         if (defaultRingtone == null)
             defaultRingtone = getDefaultTone(ctx, RingtoneManager.TYPE_RINGTONE);
         return defaultRingtone;
     }
 
-    @Override
+    /**
+     * Get the default alarm tone
+     *
+     * @param ctx the current application context
+     * @return the actual alarm tone
+     */
     public Ringtone getDefaultAlarmTone(Context ctx) {
         return getDefaultTone(ctx, RingtoneManager.TYPE_ALARM);
     }
 
-    @Override
+    /**
+     * Plays a ringtone (overload di ringtonePlay(Ringtone ringtone, final int USAGE_CODE))
+     *
+     * @param ringtone the default ringtone
+     */
     public void playRingtone(Ringtone ringtone) {
         playRingtone(ringtone, AudioAttributes.USAGE_ALARM);
     }
 
-    @Override
+    /**
+     * Stops the playing sound
+     *
+     * @param ringtone the playing sound (ringtone or alarm tone)
+     */
     public void stopRingtone(Ringtone ringtone) {
         ringtone.stop();
     }
@@ -90,6 +99,5 @@ public class RingtoneHandler implements RingtoneHandlerInterface {
     private void playRingtone(@NonNull Ringtone ringtone, final int USAGE_CODE) {
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(USAGE_CODE).build());
         ringtone.play();
-
     }
 }

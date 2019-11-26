@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands;
+package com.gruppo4.RingApplication.structure;
 
 import android.content.Context;
 import android.media.Ringtone;
@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.gruppo4.RingApplication.MainActivity;
-import com.gruppo4.RingApplication.ringCommands.Interfaces.AppManagerInterface;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
@@ -21,7 +20,7 @@ import static java.lang.Integer.parseInt;
 /**
  * @author Alberto Ursino, Luca Crema, Alessandra Tonin, Marco Mariotto
  */
-public class AppManager implements AppManagerInterface {
+public class AppManager {
 
     private final static String WRONG_PASSWORD = "Wrong Password";
     private static AppManager appManager = new AppManager();
@@ -46,7 +45,6 @@ public class AppManager implements AppManagerInterface {
      * @param context     of the application
      * @param ringCommand a ring command not null
      */
-    @Override
     public void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
         if (checkPassword(context, ringCommand)) {
             ringtoneHandler.playRingtone(ringtone);
@@ -72,7 +70,6 @@ public class AppManager implements AppManagerInterface {
      * @throws InvalidTelephoneNumberException
      * @throws InvalidSMSMessageException
      */
-    @Override
     public void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         SMSMessage message = commandToMessage(context, ringCommand);
         SMSHandler.getInstance(context).sendMessage(message, listener);
@@ -94,7 +91,6 @@ public class AppManager implements AppManagerInterface {
      * @param ringCommand a valid RingCommand object
      * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
      */
-    @Override
     public boolean checkPassword(Context context, RingCommand ringCommand) {
         return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
     }

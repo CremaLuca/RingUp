@@ -1,8 +1,5 @@
-package com.gruppo4.RingApplication.ringCommands;
+package com.gruppo4.RingApplication.structure;
 
-import android.content.Context;
-
-import com.gruppo4.RingApplication.ringCommands.Interfaces.RingCommandHandlerInterface;
 import com.gruppo4.sms.dataLink.SMSPeer;
 
 /**
@@ -11,7 +8,8 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * @author Alberto Ursino, Luca Crema, Marco Mariotto
  */
 
-public class RingCommandHandler implements RingCommandHandlerInterface {
+public class RingCommandHandler
+{
 
     public static final String SPLIT_CHARACTER = "_";
     private static RingCommandHandler ringCommandHandler = new RingCommandHandler();

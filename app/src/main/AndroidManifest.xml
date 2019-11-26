@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".ringCommands.ReceivedMessageListener" />
+        <service android:name=".structure.ReceivedMessageListener" />
     </application>
 
 </manifest>

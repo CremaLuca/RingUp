@@ -17,24 +17,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import com.gruppo4.RingApplication.ringCommands.AppManager;
-import com.gruppo4.RingApplication.ringCommands.Interfaces.PermissionInterface;
-import com.gruppo4.RingApplication.ringCommands.PasswordManager;
-import com.gruppo4.RingApplication.ringCommands.ReceivedMessageListener;
-import com.gruppo4.RingApplication.ringCommands.RingCommand;
-import com.gruppo4.RingApplication.ringCommands.RingCommandHandler;
-import com.gruppo4.RingApplication.ringCommands.RingtoneHandler;
-import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialog;
-import com.gruppo4.RingApplication.ringCommands.dialog.PasswordDialogListener;
-import com.gruppo4.RingApplication.ringCommands.exceptions.IllegalCommandException;
+import com.gruppo4.RingApplication.structure.AppManager;
+import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
+import com.gruppo4.RingApplication.structure.PasswordManager;
+import com.gruppo4.RingApplication.structure.ReceivedMessageListener;
+import com.gruppo4.RingApplication.structure.RingCommand;
+import com.gruppo4.RingApplication.structure.RingCommandHandler;
+import com.gruppo4.RingApplication.structure.RingtoneHandler;
+import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
+import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
+import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
 import com.gruppo4.sms.dataLink.SMSHandler;
-import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
 import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
 import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**

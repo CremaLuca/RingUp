@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands.dialog;
+package com.gruppo4.RingApplication.structure.dialog;
 
 import android.content.Context;
 

@@ -1,8 +1,7 @@
-package com.gruppo4.RingApplication.ringCommands;
+package com.gruppo4.RingApplication.structure;
 
 import android.content.Context;
 
-import com.gruppo4.RingApplication.ringCommands.Interfaces.PasswordManagerInterface;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
@@ -15,7 +14,7 @@ import com.gruppo_4.preferences.PreferencesManager;
  * </p>
  */
 
-public class PasswordManager implements PasswordManagerInterface {
+public class PasswordManager {
 
     private static final String PREFERENCES_PASSWORD_KEY = "group4_secret_password";
     private Context context;
@@ -29,12 +28,17 @@ public class PasswordManager implements PasswordManagerInterface {
         this.context = context;
     }
 
-    @Override
+    /**
+     *
+     * @return the password saved in memory
+     */
     public String getPassword() {
         return PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY);
     }
 
-    @Override
+    /**
+     * @param password that want to be saved in memory
+     */
     public void setPassword(String password) {
         PreferencesManager.setString(context, PREFERENCES_PASSWORD_KEY, password);
     }
@@ -44,12 +48,13 @@ public class PasswordManager implements PasswordManagerInterface {
      *
      * @return true if is it present, false otherwise
      */
-    @Override
     public boolean isPassSaved() {
         return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(PreferencesManager.DEFAULT_STRING_RETURN));
     }
 
-    @Override
+    /**
+     * Deletes the password saved in memory
+     */
     public void deletePassword() {
         PreferencesManager.removeValue(context, PREFERENCES_PASSWORD_KEY);
     }

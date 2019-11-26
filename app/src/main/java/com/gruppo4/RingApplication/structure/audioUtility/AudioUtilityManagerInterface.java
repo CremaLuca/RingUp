@@ -1,4 +1,4 @@
-package com.gruppo4.RingApplication.ringCommands.audioUtility;
+package com.gruppo4.RingApplication.structure.audioUtility;
 
 public interface AudioUtilityManagerInterface {
 
