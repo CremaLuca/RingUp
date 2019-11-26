@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendTestMessage() {
         Log.d("MainActivity", "Sending test message");
-        SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,new SMSPeer("+393467965447"),"Test message"));
+        SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,new SMSPeer("+15555215556"),"Test message"));
     }
 
     private void createNotificationChannel() {
