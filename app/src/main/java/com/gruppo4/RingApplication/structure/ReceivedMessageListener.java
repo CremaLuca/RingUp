@@ -35,7 +35,7 @@ public class ReceivedMessageListener extends SMSReceivedListener {
     @Override
     public void onMessageReceived(SMSMessage smsMessage) {
         Log.d("ReceivedMessage", "Received a message in the service");
-        RingCommand ringCommand = RingCommandHandler.getInstance().parseContent(smsMessage.getPeer(), smsMessage.getData());
+        RingCommand ringCommand = RingCommandHandler.getInstance().parseMessage(smsMessage);
         if (ringCommand != null)
             AppManager.getInstance().onRingCommandReceived(this, ringCommand, ringtoneHandler.getDefaultRingtone(this));
         else

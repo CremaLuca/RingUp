@@ -79,17 +79,7 @@ public class AppManager {
      * @throws InvalidSMSMessageException
      */
     public void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        SMSMessage message = commandToMessage(context, ringCommand);
-        SMSHandler.getInstance(context).sendMessage(message, listener);
-    }
-
-    /**
-     * @param context     of the application
-     * @param ringCommand to transform
-     * @return an SMSMessage object created from the ring command
-     */
-    private SMSMessage commandToMessage(Context context, RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        return new SMSMessage(context, ringCommand.getPeer().toString(), ringCommand.getPassword());
+        SMSHandler.getInstance(context).sendMessage(RingCommandHandler.getInstance().parseCommand(context, ringCommand), listener);
     }
 
     /**
