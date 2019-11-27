@@ -24,10 +24,11 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
  */
 public class MessageReceivedService extends SMSReceivedListenerService {
 
-    private final static String STOP_ACTION = "stopAction";
-    private Ringtone ringDef;
-
-    private NotificationActionReceiver notificationReceiver;
+    public final static String STOP_ACTION = "stopAction";
+    public final static String NOTIFICATION_ID = "notif_id";
+    private final static String CHANNEL_ID = "123";
+    private static Ringtone ringDef;
+    private int notification_id;
 
     public MessageReceivedService() {
         super("MessageReceivedService");
@@ -35,32 +36,30 @@ public class MessageReceivedService extends SMSReceivedListenerService {
 
     @Override
     public void onMessageReceived(SMSMessage message) {
-        notificationReceiver = new NotificationActionReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(STOP_ACTION);
-        registerReceiver(notificationReceiver, filter);
-
         createNotification();
-
         startAlarm();
     }
 
     /**
-     * Creatse a notification and sets a Intent for managing commands from there
+     * Creates a notification and sets a Intent for managing commands from there
      */
     private void createNotification() {
 
-        // Stop Action that stops the ringtone
+        notification_id = (int)System.currentTimeMillis();
+
+        // StopAction stops the ringtone
         Intent stopIntent = new Intent(this, NotificationActionReceiver.class);
         stopIntent.setAction(STOP_ACTION);
-        PendingIntent stopPI = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
+        stopIntent.putExtra(NOTIFICATION_ID, notification_id);
+        PendingIntent stopPI = PendingIntent.getBroadcast(this, notification_id, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Open Action that opens the MainActivity
+        // OpenAction opens the MainActivity
         Intent openIntent = new Intent(this, MainActivity.class);
+        openIntent.putExtra(NOTIFICATION_ID, notification_id);
         openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent openPI = PendingIntent.getActivity(this, 0, openIntent, 0);
+        PendingIntent openPI = PendingIntent.getActivity(this, notification_id, openIntent, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Your phone is ringing")
                 .setContentText("Stop it from here or open the app")
@@ -71,7 +70,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1423, builder.build());
+        notificationManager.notify(notification_id, builder.build());
     }
 
     /**
@@ -82,8 +81,11 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         Ringtone ringtone = RingtoneManager.getRingtone(ctx, RingtoneManager.getDefaultUri( RingtoneManager.TYPE_RINGTONE));
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
 
-        ringDef = ringtone;
-        ringDef.play();
+        if(ringDef == null) {
+            ringDef = ringtone;
+            if (!ringDef.isPlaying())
+                ringDef.play();
+        }
 
         Log.d("MSGRecSVC","Service started");
     }
@@ -91,35 +93,16 @@ public class MessageReceivedService extends SMSReceivedListenerService {
     /**
      * Creates a Handler and stop the ringtone
      */
-    private void stopAlarm()  {
+    public void stopAlarm()  {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run(){
-                Log.d("MSGRecSVC","ringdef:" + ringDef);
+                Log.d("MSGRecSVC","ringdef: " + ringDef);
                 if(ringDef.isPlaying())
                     ringDef.stop();
             }
         }, 0);
-    }
-
-    public class NotificationActionReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                switch (intent.getAction()) {
-
-                    case STOP_ACTION: {
-                        stopAlarm();
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                unregisterReceiver(this);
-            }
-        }
     }
 }
 

@@ -25,5 +25,11 @@
             android:enabled="true"
             android:label="ActivityHelper" >
         </service>
+
+        <receiver android:name=".NotificationActionReceiver">
+            <intent-filter>
+                <action android:name="stopAction"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
