@@ -15,9 +15,15 @@ import androidx.annotation.NonNull;
 
 public class RingtoneHandler {
 
-    private static Ringtone defaultRingtone;
+    /**
+     * defaultRingtone instantiated in getDefaultTone
+     */
+    private static Ringtone defaultRingtone = null;
 
-    private static RingtoneHandler ringtoneHandler = new RingtoneHandler();
+    /**
+     * Instance of the class that is instantiated in getInstance method
+     */
+    private static RingtoneHandler instance = null;
 
     /**
      * Private constructor
@@ -26,10 +32,12 @@ public class RingtoneHandler {
     }
 
     /**
-     * @return the singleton
+     * @return the RingtoneHandler instance
      */
     public static RingtoneHandler getInstance() {
-        return ringtoneHandler;
+        if (instance == null)
+            instance = new RingtoneHandler();
+        return instance;
     }
 
     /**

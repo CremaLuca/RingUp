@@ -23,7 +23,13 @@ import static java.lang.Integer.parseInt;
 public class AppManager {
 
     private final static String WRONG_PASSWORD = "Wrong Password";
-    private static AppManager appManager = new AppManager();
+
+    /**
+     * Instance of the class that is instantiated in getInstance method
+     */
+    private static AppManager instance = null;
+
+    //RingtoneHandler is a singleton
     private static RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
 
     /**
@@ -33,10 +39,12 @@ public class AppManager {
     }
 
     /**
-     * @return the singleton
+     * @return the AppManager instance
      */
     public static AppManager getInstance() {
-        return appManager;
+        if (instance == null)
+            instance = new AppManager();
+        return instance;
     }
 
     /**

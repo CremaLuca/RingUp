@@ -21,12 +21,12 @@ public class RingCommandTest {
 
     @Test
     public void getSender() {
-        Assert.assertEquals(ringCommand.getPeer().toString(), VALID_NUMBER);
+        Assert.assertEquals(VALID_NUMBER, ringCommand.getPeer().toString());
     }
 
     @Test
     public void getPassword() {
-        Assert.assertEquals(ringCommand.getPassword(), VALID_PASSWORD);
+        Assert.assertEquals(VALID_PASSWORD, ringCommand.getPassword());
     }
 
     @Test

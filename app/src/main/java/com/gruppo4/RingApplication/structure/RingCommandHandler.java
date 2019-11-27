@@ -8,11 +8,14 @@ import com.gruppo4.sms.dataLink.SMSPeer;
  * @author Alberto Ursino, Luca Crema, Marco Mariotto
  */
 
-public class RingCommandHandler
-{
+public class RingCommandHandler {
 
     public static final String SPLIT_CHARACTER = "_";
-    private static RingCommandHandler ringCommandHandler = new RingCommandHandler();
+
+    /**
+     * Instance of the class that is instantiated in getInstance method
+     */
+    private static RingCommandHandler instance;
 
     /**
      * Private constructor
@@ -21,14 +24,17 @@ public class RingCommandHandler
     }
 
     /**
-     * @return the singleton
+     * @return the RingCommandHandler instance
      */
     public static RingCommandHandler getInstance() {
-        return ringCommandHandler;
+        if (instance == null)
+            instance = new RingCommandHandler();
+        return instance;
     }
 
     /**
      * Extracts the password from the message received and create a RingCommand, null if the command is not valid
+     * A valid content is the following: "_password"
      *
      * @param peer    is the sender/receiver of the message
      * @param content command
@@ -40,7 +46,6 @@ public class RingCommandHandler
             //parts[0] is empty, parts[1] contains the password
             return new RingCommand(peer, parts[1]);
         }
-        //Message received is not a command for play the ringtone
         return null;
     }
 
