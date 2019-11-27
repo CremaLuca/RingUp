@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gruppo4.communication.dataLink.Peer;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -21,6 +23,9 @@ import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
  * @author Gruppo 4
  */
 public class MainActivity extends AppCompatActivity {
+
+    private EditText edtPhoneNumber;
+    private Button sendButton;
 
     public void setup() {
         //Initialize the receiver
@@ -38,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         setup();
 
-        final Button button = findViewById(R.id.test_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        edtPhoneNumber = findViewById(R.id.edtPhoneNumber);
+        sendButton = findViewById(R.id.test_button);
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sendTestMessage();
             }
@@ -67,7 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendTestMessage() {
         Log.d("MainActivity", "Sending test message");
-        SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,new SMSPeer("+15555215556"),"Test message"));
+
+        SMSPeer peer;
+        if(edtPhoneNumber.getText().length() != 0)
+            peer = new SMSPeer(edtPhoneNumber.getText().toString());
+        else
+            peer = new SMSPeer("+15555215556");
+
+        SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,peer.getAddress(),"Test message"));
     }
 
     private void createNotificationChannel() {

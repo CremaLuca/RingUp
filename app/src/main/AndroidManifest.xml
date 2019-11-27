@@ -23,6 +23,7 @@
         <service
             android:name=".MessageReceivedService"
             android:enabled="true"
-            android:label="ActivityHelper" />
+            android:label="ActivityHelper" >
+        </service>
     </application>
 </manifest>
