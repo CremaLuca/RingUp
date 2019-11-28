@@ -44,7 +44,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     static final String JOIN_PROPOSAL = "JP";
     static final String SPLIT_CHAR = "_";
 
-    private SMSNetworkDictionary dict = new SMSNetworkDictionary<>();
+    private SMSReplicatedNetworkDictionary dict = new SMSReplicatedNetworkDictionary<>();
 
     // joinSent keeps track of JOIN_PROPOSAL requests still pending.
     private ArrayList<SMSPeer> joinSent = new ArrayList<>();
