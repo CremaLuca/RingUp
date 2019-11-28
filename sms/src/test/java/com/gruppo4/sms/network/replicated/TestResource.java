@@ -1,5 +1,5 @@
 
-package com.gruppo4.sms.network;
+package com.gruppo4.sms.network.replicated;
 
 
 /**

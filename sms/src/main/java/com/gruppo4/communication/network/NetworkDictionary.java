@@ -12,7 +12,7 @@ import java.util.Map;
  * @param <RV> Value class for the resource
  * @author Group 4
  */
-public interface ReplicatedNetworkDictionary<U extends Peer, RK, RV> {
+public interface NetworkDictionary<U extends Peer, RK, RV> {
 
     /**
      * Registers a user to the network

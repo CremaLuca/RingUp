@@ -1,4 +1,4 @@
-package com.gruppo4.sms.network;
+package com.gruppo4.sms.network.replicated;
 
 import org.junit.Assert;
 import org.junit.Test;
