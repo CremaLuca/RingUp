@@ -6,17 +6,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<DistributedPeer, RK, RV> {
+public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<KADAddress, RK, RV> {
 
     /**
      * Maximum users per bucket
      */
     public static final int MAX_USER_BUCKET_LENGTH = 5;
 
-    public static final int MAX_BYTE_ADDRESS_LENGTH = 10;
 
+    public SMSDistributedNetworkDictionary(KADAddress userAddress) {
+
+    }
+
+    /**
+     * Adds a user to the list of
+     *
+     * @param user new network user
+     */
     @Override
-    public void addUser(DistributedPeer user) {
+    public void addUser(KADAddress user) {
 
     }
 
@@ -24,7 +32,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param users new network users
      */
     @Override
-    public void addAllUsers(Collection<DistributedPeer> users) {
+    public void addAllUsers(Collection<KADAddress> users) {
 
     }
 
@@ -32,7 +40,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @return a list of users, there can be {@value #MAX_USER_BUCKET_LENGTH} for each bucket
      */
     @Override
-    public ArrayList<DistributedPeer> getAllUsers() {
+    public ArrayList<KADAddress> getAllUsers() {
         return null;
     }
 
@@ -41,7 +49,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param user registered user
      */
     @Override
-    public void removeUser(DistributedPeer user) {
+    public void removeUser(KADAddress user) {
 
     }
 
@@ -50,7 +58,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param users registered users
      */
     @Override
-    public void removeAllUsers(Collection<DistributedPeer> users) {
+    public void removeAllUsers(Collection<KADAddress> users) {
 
     }
 
