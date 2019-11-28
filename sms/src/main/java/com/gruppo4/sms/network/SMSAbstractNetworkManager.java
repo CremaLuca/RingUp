@@ -13,8 +13,11 @@ import java.util.ArrayList;
  * Each SMS request has a format specified below. A node cannot inform each node in the network about his changes to
  * the local dictionary, for it will be expensive in terms of messages sent. Thus we ordered our dictionary by phone number, so that
  * each node has the same dictionary ordered in the same way: a node with index n in the dictionary will spread changes to only nodes numbered
- * 2n+1, 2n+2, guaranteeing mutual exclusion.
- * This costs 2 messages for each node and delivery of information is logarithmic in N, the extension of the network.
+ * 2n-req+N+1, 2n-req+N+2 (mod N) guaranteeing mutual exclusion, where N is the extension of the network and req is the requester,
+ * the node who sent the first request (to put it in a simple way, n chooses the first nodes who are not expecting the message; for example, let N = 4;
+ * if the requester is 0, then 0 will send to 1 and 2; 1 will send to 3. 2 knows it doesn't have to spread further. To see how this is done, check out
+ * spread method)
+ * This costs 2 messages for each node and delivery of information is logarithmic in N.
  *
  * @author Marco Mariotto
  */
@@ -24,11 +27,12 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     /*
      * SMS REQUESTS FORMATS
      * Join proposal:    "JP_%netName"
-     * Add user:         "AU_%(peer)"          we include the whole peer, not only his address
-     * Remove user:      "RU_%(address)"       address is the phone number of the user being removed
-     * Add resource:     "AR_%(key)_%(value)"  we include the whole resource, key and value
-     * Remove resource:  "RR_%(key)"           we only need the key to identify a resource
-     * Don't spread:     "%(1)DS_%(2)"         inform the receiver to not spread this info, it's one of the previous formats where %1 != JP
+     * Add user:         "AU_%(requesterIndex)_%(peer)"          we include the whole peer, not only his address
+     * Remove user:      "RU_%(requesterIndex)_%(address)"       address is the phone number of the user being removed
+     * Add resource:     "AR_%(requesterIndex)_%(key)_%(value)"  we include the whole resource, key and value
+     * Remove resource:  "RR_%(requesterIndex)_%(key)"           we only need the key to identify a resource
+     * Don't spread:     "%(1)DS_%(2)"           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
+     * %(2) can be peer, address, a <key, value> pair or key
      */
 
     static final String ADD_USER = "AU";
@@ -81,7 +85,8 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      */
 
     public void disconnect(){
-        spread(REMOVE_USER + "_" + mySelf.getAddress());
+        int myIndex = getMyIndex();
+        spread(myIndex, REMOVE_USER + "_" + myIndex + "_" + mySelf.getAddress());
         dict = null;
         joinSent = null;
         handler = null;
@@ -96,7 +101,8 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
 
     public void setResource(SerializableObject key, SerializableObject value){
         dict.setResource(key, value);
-        spread(ADD_RESOURCE + "_" + key.toString() + "_" + value.toString());
+        int myIndex = getMyIndex();
+        spread(myIndex, ADD_RESOURCE + "_" + myIndex + "_" + key.toString() + "_" + value.toString());
     }
 
     /**
@@ -107,27 +113,48 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
 
     public void removeResource(SerializableObject key){
         dict.removeResource(key);
-        spread(REMOVE_RESOURCE + "_" + key.toString());
+        int myIndex = getMyIndex();
+        spread(myIndex, REMOVE_RESOURCE + "_" + myIndex + "_" + key.toString());
     }
 
     /**
-     * Spreads this string according to your current index n in the dictionary. We send text to nodes with index
-     * 2n+1, 2n+2.
+     * Spreads this string according to your current index n in the dictionary. For how nodes are chosen, read the method's comments.
+     * For example, let N = 8. Suppose node 4 sends a REMOVE_RESOURCE request. We have the following tree, assuming formulas below:
+     *
+     *              4
+     *          5       6
+     *       7    0   1   2
+     *     3  4
+     *   4
+     *
+     * we clearly see that node 7 should stop after he has reached node 3, since node 4 is the requester. Similarly node 3 should not even attempt to
+     * spread this request further. Now every node has been reached.
      *
      * @param text to be sent
      */
 
-    private void spread(String text){
+    private void spread(int requester, String text){
         ArrayList<SMSPeer> users = dict.getAllUsers();
-        int first = 2*users.indexOf(mySelf) + 1;
-        for(int i = first; i < users.size() && i < first + 2; i++){
-            SMSMessage msg = new SMSMessage(handler.getApplicationCode(), users.get(i), text);
+        int N = users.size();
+        int myIndex = getMyIndex();
+        /*
+        * node n sends to req + 2(n-req) + 1 and req + 2(n-req) + 2, that is:
+        * node 2n - req + 1 (+N) and 2n - req + 2 (+N) (mod N). If one of these nodes is the requester, we don't spread further.
+        */
+
+        int first = (2*myIndex - requester + N + 1) % N;
+        for(int i = 0; i < 2 && i + first != requester; i++){
+            SMSMessage msg = new SMSMessage(handler.getApplicationCode(), users.get(first + i), text);
             handler.sendMessage(msg);
         }
     }
 
+    private int getMyIndex(){
+        return dict.getAllUsers().indexOf(mySelf);
+    }
+
     /**
-     * It process every request performing changes to the local dictionary. If otherwise specified (DO_NOT_SPREAD flag included)
+     * It processes every request performing changes to the local dictionary. If otherwise specified (DO_NOT_SPREAD flag included)
      * spreads each request to his corresponding nodes according to the number rule previously stated.
      * When a JOIN_AGREED request has to be processed, we also send the whole dictionary to the new node who just joined.
      *
@@ -136,11 +163,14 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
 
     void processRequest(SMSMessage message){
         String text = message.getData();
+        String[] splitText = text.split("_");
+        String request = splitText[0];
         SMSPeer sourcePeer = message.getPeer();
+        int myIndex = getMyIndex();
 
-        if(text.equals(JOIN_AGREED)){
+        if(request.equals(JOIN_AGREED)){
             if(joinSent.contains(sourcePeer)){
-                spread(ADD_USER + "_" + sourcePeer.toString());
+                spread(myIndex, ADD_USER + "_" + myIndex + "_" + sourcePeer.toString());
                 dict.addUser(sourcePeer);
                 joinSent.remove(sourcePeer);
                 //send the whole dictionary to sourcePeer
@@ -162,32 +192,34 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
                 //ignore non-matching joins
             }
         }
-        else if(text.equals(ADD_USER)){
-            SMSPeer p = new SMSPeer(text.split("_")[1]);
-            spread(ADD_USER + "_" + p.toString());
+        else if(request.equals(ADD_USER)){
+            int requester = Integer.parseInt(splitText[1]);
+            SMSPeer p = new SMSPeer(splitText[2]);
+            spread(requester, ADD_USER + "_" + requester + "_" + p.toString());
             dict.addUser(p);
         }
-        else if(text.equals(ADD_USER + DO_NOT_SPREAD)){
-            SMSPeer p = new SMSPeer(text.split("_")[1]);
+        else if(request.equals(ADD_USER + DO_NOT_SPREAD)){
+            SMSPeer p = new SMSPeer(splitText[1]);
             dict.addUser(p);
         }
-        else if(text.equals(REMOVE_USER)){
-            SMSPeer p = new SMSPeer(text.split("_")[1]);
-            spread(REMOVE_USER + "_" + p.getAddress());
+        else if(request.equals(REMOVE_USER)){
+            int requester = Integer.parseInt(splitText[1]);
+            SMSPeer p = new SMSPeer(splitText[2]); //we build a peer with no info, but his address is enough to find it in the list
+            spread(requester, REMOVE_USER + "_" + requester + "_" + p.getAddress());
             dict.removeUser(p);
         }
-        else if(text.equals(ADD_RESOURCE)){
-            String[] args = text.split("_");
-            spread(ADD_RESOURCE + "_" + args[1] + "_" + args[2]);
-            dict.setResource(getKeyFromString(args[1]), getValueFromString(args[2]));
+        else if(request.equals(ADD_RESOURCE)){
+            int requester = Integer.parseInt(splitText[1]);
+            spread(requester, ADD_RESOURCE + "_" + requester + "_" + splitText[2] + "_" + splitText[3]);
+            dict.setResource(getKeyFromString(splitText[2]), getValueFromString(splitText[3]));
         }
         else if(text.equals(ADD_RESOURCE + DO_NOT_SPREAD)){
-            String[] args = text.split("_");
-            dict.setResource(getKeyFromString(args[1]), getValueFromString(args[2]));
+            dict.setResource(getKeyFromString(splitText[1]), getValueFromString(splitText[2]));
         }
         else if(text.equals(REMOVE_RESOURCE)){
-            String key = text.split("_")[1];
-            spread(REMOVE_RESOURCE + "_" + key);
+            String key = splitText[2];
+            int requester = Integer.parseInt(splitText[1]);
+            spread(requester, REMOVE_RESOURCE + "_" + requester + "_" + key);
             dict.removeResource(getKeyFromString(key));
         }
         else{

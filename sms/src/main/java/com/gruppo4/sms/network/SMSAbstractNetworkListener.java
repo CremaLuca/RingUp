@@ -27,11 +27,12 @@ public abstract class SMSAbstractNetworkListener implements ReceivedMessageListe
     /*
      * SMS REQUESTS FORMATS
      * Join proposal:    "JP_%netName"
-     * Add user:         "AU_%(peer)"          we include the whole peer, not only his address
-     * Remove user:      "RU_%(address)"       address is the phone number of the user being removed
-     * Add resource:     "AR_%(key)_%(value)"  we include the whole resource, key and value
-     * Remove resource:  "RR_%(key)"           we only need the key to identify a resource
-     * Don't spread:     "%(1)DS_%(2)"         inform the receiver to not spread this info, it's one of the previous formats where %1 != JP
+     * Add user:         "AU_%(requesterIndex)_%(peer)"          we include the whole peer, not only his address
+     * Remove user:      "RU_%(requesterIndex)_%(address)"       address is the phone number of the user being removed
+     * Add resource:     "AR_%(requesterIndex)_%(key)_%(value)"  we include the whole resource, key and value
+     * Remove resource:  "RR_%(requesterIndex)_%(key)"           we only need the key to identify a resource
+     * Don't spread:     "%(1)DS_%(2)"           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
+     * %(2) can be peer, address, a <key, value> pair or key
      */
 
     protected static final String[] REQUESTS = {SMSAbstractNetworkManager.ADD_USER, SMSAbstractNetworkManager.REMOVE_USER,
