@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,6 +81,25 @@ public class MainActivity extends AppCompatActivity {
                 case MainActivityHelper.START_ACTIVITY_RING: {
                     int id = data.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
                     createRingAlertDialog(id);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if(intent != null) {
+            switch(intent.getAction()) {
+                case MessageReceivedService.OPEN_ACTION: {
+                    int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                    Toast.makeText(this, "aperta", Toast.LENGTH_SHORT).show();
+                    //createRingAlertDialog(id);
                     break;
                 }
 
