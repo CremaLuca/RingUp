@@ -63,7 +63,6 @@ public class MessageReceivedService extends SMSReceivedListenerService {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Your phone is ringing")
                 .setContentText("Stop it from here or open the app")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .addAction(android.R.drawable.ic_lock_idle_alarm, "Stop", stopPI)
                 /*.setContentIntent(openPI)*/
                 .setAutoCancel(true);
@@ -71,6 +70,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notification_id, builder.build());
+        Log.d("MessageReceivedService","Notification created");
     }
 
     /**
@@ -81,13 +81,13 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         Ringtone ringtone = RingtoneManager.getRingtone(ctx, RingtoneManager.getDefaultUri( RingtoneManager.TYPE_RINGTONE));
         ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
 
-        if(ringDef == null) {
+        if(ringDef == null)
             ringDef = ringtone;
-        }
+
         if (!ringDef.isPlaying())
             ringDef.play();
 
-        Log.d("MSGRecSVC","Service started");
+        Log.d("MessageReceivedService","Service started");
     }
 
     /**
@@ -98,7 +98,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         handler.postDelayed(new Runnable() {
             @Override
             public void run(){
-                Log.d("MSGRecSVC","ringdef: " + ringDef);
+                Log.d("MessageReceivedService","ringdef: " + ringDef);
                 if(ringDef.isPlaying())
                     ringDef.stop();
             }
