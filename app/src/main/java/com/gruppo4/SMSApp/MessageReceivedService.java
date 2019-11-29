@@ -1,5 +1,7 @@
 package com.gruppo4.SMSApp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -26,7 +29,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
 
     public final static String STOP_ACTION = "stopAction";
     public final static String NOTIFICATION_ID = "notif_id";
-    private final static String CHANNEL_ID = "123";
+
     private static Ringtone ringDef;
     private int notification_id;
 
@@ -59,7 +62,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent openPI = PendingIntent.getActivity(this, notification_id, openIntent, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Your phone is ringing")
                 .setContentText("Stop it from here or open the app")
@@ -67,8 +70,8 @@ public class MessageReceivedService extends SMSReceivedListenerService {
                 /*.setContentIntent(openPI)*/
                 .setAutoCancel(true);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notification_id, builder.build());
         Log.d("MessageReceivedService","Notification created");
     }

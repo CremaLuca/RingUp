@@ -24,7 +24,9 @@ import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private final static String CHANNEL_ID = "123";
+    public static final String CHANNEL_NAME = "TestChannelName";
+    public static final String CHANNEL_ID = "123";
+
     private EditText edtPhoneNumber;
     private Button sendButton;
 
@@ -88,9 +90,8 @@ public class MainActivity extends AppCompatActivity {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "TestChannelName";
             String description = "TestChannelDescription";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
@@ -98,5 +99,4 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
 }
