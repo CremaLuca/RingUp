@@ -53,7 +53,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         stopIntent.putExtra(NOTIFICATION_ID, notification_id);
         PendingIntent stopPI = PendingIntent.getBroadcast(this, notification_id, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // OpenAction opens the MainActivity
+        // OpenAction opens the MainActivity (not in use)
         Intent openIntent = new Intent(this, MainActivity.class);
         openIntent.putExtra(NOTIFICATION_ID, notification_id);
         openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -63,9 +63,9 @@ public class MessageReceivedService extends SMSReceivedListenerService {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Your phone is ringing")
                 .setContentText("Stop it from here or open the app")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .addAction(android.R.drawable.ic_lock_idle_alarm, "Stop", stopPI)
-                .setContentIntent(openPI)
+                /*.setContentIntent(openPI)*/
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -83,9 +83,9 @@ public class MessageReceivedService extends SMSReceivedListenerService {
 
         if(ringDef == null) {
             ringDef = ringtone;
-            if (!ringDef.isPlaying())
-                ringDef.play();
         }
+        if (!ringDef.isPlaying())
+            ringDef.play();
 
         Log.d("MSGRecSVC","Service started");
     }
