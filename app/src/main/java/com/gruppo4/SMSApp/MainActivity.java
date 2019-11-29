@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         setup();
 
+        //Only if the activity is started by a service
+        startFromService();
+
         edtPhoneNumber = findViewById(R.id.edtPhoneNumber);
         sendButton = findViewById(R.id.test_button);
 
@@ -72,41 +75,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //not working
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(data != null) {
-            switch(data.getAction()) {
-                case MainActivityHelper.START_ACTIVITY_RING: {
-                    int id = data.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
-                    createRingAlertDialog(id);
-                    break;
-                }
-
-                default:
-                    break;
-            }
-        }
-    }
-
+    /**
+     * Updates intent obtained from a service's call
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        if(intent != null) {
-            switch(intent.getAction()) {
-                case MessageReceivedService.OPEN_ACTION: {
-                    int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
-                    Toast.makeText(this, "aperta", Toast.LENGTH_SHORT).show();
-                    //createRingAlertDialog(id);
-                    break;
-                }
-
-                default:
-                    break;
-            }
-        }
+        setIntent(intent);
+        startFromService();
     }
 
     @Override
@@ -158,24 +135,55 @@ public class MainActivity extends AppCompatActivity {
         SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,peer.getAddress(),"Test message"));
     }
 
+    /**
+     * Create the NotificationChannel, but only on API 26+ because
+     * the NotificationChannel class is new and not in the support library
+     *
+     * Register the channel with the system; you can't change the importance
+     * or other notification behaviors after this
+     */
     private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String description = "TestChannelDescription";
+            //IMPORTANCE_HIGH makes pop-up the notification
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    private void createRingAlertDialog(final int notification_id) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    /**
+     * Manages action from intent
+     */
+    private void startFromService() {
+        Log.d("MainActivity","startFromService called");
+        Intent intent = getIntent();
+        if(intent != null) {
+            switch(intent.getAction()) {
+                case MessageReceivedService.ALERT_ACTION: {
+                    createStopRingDialog();
+                    Log.d("MainActivity","Creating StopRingDialog...");
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Creates and shows AlertDialog with two options:
+     * [stop] --> stop the ringtone and cancel the notification
+     * [cancel] --> nothing relevant
+     */
+    private void createStopRingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Your phone is ringing, stop it from here if you want");
         builder.setCancelable(true);
+        Log.d("MainActivity","StopRingDialog created");
 
         builder.setPositiveButton(
                 "Stop", new DialogInterface.OnClickListener() {
@@ -183,11 +191,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         MessageReceivedService service = new MessageReceivedService();
                         service.stopAlarm();
-                        if(notification_id != -1) {
-                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-                            notificationManager.cancel(notification_id);
-                        }
-                        dialogInterface.cancel();
+                        Log.d("MainActivity","Stopping ringtone");
+                        //cancel the right notification by id
+                        int id = getIntent().getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                        NotificationManagerCompat.from(getApplicationContext()).cancel(id);
+                        Log.d("MainActivity","Notification " + id + " cancelled");
+                        dialogInterface.dismiss();
                     }
                 }
         );
@@ -195,10 +204,13 @@ public class MainActivity extends AppCompatActivity {
                 "Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
+                        dialogInterface.dismiss();
+                        Log.d("MainActivity","StopRingDialog dismissed");
                     }
                 }
         );
-        builder.show();
+        AlertDialog alert = builder.create();
+        alert.show();
+        Log.d("MainActivity","Showing StopRingDialog...");
     }
 }

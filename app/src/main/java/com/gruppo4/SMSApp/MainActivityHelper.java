@@ -5,8 +5,6 @@ package com.gruppo4.SMSApp;
  */
 public class MainActivityHelper {
 
-    public static final String START_ACTIVITY_RING = "start_ring";
-
     public enum MainActivityState {
         ONPAUSE,
         ONRESUME,

@@ -23,7 +23,7 @@ import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
 public class MessageReceivedService extends SMSReceivedListenerService {
 
     public final static String STOP_ACTION = "stopAction";
-    public final static String OPEN_ACTION = "openAction";
+    public final static String ALERT_ACTION = "alertAction";
     public final static String NOTIFICATION_ID = "notif_id";
 
     private static Ringtone ringDef;
@@ -37,15 +37,6 @@ public class MessageReceivedService extends SMSReceivedListenerService {
 
         createNotification();
         startAlarm();
-
-        /*if(MainActivityHelper.getState() == MainActivityHelper.MainActivityState.ONSTOP) {
-            // Opens the MainActivity and the AlertDialog to stop the ringtone
-            Intent openIntent = new Intent(this, MainActivity.class);
-            openIntent.setAction(MainActivityHelper.START_ACTIVITY_RING);
-            openIntent.putExtra(NOTIFICATION_ID, notification_id);
-            openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(openIntent);
-        }*/
     }
 
     /**
@@ -61,11 +52,13 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         stopIntent.putExtra(NOTIFICATION_ID, notification_id);
         PendingIntent stopPI = PendingIntent.getBroadcast(this, notification_id, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // OpenAction opens the MainActivity (not in use)
+        // OpenAction opens the MainActivity
+        // FLAG_ACTIVITY_SINGLE_TOP is used for having only one MainActivity running
+        // otherwise the AlertDialog will not show up
         Intent openIntent = new Intent(this, MainActivity.class);
-        openIntent.setAction(OPEN_ACTION);
+        openIntent.setAction(ALERT_ACTION);
         openIntent.putExtra(NOTIFICATION_ID, notification_id);
-        openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent openPI = PendingIntent.getActivity(this, notification_id, openIntent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
@@ -76,7 +69,6 @@ public class MessageReceivedService extends SMSReceivedListenerService {
                 .setContentIntent(openPI)
                 .setAutoCancel(true);
 
-        // notificationId is a unique int for each notification that you must define
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notification_id, builder.build());
         Log.d("MessageReceivedService","Notification created");
@@ -109,7 +101,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         handler.postDelayed(new Runnable() {
             @Override
             public void run(){
-                Log.d("MessageReceivedService","ringdef: " + ringDef);
+                Log.d("MessageReceivedService","Ringtone stopped");
                 if(ringDef.isPlaying())
                     ringDef.stop();
             }
