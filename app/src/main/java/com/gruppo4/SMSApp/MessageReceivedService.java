@@ -1,10 +1,12 @@
 package com.gruppo4.SMSApp;
 
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioAttributes;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.WindowManager;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -39,8 +42,18 @@ public class MessageReceivedService extends SMSReceivedListenerService {
 
     @Override
     public void onMessageReceived(SMSMessage message) {
+
         createNotification();
         startAlarm();
+
+        /*if(MainActivityHelper.getState() == MainActivityHelper.MainActivityState.ONSTOP) {
+            // Opens the MainActivity and the AlertDialog to stop the ringtone
+            Intent openIntent = new Intent(this, MainActivity.class);
+            openIntent.setAction(MainActivityHelper.START_ACTIVITY_RING);
+            openIntent.putExtra(NOTIFICATION_ID, notification_id);
+            openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(openIntent);
+        }*/
     }
 
     /**
@@ -75,6 +88,8 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         notificationManager.notify(notification_id, builder.build());
         Log.d("MessageReceivedService","Notification created");
     }
+
+
 
     /**
      * Creates and starts the ringtone

@@ -1,8 +1,11 @@
 package com.gruppo4.SMSApp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.gruppo4.communication.dataLink.Peer;
 import com.gruppo4.sms.dataLink.SMSHandler;
@@ -39,7 +44,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONCREATE);
+
         setContentView(R.layout.activity_main);
+
         SMSBackgroundHandler.onAppCreate(this);
 
         createNotificationChannel();
@@ -62,10 +71,53 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //not working
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null) {
+            switch(data.getAction()) {
+                case MainActivityHelper.START_ACTIVITY_RING: {
+                    int id = data.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                    createRingAlertDialog(id);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONSTART);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONSTOP);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONPAUSE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONRESUME);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         SMSBackgroundHandler.onAppDestroy(this);
+        MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONDESTROY);
     }
 
     @Override
@@ -98,5 +150,35 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    private void createRingAlertDialog(final int notification_id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your phone is ringing, stop it from here if you want");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton(
+                "Stop", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MessageReceivedService service = new MessageReceivedService();
+                        service.stopAlarm();
+                        if(notification_id != -1) {
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                            notificationManager.cancel(notification_id);
+                        }
+                        dialogInterface.cancel();
+                    }
+                }
+        );
+        builder.setNegativeButton(
+                "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                }
+        );
+        builder.show();
     }
 }
