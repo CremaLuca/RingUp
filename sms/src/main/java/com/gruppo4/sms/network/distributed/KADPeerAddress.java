@@ -8,21 +8,21 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.BitSet;
 
-public class KADAddress extends Peer<byte[]> {
+public class KADPeerAddress extends Peer<byte[]> {
 
     public static final String HASH_ALGORITHM = "SHA-256";
     public static final int BYTE_ADDRESS_LENGTH = 10;
 
     private byte[] address;
 
-    public KADAddress(byte[] address) throws IllegalArgumentException {
+    public KADPeerAddress(byte[] address) throws IllegalArgumentException {
         super(null);//Badly designed Peer, will change to AbstractPeer
         if (address.length != BYTE_ADDRESS_LENGTH)
             throw new IllegalArgumentException("Byte address should be " + BYTE_ADDRESS_LENGTH + " bytes long");
         this.address = address;
     }
 
-    public KADAddress(String phoneAddress){
+    public KADPeerAddress(String phoneAddress) {
         super(null);
         try {
             MessageDigest digestAlgorithm = MessageDigest.getInstance(HASH_ALGORITHM);
@@ -33,7 +33,7 @@ public class KADAddress extends Peer<byte[]> {
         }
     }
 
-    public KADAddress(SMSPeer peer) {
+    public KADPeerAddress(SMSPeer peer) {
         this(peer.getAddress());
     }
 
@@ -52,7 +52,7 @@ public class KADAddress extends Peer<byte[]> {
      * @param otherAddress
      * @return
      */
-    public int firstDifferentBitPosition(KADAddress otherAddress){
+    public int firstDifferentBitPosition(KADPeerAddress otherAddress) {
         byte[] otherByteAddress = otherAddress.getAddress();
         BitSet userBitSet = BitSet.valueOf(address);
         BitSet otherBitSet = BitSet.valueOf(otherByteAddress);

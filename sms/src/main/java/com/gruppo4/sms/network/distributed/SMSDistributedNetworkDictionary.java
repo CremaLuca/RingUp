@@ -4,20 +4,22 @@ import com.gruppo4.communication.network.NetworkDictionary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
-public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<KADAddress, RK, RV> {
+public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<KADPeerAddress, RK, RV> {
 
     /**
      * Maximum users per bucket
      */
     public static final int MAX_USER_BUCKET_LENGTH = 5;
-    private KADAddress userAddress;
-    private ArrayList<KADAddress>[] usersLists;
+    private KADPeerAddress userAddress;
+    private ArrayList<KADPeerAddress>[] usersLists;
+    private HashMap<RK, RV> resourcesDict;
 
-    public SMSDistributedNetworkDictionary(KADAddress userAddress) {
+    public SMSDistributedNetworkDictionary(KADPeerAddress userAddress) {
         this.userAddress = userAddress;
-        usersLists = new ArrayList[KADAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE];
+        usersLists = new ArrayList[KADPeerAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE];
     }
 
     /**
@@ -26,12 +28,12 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param newUser new network user. Must not be the current user.
      */
     @Override
-    public void addUser(KADAddress newUser) {
+    public void addUser(KADPeerAddress newUser) {
         //Calculate the distance (to understand what bucket you have to place him)
         int bucketIndex = userAddress.firstDifferentBitPosition(newUser);
 
         //If it's actually the current user we don't add itself
-        if(bucketIndex >= (KADAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE))
+        if (bucketIndex >= (KADPeerAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE))
             return;
 
         if (usersLists[bucketIndex] == null)
@@ -48,8 +50,8 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param users new network users
      */
     @Override
-    public void addAllUsers(Collection<KADAddress> users) {
-        for (KADAddress user : users) {
+    public void addAllUsers(Collection<KADPeerAddress> users) {
+        for (KADPeerAddress user : users) {
             addUser(user);
         }
     }
@@ -61,8 +63,8 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @return a list of all users.
      */
     @Override
-    public ArrayList<KADAddress> getAllUsers() {
-        ArrayList<KADAddress> returnList = new ArrayList<>();
+    public ArrayList<KADPeerAddress> getAllUsers() {
+        ArrayList<KADPeerAddress> returnList = new ArrayList<>();
 
         for(int i=0;i<usersLists.length;i++){
             if(usersLists[i] != null)
@@ -75,7 +77,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param distance what position is the first different bit, counting from left
      * @return an ArrayList of users in that particular bucket, empty ArrayList if there is none
      */
-    public ArrayList<KADAddress> getUsersByDistance(int distance){
+    public ArrayList<KADPeerAddress> getUsersByDistance(int distance) {
         if(usersLists[distance] != null)
             return new ArrayList<>(usersLists[distance]);
         return new ArrayList<>();
@@ -87,9 +89,9 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param user registered user
      */
     @Override
-    public void removeUser(KADAddress user) {
+    public void removeUser(KADPeerAddress user) {
         int bucketIndex = userAddress.firstDifferentBitPosition(user);
-        if(bucketIndex >= KADAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE)
+        if (bucketIndex >= KADPeerAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE)
             throw new  IllegalArgumentException("Cannot remove itself");
         if(usersLists[bucketIndex] == null)
             throw new IllegalArgumentException("User is not actually present in the list");
@@ -103,8 +105,10 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @param users registered users
      */
     @Override
-    public void removeAllUsers(Collection<KADAddress> users) {
-
+    public void removeAllUsers(Collection<KADPeerAddress> users) {
+        for (KADPeerAddress user : users) {
+            removeUser(user);
+        }
     }
 
     /**
@@ -114,7 +118,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public RV setResource(RK key, RV value) {
-        return null;
+        return resourcesDict.put(key, value);
     }
 
     /**
@@ -123,7 +127,11 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public Map<RK, RV> setAllResources(Map<RK, RV> resources) {
-        return null;
+        Map<RK, RV> editedMap = new HashMap<>();
+        for (Map.Entry entry : resources.entrySet()) {
+            editedMap.put((RK) entry.getKey(), setResource((RK) entry.getKey(), (RV) entry.getValue()));
+        }
+        return editedMap;
     }
 
     /**
@@ -132,7 +140,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public RV removeResource(RK resourceKey) {
-        return null;
+        return resourcesDict.remove(resourceKey);
     }
 
     /**
@@ -141,7 +149,11 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public ArrayList<RV> removeAllResources(Collection<RK> resourcesKeys) {
-        return null;
+        ArrayList<RV> removedResources = new ArrayList<>();
+        for (RK key : resourcesKeys) {
+            removedResources.add(removeResource(key));
+        }
+        return removedResources;
     }
 
     /**
@@ -150,7 +162,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public RV getValue(RK resourceKey) {
-        return null;
+        return resourcesDict.get(resourceKey);
     }
 
     /**
@@ -159,7 +171,11 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public ArrayList<RV> getAllValues(Collection<RK> resourceKeys) {
-        return null;
+        ArrayList<RV> values = new ArrayList<>();
+        for (RK key : resourceKeys) {
+            values.add(getValue(key));
+        }
+        return values;
     }
 
     /**
@@ -167,7 +183,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public ArrayList<RK> getKeys() {
-        return null;
+        return new ArrayList<>(resourcesDict.keySet());
     }
 
     /**
@@ -175,7 +191,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      */
     @Override
     public ArrayList<RV> getValues() {
-        return null;
+        return new ArrayList<>(resourcesDict.values());
     }
 
 

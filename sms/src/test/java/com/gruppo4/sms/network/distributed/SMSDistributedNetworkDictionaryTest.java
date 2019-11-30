@@ -4,16 +4,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-
 public class SMSDistributedNetworkDictionaryTest {
 
     private static String DEFAULT_TELEPHONE_NUMBER = "+393343343332";
-    private static KADAddress DEFAULT_USER_ADDRESS = new KADAddress(DEFAULT_TELEPHONE_NUMBER);
-    private static KADAddress OTHER_USER_ADDRESS = new KADAddress(DEFAULT_TELEPHONE_NUMBER + "3");
+    private static KADPeerAddress DEFAULT_USER_ADDRESS = new KADPeerAddress(DEFAULT_TELEPHONE_NUMBER);
+    private static KADPeerAddress OTHER_USER_ADDRESS = new KADPeerAddress(DEFAULT_TELEPHONE_NUMBER + "3");
     private static String DEFAULT_RESOURCE_KEY_1 = "Resource key number one";
     private static String DEFAULT_RESOURCE_VALUE_1 = "This is the value";
 
