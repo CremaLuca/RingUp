@@ -15,17 +15,16 @@ import java.util.Arrays;
 
 public abstract class SMSAbstractNetworkListener implements SMSReceivedListener {
 
-    /*
+    /**
      * This listener needs an instance of manager in order to let it process incoming requests.
      * JOIN_PROPOSAL requests are handled by the application overriding onJoinProposal().
      * Other requests are handled by the manager, such as adding a user.
      * When we will deal with multiple networks this listener will need a manager for each network.
      *
      */
-
     protected SMSAbstractNetworkManager manager;
 
-    /*
+    /**
      * SMS REQUESTS FORMATS
      * Join proposal:    "JP_%netName"
      * Add user:         "AU_%(requesterIndex)_%(peer)"          we include the whole peer, not only his address
@@ -35,7 +34,6 @@ public abstract class SMSAbstractNetworkListener implements SMSReceivedListener 
      * Don't spread:     "%(1)DS_%(2)"           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
      * %(2) can be peer, address, a <key, value> pair or key
      */
-
     protected static final String[] REQUESTS = {SMSAbstractNetworkManager.ADD_USER, SMSAbstractNetworkManager.REMOVE_USER,
             SMSAbstractNetworkManager.ADD_RESOURCE, SMSAbstractNetworkManager.REMOVE_RESOURCE, SMSAbstractNetworkManager.DO_NOT_SPREAD,
             SMSAbstractNetworkManager.JOIN_AGREED, SMSAbstractNetworkManager.JOIN_PROPOSAL};

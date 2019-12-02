@@ -23,7 +23,8 @@ import java.util.ArrayList;
  */
 
 public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPeer, SerializableObject, SerializableObject> {
-    /*
+
+    /**
      * SMS REQUESTS FORMATS
      * Join proposal:    "JP_%netName"
      * Add user:         "AU_%(requesterIndex)_%(peer)"          we include the whole peer, not only his address
@@ -33,7 +34,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      * Don't spread:     "%(1)DS_%(2)"           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
      * %(2) can be peer, address, a <key, value> pair or key
      */
-
     static final String ADD_USER = "AU";
     static final String REMOVE_USER = "RU";
     static final String ADD_RESOURCE = "AR";
@@ -45,10 +45,10 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
 
     private SMSReplicatedNetworkDictionary dict = new SMSReplicatedNetworkDictionary<>();
 
-    // joinSent keeps track of JOIN_PROPOSAL requests still pending.
+    //joinSent keeps track of JOIN_PROPOSAL requests still pending.
     private ArrayList<SMSPeer> joinSent = new ArrayList<>();
     protected String networkName;
-    // mySelf is the current peer setting up the network
+    //mySelf is the current peer setting up the network
     protected SMSPeer mySelf;
 
     //manager makes use of SMSHandler to send requests
@@ -82,7 +82,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      * Inform every user in the network that the current application is disconnecting from the network
      * Sends a REMOVE_USER request, where user is mySelf
      */
-
     public void disconnect() {
         int myIndex = getMyIndex();
         spread(myIndex, REMOVE_USER + "_" + myIndex + "_" + mySelf.getAddress());
@@ -97,7 +96,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      * @param key   resource key
      * @param value resource value
      */
-
     public void setResource(SerializableObject key, SerializableObject value) {
         dict.setResource(key, value);
         int myIndex = getMyIndex();
@@ -109,7 +107,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param key resource key
      */
-
     public void removeResource(SerializableObject key) {
         dict.removeResource(key);
         int myIndex = getMyIndex();
@@ -131,7 +128,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param text to be sent
      */
-
     private void spread(int requester, String text) {
         ArrayList<SMSPeer> users = dict.getAllUsers();
         int N = users.size();
@@ -159,7 +155,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param message containing the request to be processed
      */
-
     void processRequest(SMSMessage message) {
         String text = message.getData();
         String[] splitText = text.split("_");
@@ -223,7 +218,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param key as string
      */
-
     protected abstract SerializableObject getKeyFromString(String key);
 
     /**
