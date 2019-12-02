@@ -12,7 +12,6 @@ import java.util.Arrays;
  *
  * @author Marco Mariotto
  */
-
 public abstract class SMSAbstractNetworkListener implements SMSReceivedListener {
 
     /**
@@ -20,7 +19,6 @@ public abstract class SMSAbstractNetworkListener implements SMSReceivedListener 
      * JOIN_PROPOSAL requests are handled by the application overriding onJoinProposal().
      * Other requests are handled by the manager, such as adding a user.
      * When we will deal with multiple networks this listener will need a manager for each network.
-     *
      */
     protected SMSAbstractNetworkManager manager;
 
@@ -52,6 +50,11 @@ public abstract class SMSAbstractNetworkListener implements SMSReceivedListener 
         }
     }
 
+    /**
+     * //TODO
+     *
+     * @param message
+     */
     public abstract void onJoinProposal(SMSMessage message);
 }
 

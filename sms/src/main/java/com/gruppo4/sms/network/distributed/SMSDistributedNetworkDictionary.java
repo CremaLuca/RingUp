@@ -7,6 +7,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * //TODO
+ *
+ * @param <RK>
+ * @param <RV>
+ */
 public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<KADPeerAddress, RK, RV> {
 
     /**

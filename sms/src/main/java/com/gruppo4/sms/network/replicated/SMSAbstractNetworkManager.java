@@ -21,7 +21,6 @@ import java.util.ArrayList;
  *
  * @author Marco Mariotto
  */
-
 public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPeer, SerializableObject, SerializableObject> {
 
     /**
@@ -55,10 +54,11 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     private SMSHandler handler;
 
     /**
-     * Set up a new network
+     * Sets up a new network
      *
      * @param handler     we set up a handler for sending requests
      * @param networkName of the network being created
+     * @param mySelf //TODO
      */
     public void setup(SMSHandler handler, String networkName, SMSPeer mySelf) {
         this.handler = handler;
@@ -79,7 +79,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     }
 
     /**
-     * Inform every user in the network that the current application is disconnecting from the network
+     * Informs every user in the network that the current application is disconnecting from the network
      * Sends a REMOVE_USER request, where user is mySelf
      */
     public void disconnect() {
@@ -91,7 +91,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     }
 
     /**
-     * set a key-value resource for the local dictionary and spread this information to every user
+     * Sets a key-value resource for the local dictionary and spread this information to every user
      *
      * @param key   resource key
      * @param value resource value
@@ -103,7 +103,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     }
 
     /**
-     * remove a key-value resource from the local dictionary and spread this information to every user
+     * Removes a key-value resource from the local dictionary and spread this information to every user
      *
      * @param key resource key
      */
@@ -126,6 +126,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      * we clearly see that node 7 should stop after he has reached node 3, since node 4 is the requester. Similarly node 3 should not even attempt to
      * spread this request further. Now every node has been reached.
      *
+     * @param requester //TODO
      * @param text to be sent
      */
     private void spread(int requester, String text) {
@@ -144,6 +145,11 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
         }
     }
 
+    /**
+     * //TODO
+     *
+     * @return
+     */
     private int getMyIndex() {
         return dict.getAllUsers().indexOf(mySelf);
     }
