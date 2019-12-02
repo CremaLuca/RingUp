@@ -8,10 +8,6 @@ import com.gruppo_4.preferences.PreferencesManager;
  * Class used to save and read the password from memory
  *
  * @author Alberto Ursino, Luca Crema
- *
- * <p>
- * Code reviewed by Bortoletti and Barca
- * </p>
  */
 
 public class PasswordManager {
@@ -29,7 +25,6 @@ public class PasswordManager {
     }
 
     /**
-     *
      * @return the password saved in memory
      */
     public String getPassword() {

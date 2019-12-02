@@ -35,16 +35,11 @@ import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
- * @author Alberto Ursino, Alessandra Tonin
- * <p>
- * Code reviewed by Bortoletti and Barca
- * <p>
- * Usefull help: https://www.youtube.com/watch?v=j-3L3CgYXkU
+ * @author Gruppo4
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener, PermissionInterface {
 
     private static final int PERMISSION_CODE = 0;
-    private static final int APPLICATION_CODE = 1;
     static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;

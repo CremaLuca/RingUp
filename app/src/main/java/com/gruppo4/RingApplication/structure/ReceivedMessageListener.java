@@ -14,7 +14,7 @@ import com.eis.smslibrary.listeners.SMSReceivedListener;
 public class ReceivedMessageListener implements SMSReceivedListener {
 
     private RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
-    private Context context = null;
+    private Context context;
 
     /**
      * Constructor which define a context
