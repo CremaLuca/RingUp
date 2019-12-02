@@ -1,7 +1,7 @@
 package com.gruppo4.sms.network.replicated;
 
-import com.gruppo4.communication.dataLink.listeners.ReceivedMessageListener;
-import com.gruppo4.sms.dataLink.SMSMessage;
+import com.eis.smslibrary.SMSMessage;
+import com.eis.smslibrary.listeners.SMSReceivedListener;
 
 import java.util.Arrays;
 
@@ -9,18 +9,19 @@ import java.util.Arrays;
  * This listener receives messages from the broadcast receiver and looks for messages forwarded by
  * the network. It is abstract since an actual implementation requires an instance of SMSNetworkManager,
  * which is abstract (see the class for further explanation).
+ *
  * @author Marco Mariotto
  */
 
-public abstract class SMSAbstractNetworkListener implements ReceivedMessageListener<SMSMessage> {
+public abstract class SMSAbstractNetworkListener implements SMSReceivedListener {
 
     /*
-    * This listener needs an instance of manager in order to let it process incoming requests.
-    * JOIN_PROPOSAL requests are handled by the application overriding onJoinProposal().
-    * Other requests are handled by the manager, such as adding a user.
-    * When we will deal with multiple networks this listener will need a manager for each network.
-    *
-    */
+     * This listener needs an instance of manager in order to let it process incoming requests.
+     * JOIN_PROPOSAL requests are handled by the application overriding onJoinProposal().
+     * Other requests are handled by the manager, such as adding a user.
+     * When we will deal with multiple networks this listener will need a manager for each network.
+     *
+     */
 
     protected SMSAbstractNetworkManager manager;
 
@@ -42,17 +43,17 @@ public abstract class SMSAbstractNetworkListener implements ReceivedMessageListe
     @Override
     public void onMessageReceived(SMSMessage message) {
         String request = message.getData().split(SMSAbstractNetworkManager.SPLIT_CHAR)[0];
-        if(!Arrays.asList(REQUESTS).contains(request)){
+        if (!Arrays.asList(REQUESTS).contains(request)) {
             throw new IllegalArgumentException("Unknown request received");
-        }
-        else if(request.equals(SMSAbstractNetworkManager.JOIN_PROPOSAL))
+        } else if (request.equals(SMSAbstractNetworkManager.JOIN_PROPOSAL))
             onJoinProposal(message);
-        else{
-            if(manager == null)
+        else {
+            if (manager == null)
                 throw new IllegalStateException("Message not expected: a manager has not been assigned for this network message");
             manager.processRequest(message);
         }
     }
+
     public abstract void onJoinProposal(SMSMessage message);
 }
 
