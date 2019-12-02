@@ -1,6 +1,6 @@
 package com.gruppo4.RingApplication.structure;
 
-import com.gruppo4.sms.dataLink.SMSPeer;
+import com.eis.smslibrary.SMSPeer;
 
 /**
  * Class that encapsulates the peer and the password of a ring command

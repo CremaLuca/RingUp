@@ -2,6 +2,7 @@ package com.gruppo4.RingApplication;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,6 @@ import com.gruppo4.RingApplication.structure.PasswordManager;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
-import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo_4.preferences.PreferencesManager;
 
 import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
@@ -126,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
 
     @Override
     public void checkPermission() {
-        if (!SMSHandler.checkReceivePermission(getApplicationContext()))
+        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
     }
 

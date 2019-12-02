@@ -18,6 +18,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.eis.smslibrary.SMSHandler;
+import com.eis.smslibrary.SMSPeer;
+import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
+import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.gruppo4.RingApplication.structure.AppManager;
 import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
 import com.gruppo4.RingApplication.structure.PasswordManager;
@@ -28,10 +32,6 @@ import com.gruppo4.RingApplication.structure.RingtoneHandler;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
-import com.gruppo4.sms.dataLink.SMSHandler;
-import com.gruppo4.sms.dataLink.SMSPeer;
-import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
-import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
@@ -67,10 +67,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         Context context = getApplicationContext();
 
-        /**
-         * Getting instance of the classes
-         */
-        SMSHandler smsHandler = SMSHandler.getInstance(context);
+        SMSHandler smsHandler = SMSHandler.getInstance();
         RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
 
         passwordManager = new PasswordManager(context);
@@ -88,9 +85,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
          * 2nd) The user open the app for the 1st time -> set a not empty password -> DON'T grant permissions -> Re-enter the application -> Has the possibility to grant permits again ↺
          * Both satisfied by the following if:
          */
-        //If there's a password stored and the permissions are granted -> setup the SMSHandler
-        if (passwordManager.isPassSaved() && SMSHandler.checkReceivePermission(context))
-            smsHandler.setup(APPLICATION_CODE);
+        //If there's a password stored and the receive permissions are granted -> setup the SMSHandler
+        if (passwordManager.isPassSaved() && (context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
+            smsHandler.setup(context);
 
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
         if (!passwordManager.isPassSaved()) {
@@ -99,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             checkPermission();
         }
 
-        smsHandler.setReceivedMessageListener(ReceivedMessageListener.class);
+        smsHandler.setReceivedListener(new ReceivedMessageListener(context));
 
         ringButton.setOnClickListener(v -> sendRingCommand());
 
@@ -189,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            SMSHandler.getInstance(getApplicationContext()).setup(APPLICATION_CODE);
+            SMSHandler.getInstance().setup(getApplicationContext());
         } else {
             finish();
             System.exit(0);
@@ -205,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     @Override
     public void checkPermission() {
-        if (!SMSHandler.checkReceivePermission(getApplicationContext()))
+        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
     }
 

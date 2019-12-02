@@ -2,7 +2,7 @@ package com.gruppo4.RingApplication.structure;
 
 import android.content.Context;
 
-import com.gruppo4.sms.dataLink.SMSMessage;
+import com.eis.smslibrary.SMSMessage;
 
 /**
  * Class used to parse RingCommand to SMSMessage and back
@@ -57,6 +57,6 @@ public class RingCommandHandler {
      * @return a SMSMessage object
      */
     public SMSMessage parseCommand(Context context, RingCommand ringCommand) {
-        return new SMSMessage(context, ringCommand.getPeer().toString(), ringCommand.getPassword());
+        return new SMSMessage(ringCommand.getPeer(), ringCommand.getPassword());
     }
 }

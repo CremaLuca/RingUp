@@ -7,15 +7,12 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.eis.smslibrary.SMSHandler;
+import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
+import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
+import com.eis.smslibrary.listeners.SMSSentListener;
 import com.gruppo4.RingApplication.MainActivity;
-import com.gruppo4.sms.dataLink.SMSHandler;
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
-import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
-import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
-
-import static java.lang.Integer.parseInt;
 
 /**
  * @author Alberto Ursino, Luca Crema, Alessandra Tonin, Marco Mariotto
@@ -79,7 +76,9 @@ public class AppManager {
      * @throws InvalidSMSMessageException
      */
     public void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        SMSHandler.getInstance(context).sendMessage(RingCommandHandler.getInstance().parseCommand(context, ringCommand), listener);
+        SMSHandler smsHandler = SMSHandler.getInstance();
+        smsHandler.setup(context);
+        smsHandler.sendMessage(RingCommandHandler.getInstance().parseCommand(context, ringCommand), listener);
     }
 
     /**
