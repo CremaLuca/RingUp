@@ -7,6 +7,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * //TODO
+ *
+ * @param <RK>
+ * @param <RV>
+ */
 public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<KADPeerAddress, RK, RV> {
 
     /**
@@ -66,8 +72,8 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
     public ArrayList<KADPeerAddress> getAllUsers() {
         ArrayList<KADPeerAddress> returnList = new ArrayList<>();
 
-        for(int i=0;i<usersLists.length;i++){
-            if(usersLists[i] != null)
+        for (int i = 0; i < usersLists.length; i++) {
+            if (usersLists[i] != null)
                 returnList.addAll(usersLists[i]);
         }
         return returnList;
@@ -78,7 +84,7 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
      * @return an ArrayList of users in that particular bucket, empty ArrayList if there is none
      */
     public ArrayList<KADPeerAddress> getUsersByDistance(int distance) {
-        if(usersLists[distance] != null)
+        if (usersLists[distance] != null)
             return new ArrayList<>(usersLists[distance]);
         return new ArrayList<>();
     }
@@ -92,10 +98,10 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
     public void removeUser(KADPeerAddress user) {
         int bucketIndex = userAddress.firstDifferentBitPosition(user);
         if (bucketIndex >= KADPeerAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE)
-            throw new  IllegalArgumentException("Cannot remove itself");
-        if(usersLists[bucketIndex] == null)
+            throw new IllegalArgumentException("Cannot remove itself");
+        if (usersLists[bucketIndex] == null)
             throw new IllegalArgumentException("User is not actually present in the list");
-        if(!usersLists[bucketIndex].remove(user))
+        if (!usersLists[bucketIndex].remove(user))
             throw new IllegalArgumentException("User is not actually present in the user list");
     }
 

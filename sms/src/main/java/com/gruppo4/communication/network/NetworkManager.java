@@ -1,6 +1,6 @@
 package com.gruppo4.communication.network;
 
-import com.gruppo4.communication.dataLink.Peer;
+import com.eis.communication.Peer;
 
 /**
  * @param <U>  Peer for users in the network

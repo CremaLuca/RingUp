@@ -1,10 +1,10 @@
 package com.gruppo4.sms.network.replicated;
 
+import com.eis.smslibrary.SMSHandler;
+import com.eis.smslibrary.SMSMessage;
+import com.eis.smslibrary.SMSPeer;
 import com.gruppo4.communication.network.NetworkManager;
 import com.gruppo4.communication.network.SerializableObject;
-import com.gruppo4.sms.dataLink.SMSHandler;
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSPeer;
 
 import java.util.ArrayList;
 
@@ -21,10 +21,9 @@ import java.util.ArrayList;
  *
  * @author Marco Mariotto
  */
+public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPeer, SerializableObject, SerializableObject> {
 
-public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPeer, SerializableObject, SerializableObject>
-{
-    /*
+    /**
      * SMS REQUESTS FORMATS
      * Join proposal:    "JP_%netName"
      * Add user:         "AU_%(requesterIndex)_%(peer)"          we include the whole peer, not only his address
@@ -34,7 +33,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      * Don't spread:     "%(1)DS_%(2)"           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
      * %(2) can be peer, address, a <key, value> pair or key
      */
-
     static final String ADD_USER = "AU";
     static final String REMOVE_USER = "RU";
     static final String ADD_RESOURCE = "AR";
@@ -46,22 +44,23 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
 
     private SMSReplicatedNetworkDictionary dict = new SMSReplicatedNetworkDictionary<>();
 
-    // joinSent keeps track of JOIN_PROPOSAL requests still pending.
+    //joinSent keeps track of JOIN_PROPOSAL requests still pending.
     private ArrayList<SMSPeer> joinSent = new ArrayList<>();
-    protected  String networkName;
-    // mySelf is the current peer setting up the network
-    protected  SMSPeer mySelf;
+    protected String networkName;
+    //mySelf is the current peer setting up the network
+    protected SMSPeer mySelf;
 
     //manager makes use of SMSHandler to send requests
     private SMSHandler handler;
 
     /**
-     * Set up a new network
+     * Sets up a new network
      *
-     * @param handler we set up a handler for sending requests
+     * @param handler     we set up a handler for sending requests
      * @param networkName of the network being created
+     * @param mySelf //TODO
      */
-    public void setup(SMSHandler handler, String networkName, SMSPeer mySelf){
+    public void setup(SMSHandler handler, String networkName, SMSPeer mySelf) {
         this.handler = handler;
         this.networkName = networkName;
         this.mySelf = mySelf;
@@ -73,18 +72,17 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param peer who is asked to join the network
      */
-    public void invite(SMSPeer peer){
-        SMSMessage invMsg = new SMSMessage(handler.getApplicationCode(), peer, JOIN_PROPOSAL + "_" + networkName);
+    public void invite(SMSPeer peer) {
+        SMSMessage invMsg = new SMSMessage(peer, JOIN_PROPOSAL + "_" + networkName);
         joinSent.add(peer);
         handler.sendMessage(invMsg);
     }
 
     /**
-     * Inform every user in the network that the current application is disconnecting from the network
+     * Informs every user in the network that the current application is disconnecting from the network
      * Sends a REMOVE_USER request, where user is mySelf
      */
-
-    public void disconnect(){
+    public void disconnect() {
         int myIndex = getMyIndex();
         spread(myIndex, REMOVE_USER + "_" + myIndex + "_" + mySelf.getAddress());
         dict = null;
@@ -93,25 +91,23 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     }
 
     /**
-     * set a key-value resource for the local dictionary and spread this information to every user
+     * Sets a key-value resource for the local dictionary and spread this information to every user
      *
-     * @param key resource key
+     * @param key   resource key
      * @param value resource value
      */
-
-    public void setResource(SerializableObject key, SerializableObject value){
+    public void setResource(SerializableObject key, SerializableObject value) {
         dict.setResource(key, value);
         int myIndex = getMyIndex();
         spread(myIndex, ADD_RESOURCE + "_" + myIndex + "_" + key.toString() + "_" + value.toString());
     }
 
     /**
-     * remove a key-value resource from the local dictionary and spread this information to every user
+     * Removes a key-value resource from the local dictionary and spread this information to every user
      *
      * @param key resource key
      */
-
-    public void removeResource(SerializableObject key){
+    public void removeResource(SerializableObject key) {
         dict.removeResource(key);
         int myIndex = getMyIndex();
         spread(myIndex, REMOVE_RESOURCE + "_" + myIndex + "_" + key.toString());
@@ -120,36 +116,41 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     /**
      * Spreads this string according to your current index n in the dictionary. For how nodes are chosen, read the method's comments.
      * For example, let N = 8. Suppose node 4 sends a REMOVE_RESOURCE request. We have the following tree, assuming formulas below:
-     *
+     * <p>
      *              4
      *          5       6
      *       7    0   1   2
      *     3  4
      *   4
-     *
+     * <p>
      * we clearly see that node 7 should stop after he has reached node 3, since node 4 is the requester. Similarly node 3 should not even attempt to
      * spread this request further. Now every node has been reached.
      *
+     * @param requester //TODO
      * @param text to be sent
      */
-
-    private void spread(int requester, String text){
+    private void spread(int requester, String text) {
         ArrayList<SMSPeer> users = dict.getAllUsers();
         int N = users.size();
         int myIndex = getMyIndex();
         /*
-        * node n sends to req + 2(n-req) + 1 and req + 2(n-req) + 2, that is:
-        * node 2n - req + 1 (+N) and 2n - req + 2 (+N) (mod N). If one of these nodes is the requester, we don't spread further.
-        */
+         * node n sends to req + 2(n-req) + 1 and req + 2(n-req) + 2, that is:
+         * node 2n - req + 1 (+N) and 2n - req + 2 (+N) (mod N). If one of these nodes is the requester, we don't spread further.
+         */
 
-        int first = (2*myIndex - requester + N + 1) % N;
-        for(int i = 0; i < 2 && i + first != requester; i++){
-            SMSMessage msg = new SMSMessage(handler.getApplicationCode(), users.get(first + i), text);
+        int first = (2 * myIndex - requester + N + 1) % N;
+        for (int i = 0; i < 2 && i + first != requester; i++) {
+            SMSMessage msg = new SMSMessage(users.get(first + i), text);
             handler.sendMessage(msg);
         }
     }
 
-    private int getMyIndex(){
+    /**
+     * //TODO
+     *
+     * @return
+     */
+    private int getMyIndex() {
         return dict.getAllUsers().indexOf(mySelf);
     }
 
@@ -160,69 +161,60 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param message containing the request to be processed
      */
-
-    void processRequest(SMSMessage message){
+    void processRequest(SMSMessage message) {
         String text = message.getData();
         String[] splitText = text.split("_");
         String request = splitText[0];
         SMSPeer sourcePeer = message.getPeer();
         int myIndex = getMyIndex();
 
-        if(request.equals(JOIN_AGREED)){
-            if(joinSent.contains(sourcePeer)){
+        if (request.equals(JOIN_AGREED)) {
+            if (joinSent.contains(sourcePeer)) {
                 spread(myIndex, ADD_USER + "_" + myIndex + "_" + sourcePeer.toString());
                 dict.addUser(sourcePeer);
                 joinSent.remove(sourcePeer);
                 //send the whole dictionary to sourcePeer
-                for(Object obj: dict.getKeys()){
+                for (Object obj : dict.getKeys()) {
                     SerializableObject key = (SerializableObject) obj;
-                    SMSMessage record = new SMSMessage(handler.getApplicationCode(), sourcePeer,
+                    SMSMessage record = new SMSMessage(sourcePeer,
                             ADD_RESOURCE + DO_NOT_SPREAD +
                                     "_" + key.toString() + "_" + dict.getValue(key).toString());
                     handler.sendMessage(record);
                 }
-                for(Object obj: dict.getAllUsers()){
+                for (Object obj : dict.getAllUsers()) {
                     SMSPeer peer = (SMSPeer) obj;
-                    SMSMessage record = new SMSMessage(handler.getApplicationCode(), sourcePeer,
+                    SMSMessage record = new SMSMessage(sourcePeer,
                             ADD_USER + DO_NOT_SPREAD + "_" + peer.toString());
                     handler.sendMessage(record);
                 }
-            }
-            else{
+            } else {
                 //ignore non-matching joins
             }
-        }
-        else if(request.equals(ADD_USER)){
+        } else if (request.equals(ADD_USER)) {
             int requester = Integer.parseInt(splitText[1]);
             SMSPeer p = new SMSPeer(splitText[2]);
             spread(requester, ADD_USER + "_" + requester + "_" + p.toString());
             dict.addUser(p);
-        }
-        else if(request.equals(ADD_USER + DO_NOT_SPREAD)){
+        } else if (request.equals(ADD_USER + DO_NOT_SPREAD)) {
             SMSPeer p = new SMSPeer(splitText[1]);
             dict.addUser(p);
-        }
-        else if(request.equals(REMOVE_USER)){
+        } else if (request.equals(REMOVE_USER)) {
             int requester = Integer.parseInt(splitText[1]);
             SMSPeer p = new SMSPeer(splitText[2]); //we build a peer with no info, but his address is enough to find it in the list
             spread(requester, REMOVE_USER + "_" + requester + "_" + p.getAddress());
             dict.removeUser(p);
-        }
-        else if(request.equals(ADD_RESOURCE)){
+        } else if (request.equals(ADD_RESOURCE)) {
             int requester = Integer.parseInt(splitText[1]);
             spread(requester, ADD_RESOURCE + "_" + requester + "_" + splitText[2] + "_" + splitText[3]);
             dict.setResource(getKeyFromString(splitText[2]), getValueFromString(splitText[3]));
-        }
-        else if(text.equals(ADD_RESOURCE + DO_NOT_SPREAD)){
+        } else if (text.equals(ADD_RESOURCE + DO_NOT_SPREAD)) {
             dict.setResource(getKeyFromString(splitText[1]), getValueFromString(splitText[2]));
-        }
-        else if(text.equals(REMOVE_RESOURCE)){
+        } else if (text.equals(REMOVE_RESOURCE)) {
             String key = splitText[2];
             int requester = Integer.parseInt(splitText[1]);
             spread(requester, REMOVE_RESOURCE + "_" + requester + "_" + key);
             dict.removeResource(getKeyFromString(key));
-        }
-        else{
+        } else {
             throw new IllegalStateException("Should not have received this command");
         }
     }
@@ -232,7 +224,6 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param key as string
      */
-
     protected abstract SerializableObject getKeyFromString(String key);
 
     /**

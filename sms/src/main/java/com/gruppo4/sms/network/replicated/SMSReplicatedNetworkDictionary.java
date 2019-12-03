@@ -1,8 +1,8 @@
 package com.gruppo4.sms.network.replicated;
 
 
+import com.eis.smslibrary.SMSPeer;
 import com.gruppo4.communication.network.NetworkDictionary;
-import com.gruppo4.sms.dataLink.SMSPeer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,7 +120,7 @@ public class SMSReplicatedNetworkDictionary<RK, RV> implements NetworkDictionary
     }
 
     /**
-     * Remove the resource from the network
+     * Removes the resource from the network
      *
      * @param resourceKey identification for the resource
      * @return the removed resource value
@@ -146,7 +146,7 @@ public class SMSReplicatedNetworkDictionary<RK, RV> implements NetworkDictionary
     }
 
     /**
-     * Get the value given a key
+     * Gets the value given a key
      *
      * @param resourceKey identification for the resource
      * @return the requested value, null if not present
@@ -157,7 +157,7 @@ public class SMSReplicatedNetworkDictionary<RK, RV> implements NetworkDictionary
     }
 
     /**
-     * Get the values given a collection of keys
+     * Gets the values given a collection of keys
      *
      * @param resourceKeys identifications for the resources
      * @return requested resources if present
@@ -172,7 +172,7 @@ public class SMSReplicatedNetworkDictionary<RK, RV> implements NetworkDictionary
     }
 
     /**
-     * Retrieve all keys
+     * Retrieves all keys
      *
      * @return {@link ArrayList} of keys in the dictionary
      */
@@ -182,7 +182,7 @@ public class SMSReplicatedNetworkDictionary<RK, RV> implements NetworkDictionary
     }
 
     /**
-     * Retrieve all values
+     * Retrieves all values
      *
      * @return {@link ArrayList} of values in the dictionary
      */

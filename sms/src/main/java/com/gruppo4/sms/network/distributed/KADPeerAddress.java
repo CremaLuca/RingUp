@@ -1,29 +1,41 @@
 package com.gruppo4.sms.network.distributed;
 
-import com.gruppo4.communication.dataLink.Peer;
-import com.gruppo4.sms.dataLink.SMSPeer;
+import com.eis.communication.Peer;
+import com.eis.smslibrary.SMSPeer;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.BitSet;
 
-public class KADPeerAddress extends Peer<byte[]> {
+/**
+ * //TODO
+ */
+public class KADPeerAddress implements Peer<byte[]> {
 
     public static final String HASH_ALGORITHM = "SHA-256";
     public static final int BYTE_ADDRESS_LENGTH = 10;
 
     private byte[] address;
 
+    /**
+     * //TODO
+     *
+     * @param address
+     * @throws IllegalArgumentException
+     */
     public KADPeerAddress(byte[] address) throws IllegalArgumentException {
-        super(null);//Badly designed Peer, will change to AbstractPeer
         if (address.length != BYTE_ADDRESS_LENGTH)
             throw new IllegalArgumentException("Byte address should be " + BYTE_ADDRESS_LENGTH + " bytes long");
         this.address = address;
     }
 
+    /**
+     * //TODO
+     *
+     * @param phoneAddress
+     */
     public KADPeerAddress(String phoneAddress) {
-        super(null);
         try {
             MessageDigest digestAlgorithm = MessageDigest.getInstance(HASH_ALGORITHM);
             address = new byte[BYTE_ADDRESS_LENGTH];
@@ -33,6 +45,11 @@ public class KADPeerAddress extends Peer<byte[]> {
         }
     }
 
+    /**
+     * //TODO
+     *
+     * @param peer
+     */
     public KADPeerAddress(SMSPeer peer) {
         this(peer.getAddress());
     }
@@ -49,6 +66,7 @@ public class KADPeerAddress extends Peer<byte[]> {
 
     /**
      * Calculates the first bit that differs starting from left
+     *
      * @param otherAddress
      * @return
      */
@@ -59,13 +77,13 @@ public class KADPeerAddress extends Peer<byte[]> {
 
         int lastValueIndex = (BYTE_ADDRESS_LENGTH * Byte.SIZE) - 1;
 
-        for(int i=0; i< otherByteAddress.length;i++){
-            for(int bitCounter=0;bitCounter < Byte.SIZE; bitCounter++){
+        for (int i = 0; i < otherByteAddress.length; i++) {
+            for (int bitCounter = 0; bitCounter < Byte.SIZE; bitCounter++) {
                 //You need to reverse the value of the pointer
                 int pointer = lastValueIndex - (i + bitCounter);
                 //System.out.println("First bit is: " + userBitSet.get(pointer) + " second bit is: " + otherBitSet.get(pointer)); //Testing purposes
-                if(userBitSet.get(pointer) != otherBitSet.get(pointer)){
-                    return  i + bitCounter;
+                if (userBitSet.get(pointer) != otherBitSet.get(pointer)) {
+                    return i + bitCounter;
                 }
             }
         }
