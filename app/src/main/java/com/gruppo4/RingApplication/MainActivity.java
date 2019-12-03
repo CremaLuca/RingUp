@@ -19,9 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.eis.smslibrary.SMSHandler;
+import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
+import com.eis.smslibrary.listeners.SMSSentListener;
 import com.gruppo4.RingApplication.structure.AppManager;
 import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
 import com.gruppo4.RingApplication.structure.PasswordManager;
@@ -32,6 +34,7 @@ import com.gruppo4.RingApplication.structure.RingtoneHandler;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
+import com.gruppo4.RingApplication.structure.exceptions.WrongPasswordException;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
@@ -49,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private EditText phoneNumberField;
     private EditText passwordField;
     private Button ringButton;
-    private static PasswordManager passwordManager = null;
+    private PasswordManager passwordManager = null;
+    private ReceivedMessageListener receivedMessageListener = null;
     public static final String SETTINGS_NAME = "Settings";
     public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
 
@@ -62,14 +66,22 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         Context context = getApplicationContext();
 
+        /**
+         * Instancing of singleton classes
+         */
         SMSHandler smsHandler = SMSHandler.getInstance();
         RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
 
+        /**
+         * Instancing of non-singleton classes
+         */
         passwordManager = new PasswordManager(context);
+        receivedMessageListener = new ReceivedMessageListener(context);
 
         setupTimerValue();
 
         ringtone = ringtoneHandler.getDefaultRingtone(getApplicationContext());
+
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
         ringButton = findViewById(R.id.ring_button);
@@ -91,9 +103,10 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             checkPermission();
         }
 
-        smsHandler.setReceivedListener(new ReceivedMessageListener(context));
+        smsHandler.setReceivedListener(receivedMessageListener);
 
         ringButton.setOnClickListener(v -> sendRingCommand());
+
 
     }
 
@@ -124,13 +137,21 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * Method used to send the ring command when the user presses on the "RING" button
      */
     public void sendRingCommand() {
-        if (passwordField.getText().toString().equals(""))
+        String phoneNumber = phoneNumberField.getText().toString();
+        String password = passwordField.getText().toString();
+
+        if (password.equals(""))
             Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
         else {
-            final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumberField.getText().toString()), createPassword(passwordField.getText().toString()));
+            final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), createPassword(password));
             try {
-                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (message, sentState) ->
-                        Toast.makeText(MainActivity.this, String.format("Command sent to %s", ringCommand.getPeer()), Toast.LENGTH_SHORT).show());
+                SMSSentListener smsSentListener = new SMSSentListener() {
+                    @Override
+                    public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
+                        Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
+                    }
+                };
+                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, smsSentListener);
             } catch (InvalidTelephoneNumberException e) {
                 Toast.makeText(getApplicationContext(), "Invalid phone number", Toast.LENGTH_SHORT).show();
             } catch (InvalidSMSMessageException e) {

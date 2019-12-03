@@ -2,32 +2,33 @@ package com.gruppo4.RingApplication.structure;
 
 import android.content.Context;
 import android.media.Ringtone;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.eis.smslibrary.SMSHandler;
 import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
-import com.gruppo4.RingApplication.MainActivity;
-import com.gruppo_4.preferences.PreferencesManager;
+import com.gruppo4.RingApplication.structure.exceptions.WrongPasswordException;
 
 /**
+ * This is a singleton class used to manage a received RingCommand or to send one
+ *
  * @author Alberto Ursino, Luca Crema, Alessandra Tonin, Marco Mariotto
  */
 public class AppManager {
 
-    private final static String WRONG_PASSWORD = "Wrong Password";
+    private static final int TIMEOUT_TIME = 30 * 1000; //30 seconds
 
     /**
      * Instance of the class that is instantiated in getInstance method
      */
     private static AppManager instance = null;
-
-    //RingtoneHandler is a singleton
-    private static RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
 
     /**
      * Private constructor
@@ -45,50 +46,54 @@ public class AppManager {
     }
 
     /**
-     * If the password of the message received is valid then play ringtone for fixed amount of time
+     * If the password of the RingCommand received is valid then play ringtone for fixed amount of time
      *
      * @param context     of the application
-     * @param ringCommand a ring command not null
+     * @param ringCommand received
+     * @param ringtone    to be played
+     * @throws WrongPasswordException Exception thrown when the password received is not valid
      */
-    public void onRingCommandReceived(Context context, RingCommand ringCommand, final Ringtone ringtone) {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void onRingCommandReceived(Context context, @NonNull RingCommand ringCommand, final Ringtone ringtone) throws WrongPasswordException {
+        final RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
+
         if (checkPassword(context, ringCommand)) {
             ringtoneHandler.playRingtone(ringtone);
-            Log.d("Timer value saved: ", "" + PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
-            //Timer: the ringtone is playing for TIME seconds.
+            //Timer: the ringtone is playing for TIMEOUT_TIME seconds.
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     ringtoneHandler.stopRingtone(ringtone);
                 }
-            }, PreferencesManager.getInt(context, MainActivity.TIMEOUT_TIME_PREFERENCES_KEY));
+            }, TIMEOUT_TIME);
         } else {
-            Toast.makeText(context, WRONG_PASSWORD, Toast.LENGTH_SHORT).show();
+            throw new WrongPasswordException();
         }
     }
 
     /**
-     * Calls the class SMS Handler and passed to it an SMS Message object, built with the ring command
+     * Method used to send a RingCommand via SMS using the library class {@link SMSHandler}
      *
-     * @param context     of the application
-     * @param ringCommand to send
-     * @param listener
-     * @throws InvalidTelephoneNumberException
-     * @throws InvalidSMSMessageException
+     * @param context         of the application
+     * @param ringCommand     to send
+     * @param smsSentListener Listener used to inform that the message has been sent
+     * @throws InvalidSMSMessageException      could be launched by the RingCommandHandler method "parseCommand"
+     * @throws InvalidTelephoneNumberException could be launched by the RingCommandHandler method "parseCommand"
      */
-    public void sendCommand(Context context, RingCommand ringCommand, SMSSentListener listener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public void sendCommand(Context context, @NonNull RingCommand ringCommand, SMSSentListener smsSentListener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         SMSHandler smsHandler = SMSHandler.getInstance();
         smsHandler.setup(context);
-        smsHandler.sendMessage(RingCommandHandler.getInstance().parseCommand(ringCommand), listener);
+        smsHandler.sendMessage(RingCommandHandler.getInstance().parseCommand(ringCommand), smsSentListener);
     }
 
     /**
-     * Verify that the password in the RingCommand is the same as the one in memory
+     * Checks if the RingCommand password and the one saved in memory corresponds
      *
      * @param context     a valid context
      * @param ringCommand a valid RingCommand object
-     * @return a boolean: true = passwords are corresponding, false = passwords are NOT corresponding
+     * @return a boolean: true if passwords corresponds, false otherwise
      */
-    public boolean checkPassword(Context context, RingCommand ringCommand) {
+    private boolean checkPassword(Context context, @NonNull RingCommand ringCommand) {
         return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
     }
 
