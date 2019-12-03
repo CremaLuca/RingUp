@@ -29,8 +29,8 @@ public abstract class SMSAbstractNetworkListener implements SMSReceivedListener 
      * Remove user:      "RU_%(requesterIndex)_%(address)"       address is the phone number of the user being removed
      * Add resource:     "AR_%(requesterIndex)_%(key)_%(value)"  we include the whole resource, key and value
      * Remove resource:  "RR_%(requesterIndex)_%(key)"           we only need the key to identify a resource
-     * Don't spread:     "%(1)DS_%(2)"           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
-     * %(2) can be peer, address, a <key, value> pair or key
+     * Don't spread:     "%(1)DS_%(2)"                           inform the receiver to not spread this info, %(1) is one of {AU, RU, AR, RR},
+     *                                                           %(2) can be peer, address, a <key, value> pair or key
      */
     protected static final String[] REQUESTS = {SMSAbstractNetworkManager.ADD_USER, SMSAbstractNetworkManager.REMOVE_USER,
             SMSAbstractNetworkManager.ADD_RESOURCE, SMSAbstractNetworkManager.REMOVE_RESOURCE, SMSAbstractNetworkManager.DO_NOT_SPREAD,

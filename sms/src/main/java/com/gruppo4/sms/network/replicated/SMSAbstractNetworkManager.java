@@ -148,7 +148,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     /**
      * Gets the index of the current peer
      *
-     * @return the requested index, as explained above
+     * @return the requested index as explained above, or -1 if not found
      */
     private int getMyIndex() {
         return dict.getAllUsers().indexOf(mySelf);
