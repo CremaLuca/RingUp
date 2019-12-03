@@ -5,18 +5,21 @@ import android.content.Context;
 import com.gruppo_4.preferences.PreferencesManager;
 
 /**
- * Class used to save and read the password from memory
+ * Class used to control the saving of a password
  *
- * @author Alberto Ursino, Luca Crema
+ * @author Alberto Ursino
  */
-
 public class PasswordManager {
 
-    private static final String PREFERENCES_PASSWORD_KEY = "group4_secret_password";
+    /**
+     * Through this key we can access the memory location where we store the password
+     */
+    private static final String PREFERENCES_PASSWORD_KEY = "secret_password";
+
     private Context context;
 
     /**
-     * Constructor captures the context which will be used in this class' methods
+     * Constructor captures the context that will then be used in the methods of this class
      *
      * @param context of the application
      */
@@ -53,4 +56,6 @@ public class PasswordManager {
     public void deletePassword() {
         PreferencesManager.removeValue(context, PREFERENCES_PASSWORD_KEY);
     }
+
+
 }

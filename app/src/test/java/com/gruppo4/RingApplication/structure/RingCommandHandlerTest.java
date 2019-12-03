@@ -1,7 +1,7 @@
 package com.gruppo4.RingApplication.structure;
 
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSPeer;
+import com.eis.smslibrary.SMSMessage;
+import com.eis.smslibrary.SMSPeer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,10 +18,9 @@ public class RingCommandHandlerTest {
     private static final String VALID_PASSWORD = "pass";
     private static final String VALID_CONTENT = SPLIT_CHARACTER + VALID_PASSWORD;
     private static final String WRONG_CONTENT = VALID_PASSWORD;
-    private static final int VALID_APP_ID = 1;
     private static SMSPeer SMS_PEER = new SMSPeer(VALID_NUMBER);
     private RingCommandHandler ringCommandHandler = null;
-    private SMSMessage smsMessage = new SMSMessage(1,   VALID_NUMBER, VALID_CONTENT);
+    private SMSMessage smsMessage = new SMSMessage(new SMSPeer(VALID_NUMBER), VALID_CONTENT);
 
     @Before
     public void init() {
@@ -35,7 +34,7 @@ public class RingCommandHandlerTest {
 
     @Test
     public void parseContent_content_isNotValid() {
-        Assert.assertEquals(null, ringCommandHandler.parseMessage(new SMSMessage(VALID_APP_ID,VALID_NUMBER, WRONG_CONTENT)));
+        Assert.assertEquals(null, ringCommandHandler.parseMessage(new SMSMessage(new SMSPeer(VALID_NUMBER), WRONG_CONTENT)));
     }
 
     @Test

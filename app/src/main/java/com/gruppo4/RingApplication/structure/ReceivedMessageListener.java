@@ -19,7 +19,7 @@ public class ReceivedMessageListener implements SMSReceivedListener {
     /**
      * Constructor which define a context
      *
-     * @param context of the application
+     * @param context The current application context
      */
     public ReceivedMessageListener(Context context) {
         this.context = context;
@@ -28,7 +28,7 @@ public class ReceivedMessageListener implements SMSReceivedListener {
     /**
      * Creation of the command upon receipt of the message
      *
-     * @param smsMessage received
+     * @param smsMessage A valid SMSMessage object received
      */
     @Override
     public void onMessageReceived(SMSMessage smsMessage) {
@@ -37,7 +37,7 @@ public class ReceivedMessageListener implements SMSReceivedListener {
         if (ringCommand != null)
             AppManager.getInstance().onRingCommandReceived(context, ringCommand, ringtoneHandler.getDefaultRingtone(context));
         else
-            Log.d("Fail: ", "Message received is not a valid command for play the ringtone");
+            Log.d("Invalid RingCommand", "the message received is not a valid RingCommand");
     }
 
 }

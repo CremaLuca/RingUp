@@ -6,10 +6,7 @@ import com.eis.smslibrary.SMSPeer;
  * Class that encapsulates the peer and the password of a ring command
  *
  * @author Alberto Ursino, Luca Crema
- * <p>
- * Code reviewed by Bortoletti and Barca
  */
-
 public class RingCommand {
 
     private SMSPeer peer;
@@ -41,3 +38,4 @@ public class RingCommand {
     }
 
 }
+

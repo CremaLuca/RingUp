@@ -1,8 +1,8 @@
 package com.gruppo4.RingApplication.structure;
 
-import android.content.Context;
-
 import com.eis.smslibrary.SMSMessage;
+import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
+import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 
 /**
  * Class used to parse RingCommand to SMSMessage and back
@@ -16,7 +16,7 @@ public class RingCommandHandler {
     /**
      * Instance of the class that is instantiated in getInstance method
      */
-    private static RingCommandHandler instance;
+    private static RingCommandHandler instance = null;
 
     /**
      * Private constructor
@@ -53,10 +53,12 @@ public class RingCommandHandler {
      * Extracts the password and the peer from the RingCommand and creates a SMSMessage object
      *
      * @param ringCommand to parse, it must be a valid one
-     * @param context     of the application
      * @return a SMSMessage object
+     * @throws InvalidSMSMessageException      thrown when an SMSMessage received invalid params
+     * @throws InvalidTelephoneNumberException thrown when the phone number is not valid
      */
-    public SMSMessage parseCommand(Context context, RingCommand ringCommand) {
+    public SMSMessage parseCommand(RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         return new SMSMessage(ringCommand.getPeer(), ringCommand.getPassword());
     }
+
 }

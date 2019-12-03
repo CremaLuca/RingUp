@@ -42,7 +42,7 @@ public class PasswordManagerTest {
     @Test
     public void getPassword_passwords_areEquals() {
         passwordManager.setPassword(VALID_PASSWORD);
-        Assert.assertEquals(VALID_PASSWORD, PasswordManager.getPassword());
+        Assert.assertEquals(VALID_PASSWORD, passwordManager.getPassword());
     }
 
     @Test
