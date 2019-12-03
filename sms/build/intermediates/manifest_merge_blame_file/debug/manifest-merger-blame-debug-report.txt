@@ -1,0 +1,63 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.gruppo4.sms"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="23"
+8-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.SEND_SMS" />
+11-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:5:5-67
+11-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.READ_SMS" />
+12-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:6:5-67
+12-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:6:22-64
+13    <uses-permission android:name="android.permission.WRITE_SMS" />
+13-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:7:5-68
+13-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:7:22-65
+14    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+14-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:8:5-70
+14-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:8:22-67
+15
+16    <application>
+16-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:10:5-30:19
+17        <service
+17-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:12:9-19:19
+18            android:name="com.gruppo4.sms.notifications.SMSNotificationCaptureService"
+18-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:13:13-72
+19            android:label="SMSApp"
+19-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:14:13-35
+20            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
+20-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:15:13-87
+21            <intent-filter>
+21-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:16:13-18:29
+22                <action android:name="android.service.notification.NotificationListenerService" />
+22-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:17:17-99
+22-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:17:25-96
+23            </intent-filter>
+24        </service>
+25
+26        <receiver
+26-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:21:9-29:20
+27            android:name="com.gruppo4.sms.dataLink.SMSReceivedBroadcastReceiver"
+27-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:22:13-66
+28            android:enabled="true"
+28-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:23:13-35
+29            android:exported="true"
+29-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:24:13-36
+30            android:permission="android.permission.BROADCAST_SMS" >
+30-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:25:13-66
+31            <intent-filter>
+31-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:26:13-28:29
+32                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+32-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:27:17-81
+32-->C:\Users\letto\Desktop\LocalRepository\SMSApp\sms\src\main\AndroidManifest.xml:27:25-79
+33            </intent-filter>
+34        </receiver>
+35    </application>
+36
+37</manifest>
