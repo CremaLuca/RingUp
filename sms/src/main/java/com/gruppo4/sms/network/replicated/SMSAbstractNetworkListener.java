@@ -10,7 +10,7 @@ import java.util.Arrays;
  * the network. It is abstract since an actual implementation requires an instance of SMSNetworkManager,
  * which is abstract (see the class for further explanation).
  *
- * @author Marco Mariotto
+ * @author Marco Mariotto, Alessandra Tonin
  */
 public abstract class SMSAbstractNetworkListener implements SMSReceivedListener {
 
@@ -51,9 +51,9 @@ public abstract class SMSAbstractNetworkListener implements SMSReceivedListener 
     }
 
     /**
-     * //TODO
+     * This method is for handling a JoinProposal. It is up to the application to override it.
      *
-     * @param message
+     * @param message as SMSMessage
      */
     public abstract void onJoinProposal(SMSMessage message);
 }
