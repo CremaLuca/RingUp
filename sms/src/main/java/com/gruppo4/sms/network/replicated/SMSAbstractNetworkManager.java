@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * spread method)
  * This costs 2 messages for each node and delivery of information is logarithmic in N.
  *
- * @author Marco Mariotto
+ * @author Marco Mariotto, Alessandra Tonin
  */
 public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPeer, SerializableObject, SerializableObject> {
 
@@ -58,7 +58,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      *
      * @param handler     we set up a handler for sending requests
      * @param networkName of the network being created
-     * @param mySelf //TODO
+     * @param mySelf      the current peer executing setup()
      */
     public void setup(SMSHandler handler, String networkName, SMSPeer mySelf) {
         this.handler = handler;
@@ -126,7 +126,7 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
      * we clearly see that node 7 should stop after he has reached node 3, since node 4 is the requester. Similarly node 3 should not even attempt to
      * spread this request further. Now every node has been reached.
      *
-     * @param requester //TODO
+     * @param requester the node which sends the request
      * @param text to be sent
      */
     private void spread(int requester, String text) {
@@ -146,9 +146,9 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
     }
 
     /**
-     * //TODO
+     * Gets the index of the current peer
      *
-     * @return
+     * @return the requested index, as explained above
      */
     private int getMyIndex() {
         return dict.getAllUsers().indexOf(mySelf);
@@ -168,54 +168,70 @@ public abstract class SMSAbstractNetworkManager implements NetworkManager<SMSPee
         SMSPeer sourcePeer = message.getPeer();
         int myIndex = getMyIndex();
 
-        if (request.equals(JOIN_AGREED)) {
-            if (joinSent.contains(sourcePeer)) {
-                spread(myIndex, ADD_USER + "_" + myIndex + "_" + sourcePeer.toString());
-                dict.addUser(sourcePeer);
-                joinSent.remove(sourcePeer);
-                //send the whole dictionary to sourcePeer
-                for (Object obj : dict.getKeys()) {
-                    SerializableObject key = (SerializableObject) obj;
-                    SMSMessage record = new SMSMessage(sourcePeer,
-                            ADD_RESOURCE + DO_NOT_SPREAD +
-                                    "_" + key.toString() + "_" + dict.getValue(key).toString());
-                    handler.sendMessage(record);
+        switch(request){
+            case JOIN_AGREED: {
+                if (joinSent.contains(sourcePeer)) {
+                    spread(myIndex, ADD_USER + "_" + myIndex + "_" + sourcePeer.toString());
+                    dict.addUser(sourcePeer);
+                    joinSent.remove(sourcePeer);
+                    //send the whole dictionary to sourcePeer
+                    for (Object obj : dict.getKeys()) {
+                        SerializableObject key = (SerializableObject) obj;
+                        SMSMessage record = new SMSMessage(sourcePeer,
+                                ADD_RESOURCE + DO_NOT_SPREAD +
+                                        "_" + key.toString() + "_" + dict.getValue(key).toString());
+                        handler.sendMessage(record);
+                    }
+                    for (Object obj : dict.getAllUsers()) {
+                        SMSPeer peer = (SMSPeer) obj;
+                        SMSMessage record = new SMSMessage(sourcePeer,
+                                ADD_USER + DO_NOT_SPREAD + "_" + peer.toString());
+                        handler.sendMessage(record);
+                    }
+                } else {
+                    //ignore non-matching joins
                 }
-                for (Object obj : dict.getAllUsers()) {
-                    SMSPeer peer = (SMSPeer) obj;
-                    SMSMessage record = new SMSMessage(sourcePeer,
-                            ADD_USER + DO_NOT_SPREAD + "_" + peer.toString());
-                    handler.sendMessage(record);
-                }
-            } else {
-                //ignore non-matching joins
+                break;
             }
-        } else if (request.equals(ADD_USER)) {
-            int requester = Integer.parseInt(splitText[1]);
-            SMSPeer p = new SMSPeer(splitText[2]);
-            spread(requester, ADD_USER + "_" + requester + "_" + p.toString());
-            dict.addUser(p);
-        } else if (request.equals(ADD_USER + DO_NOT_SPREAD)) {
-            SMSPeer p = new SMSPeer(splitText[1]);
-            dict.addUser(p);
-        } else if (request.equals(REMOVE_USER)) {
-            int requester = Integer.parseInt(splitText[1]);
-            SMSPeer p = new SMSPeer(splitText[2]); //we build a peer with no info, but his address is enough to find it in the list
-            spread(requester, REMOVE_USER + "_" + requester + "_" + p.getAddress());
-            dict.removeUser(p);
-        } else if (request.equals(ADD_RESOURCE)) {
-            int requester = Integer.parseInt(splitText[1]);
-            spread(requester, ADD_RESOURCE + "_" + requester + "_" + splitText[2] + "_" + splitText[3]);
-            dict.setResource(getKeyFromString(splitText[2]), getValueFromString(splitText[3]));
-        } else if (text.equals(ADD_RESOURCE + DO_NOT_SPREAD)) {
-            dict.setResource(getKeyFromString(splitText[1]), getValueFromString(splitText[2]));
-        } else if (text.equals(REMOVE_RESOURCE)) {
-            String key = splitText[2];
-            int requester = Integer.parseInt(splitText[1]);
-            spread(requester, REMOVE_RESOURCE + "_" + requester + "_" + key);
-            dict.removeResource(getKeyFromString(key));
-        } else {
-            throw new IllegalStateException("Should not have received this command");
+            case ADD_USER: {
+                int requester = Integer.parseInt(splitText[1]);
+                SMSPeer p = new SMSPeer(splitText[2]);
+                spread(requester, ADD_USER + "_" + requester + "_" + p.toString());
+                dict.addUser(p);
+                break;
+            }
+            case ADD_USER + DO_NOT_SPREAD: {
+                SMSPeer p = new SMSPeer(splitText[1]);
+                dict.addUser(p);
+                break;
+            }
+            case REMOVE_USER: {
+                int requester = Integer.parseInt(splitText[1]);
+                SMSPeer p = new SMSPeer(splitText[2]); //we build a peer with no info, but his address is enough to find it in the list
+                spread(requester, REMOVE_USER + "_" + requester + "_" + p.getAddress());
+                dict.removeUser(p);
+                break;
+            }
+            case ADD_RESOURCE: {
+                int requester = Integer.parseInt(splitText[1]);
+                spread(requester, ADD_RESOURCE + "_" + requester + "_" + splitText[2] + "_" + splitText[3]);
+                dict.setResource(getKeyFromString(splitText[2]), getValueFromString(splitText[3]));
+                break;
+            }
+            case ADD_RESOURCE + DO_NOT_SPREAD: {
+                dict.setResource(getKeyFromString(splitText[1]), getValueFromString(splitText[2]));
+                break;
+            }
+            case REMOVE_RESOURCE: {
+                String key = splitText[2];
+                int requester = Integer.parseInt(splitText[1]);
+                spread(requester, REMOVE_RESOURCE + "_" + requester + "_" + key);
+                dict.removeResource(getKeyFromString(key));
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Should not have received this command");
+            }
         }
     }
 
