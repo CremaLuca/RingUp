@@ -171,9 +171,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Creates and shows AlertDialog with two options:
+     * Creates and shows AlertDialog with one option:
      * [stop] --> stop the ringtone and cancel the notification
-     * [cancel] --> nothing relevant
+     *
      */
     private void createStopRingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
         AlertDialog alert = builder.create();
         alert.show();
         Log.d("MainActivity","Showing StopRingDialog...");
