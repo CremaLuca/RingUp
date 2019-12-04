@@ -25,6 +25,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
     public final static String STOP_ACTION = "stopAction";
     public final static String ALERT_ACTION = "alertAction";
     public final static String NOTIFICATION_ID = "notif_id";
+    final static int TIME = 30 * 1000;
 
     private static Ringtone ringDef;
 
@@ -44,7 +45,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
      */
     private void createNotification() {
 
-        int notification_id = (int) System.currentTimeMillis();
+        final int notification_id = (int) System.currentTimeMillis();
 
         // StopAction stops the ringtone
         Intent stopIntent = new Intent(this, NotificationActionReceiver.class);
@@ -69,9 +70,20 @@ public class MessageReceivedService extends SMSReceivedListenerService {
                 .setContentIntent(openPI)
                 .setAutoCancel(true);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notification_id, builder.build());
         Log.d("MessageReceivedService","Notification created");
+
+        //Cancel the notification after 30 seconds (as the ringtone stops playing)
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run(){
+                Log.d("MessageReceivedService","Ringtone stopped");
+                notificationManager.cancel(notification_id);
+            }
+        }, TIME);
+
     }
 
 
@@ -90,13 +102,7 @@ public class MessageReceivedService extends SMSReceivedListenerService {
         if (!ringDef.isPlaying())
             ringDef.play();
 
-        Log.d("MessageReceivedService","Service started");
-    }
-
-    /**
-     * Creates a Handler and stop the ringtone
-     */
-    public void stopAlarm()  {
+        //Stops the ringtone after 30 seconds (and cancels ringing notification) if the user doesn't stop it
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
@@ -105,7 +111,16 @@ public class MessageReceivedService extends SMSReceivedListenerService {
                 if(ringDef.isPlaying())
                     ringDef.stop();
             }
-        }, 0);
+        }, TIME);
+        Log.d("MessageReceivedService","Service started");
+    }
+
+    /**
+     * Creates a Handler and stop the ringtone
+     */
+    public void stopAlarm()  {
+        if(ringDef.isPlaying())
+            ringDef.stop();
     }
 }
 

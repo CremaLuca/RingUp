@@ -12,7 +12,7 @@ public class MainActivityHelper {
         ONSTART,
         ONCREATE,
         ONDESTROY
-    }
+    };
 
     private static MainActivityState state;
 

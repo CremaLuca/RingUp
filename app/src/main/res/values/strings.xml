@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">SMSApp</string>
+    <string name="app_name">RingUp</string>
     <string name="send_message">Send message</string>
+    <string name="hint">Insert phone number</string>
 </resources>

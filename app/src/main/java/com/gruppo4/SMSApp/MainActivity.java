@@ -12,14 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.gruppo4.communication.dataLink.Peer;
 import com.gruppo4.sms.dataLink.SMSHandler;
 import com.gruppo4.sms.dataLink.SMSMessage;
 import com.gruppo4.sms.dataLink.SMSPeer;
@@ -123,15 +120,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Sends an SMS message to the inserted number
+     *
+     */
     public void sendTestMessage() {
         Log.d("MainActivity", "Sending test message");
 
-        SMSPeer peer;
-        if(edtPhoneNumber.getText().length() != 0)
-            peer = new SMSPeer(edtPhoneNumber.getText().toString());
-        else
-            peer = new SMSPeer("+15555215556");
-
+        SMSPeer peer = new SMSPeer(edtPhoneNumber.getText().toString());
         SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,peer.getAddress(),"Test message"));
     }
 
@@ -197,15 +193,6 @@ public class MainActivity extends AppCompatActivity {
                         NotificationManagerCompat.from(getApplicationContext()).cancel(id);
                         Log.d("MainActivity","Notification " + id + " cancelled");
                         dialogInterface.dismiss();
-                    }
-                }
-        );
-        builder.setNegativeButton(
-                "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        Log.d("MainActivity","StopRingDialog dismissed");
                     }
                 }
         );
