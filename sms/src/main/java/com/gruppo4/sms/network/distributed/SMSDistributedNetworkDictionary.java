@@ -7,11 +7,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
- * //TODO
+ * Distributed network dictionary for peers and resources on the SMS network (Kademlia method)
  *
- * @param <RK>
- * @param <RV>
+ * @param <RK> resource key
+ * @param <RV> resource value
+ * @author Luca Crema
  */
 public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionary<KADPeerAddress, RK, RV> {
 
@@ -23,6 +25,11 @@ public class SMSDistributedNetworkDictionary<RK, RV> implements NetworkDictionar
     private ArrayList<KADPeerAddress>[] usersLists;
     private HashMap<RK, RV> resourcesDict;
 
+    /**
+     * Constructor for the dictionary
+     *
+     * @param userAddress
+     */
     public SMSDistributedNetworkDictionary(KADPeerAddress userAddress) {
         this.userAddress = userAddress;
         usersLists = new ArrayList[KADPeerAddress.BYTE_ADDRESS_LENGTH * Byte.SIZE];

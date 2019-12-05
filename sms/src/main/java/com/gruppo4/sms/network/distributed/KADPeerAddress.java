@@ -9,7 +9,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.BitSet;
 
 /**
- * //TODO
+ * This class manages the peer address, as hash of his phone number
+ *
+ * @author Luca Crema, Alessandra Tonin
  */
 public class KADPeerAddress implements Peer<byte[]> {
 
@@ -19,9 +21,9 @@ public class KADPeerAddress implements Peer<byte[]> {
     private byte[] address;
 
     /**
-     * //TODO
+     * Constructor
      *
-     * @param address
+     * @param address a byte[] containing the peer address
      * @throws IllegalArgumentException
      */
     public KADPeerAddress(byte[] address) throws IllegalArgumentException {
@@ -31,9 +33,10 @@ public class KADPeerAddress implements Peer<byte[]> {
     }
 
     /**
-     * //TODO
+     * Constructor
      *
-     * @param phoneAddress
+     * @param phoneAddress a String containing the peer phone number
+     * @throws NoSuchAlgorithmException
      */
     public KADPeerAddress(String phoneAddress) {
         try {
@@ -46,9 +49,9 @@ public class KADPeerAddress implements Peer<byte[]> {
     }
 
     /**
-     * //TODO
+     * Constructor
      *
-     * @param peer
+     * @param peer a network user
      */
     public KADPeerAddress(SMSPeer peer) {
         this(peer.getAddress());
@@ -67,8 +70,8 @@ public class KADPeerAddress implements Peer<byte[]> {
     /**
      * Calculates the first bit that differs starting from left
      *
-     * @param otherAddress
-     * @return
+     * @param otherAddress the address of another network user
+     * @return an int, as the position of the first bit different from mine
      */
     public int firstDifferentBitPosition(KADPeerAddress otherAddress) {
         byte[] otherByteAddress = otherAddress.getAddress();
