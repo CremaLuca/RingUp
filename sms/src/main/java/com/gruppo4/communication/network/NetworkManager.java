@@ -9,8 +9,7 @@ import com.eis.communication.Peer;
  * @author Marco Mariotto
  */
 
-public interface NetworkManager<U extends Peer, RK, RV>
-{
+public interface NetworkManager<U extends Peer, RK, RV> {
     /**
      * send an invitation message to a user to let him join this network
      *
@@ -26,7 +25,7 @@ public interface NetworkManager<U extends Peer, RK, RV>
     /**
      * set a key-value resource for the local dictionary and spread this information to every user
      *
-     * @param key resource key
+     * @param key   resource key
      * @param value resource value
      */
     void setResource(RK key, RV value);
