@@ -1,10 +1,20 @@
 package com.gruppo4.sms.dataLink.listeners;
 
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSMessage.SentState;
 
+import com.gruppo4.sms.dataLink.SMSMessage;
+
+/**
+ * Listener for sent messages
+ *
+ * @author Alessandra Tonin
+ */
 public interface SMSSentListener {
 
-    void onSMSSent(SMSMessage message, SentState sentState);
+    /**
+     * Callback for message sent to the provider or in case of error
+     * @param message that's been sent/not sent
+     * @param sentState of the operation
+     */
+    void onSMSSent(SMSMessage message, SMSMessage.SentState sentState);
 
 }

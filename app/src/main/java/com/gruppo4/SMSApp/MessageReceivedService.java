@@ -14,13 +14,13 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedServiceListener;
 
 
 /**
  * @author Luca Crema, Alessandra Tonin, Marco Tommasini
  */
-public class MessageReceivedService extends SMSReceivedListenerService {
+public class MessageReceivedService extends SMSReceivedServiceListener {
 
     public final static String STOP_ACTION = "stopAction";
     public final static String ALERT_ACTION = "alertAction";
@@ -28,10 +28,6 @@ public class MessageReceivedService extends SMSReceivedListenerService {
     final static int TIME = 30 * 1000;
 
     private static Ringtone ringDef;
-
-    public MessageReceivedService() {
-        super("MessageReceivedService");
-    }
 
     @Override
     public void onMessageReceived(SMSMessage message) {

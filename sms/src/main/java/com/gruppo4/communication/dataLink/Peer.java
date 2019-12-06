@@ -1,29 +1,17 @@
 package com.gruppo4.communication.dataLink;
 
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
 
-public abstract class Peer<A> implements Serializable {
+/**
+ * Represents a user in the network
+ * @param <A> The type of address used by the network
+ */
+public interface Peer<A> extends Serializable {
 
-    protected A address;
-
-    public Peer(A address) {
-        this.address = address;
-    }
-
-    public A getAddress() {
-        return address;
-    }
-
-    protected void setAddress(A address) {
-        this.address = address;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return address.toString();
-    }
+    /**
+     * Retrieves the peer's address
+     * @return peer's address
+     */
+    A getAddress();
 
 }

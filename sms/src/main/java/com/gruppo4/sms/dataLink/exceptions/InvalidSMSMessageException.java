@@ -1,22 +1,48 @@
 package com.gruppo4.sms.dataLink.exceptions;
 
+
 import com.gruppo4.sms.dataLink.SMSMessage;
 
+/**
+ * Thrown when user tries to work on a SMSMessage with an invalid content
+ * @author Luca Crema
+ */
 public class InvalidSMSMessageException extends RuntimeException {
 
-    private SMSMessage.MessageTextState state;
+    /**
+     * Invalid state of a message content
+     */
+    private SMSMessage.ContentState state;
 
-    public InvalidSMSMessageException(String message, SMSMessage.MessageTextState state) {
+    /**
+     *
+     * @param message exception message content
+     * @param state invalid message content state
+     */
+    public InvalidSMSMessageException(String message, SMSMessage.ContentState state) {
         super(message);
+        if(state == SMSMessage.ContentState.MESSAGE_TEXT_VALID)
+            throw new IllegalArgumentException("Cannot throw exception on valid message content state");
         this.state = state;
     }
 
-    public InvalidSMSMessageException(Throwable cause, SMSMessage.MessageTextState state) {
+    /**
+     *
+     * @param cause exception cause
+     * @param state invalid message content state
+     */
+    public InvalidSMSMessageException(Throwable cause, SMSMessage.ContentState state) {
         super(cause);
+        if(state == SMSMessage.ContentState.MESSAGE_TEXT_VALID)
+            throw new IllegalArgumentException("Cannot throw exception on valid message content state");
         this.state = state;
     }
 
-    public SMSMessage.MessageTextState getState() {
+    /**
+     * Retrieves the state of the message that is the reason of the exception
+     * @return
+     */
+    public SMSMessage.ContentState getState() {
         return this.state;
     }
 }

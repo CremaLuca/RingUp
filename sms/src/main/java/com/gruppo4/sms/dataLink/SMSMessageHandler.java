@@ -1,59 +1,101 @@
 package com.gruppo4.sms.dataLink;
 
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.gruppo4.communication.dataLink.MessageHandler;
-import com.gruppo4.sms.dataLink.exceptions.InvalidSMSMessageException;
-import com.gruppo4.sms.dataLink.exceptions.InvalidTelephoneNumberException;
+import com.gruppo4.communication.dataLink.MessageParseStrategy;
 
-public class SMSMessageHandler extends MessageHandler<SMSMessage> {
 
-    public static final String SPLIT_CHARACTER = "_";
-    public static final String HIDDEN_CHARACTER = (char) 0x02 + "";
+/**
+ * Singleton class used to parse String to SMSMessage and back
+ * Uses a strategy to parse messages, so that any user can update it to its preferred parser
+ * By defaults it uses a default strategy, defined by the library
+ *
+ * @author Luca Crema, Alberto Ursino, Marco Mariotto
+ */
+public class SMSMessageHandler implements MessageHandler<String, String, SMSMessage> {
+
+    private MessageParseStrategy<String, SMSPeer, SMSMessage> parseStrategy;
     private static SMSMessageHandler instance;
-    private static final String EXAMPLE_TELEPHONE_NUMBER = "+393455543456";
 
-    public static SMSMessageHandler getInstance() {
-        if (instance == null)
+    /**
+     * Private constructor
+     */
+    private SMSMessageHandler(){
+        parseStrategy = new DefaultSMSMessageParseStrategy();
+    }
+
+    /**
+     * @return Singleton instance of this class
+     */
+    public static SMSMessageHandler getInstance(){
+        if(instance == null)
             instance = new SMSMessageHandler();
         return instance;
     }
 
-    @Override
-    protected SMSMessage parseMessage(String data, String peerData) {
-        String[] splitData = data.split(SPLIT_CHARACTER, 2);
-        //Must be only 2 parts of the message
-        if (splitData.length < 2)
-            return null;
-        //First part must be (1 + 3 = 4) characters long at max
-        if (splitData[0].length() > 4)
+    /**
+     * Update the parse strategy to a custom one
+     * @param parseStrategy custom message parsing
+     */
+    public void setMessageParseStrategy(@NonNull final MessageParseStrategy<String,SMSPeer,SMSMessage> parseStrategy){
+        this.parseStrategy = parseStrategy;
+    }
+
+    /**
+     * Interprets a string arrived via the communication channel and parses it to a library {@link SMSMessage}
+     *
+     * @param peerData from the sms pdus
+     * @param messageData from the sms pdus
+     * @return the message if the string has been parsed correctly, null otherwise
+     */
+    public SMSMessage parseMessage(@NonNull final String peerData, @NonNull final String messageData){
+        if(SMSPeer.checkPhoneNumber(peerData) != SMSPeer.TelephoneNumberState.TELEPHONE_NUMBER_VALID)
             return null;
 
-        //First character must be the hidden char
-        if (!splitData[0].startsWith(HIDDEN_CHARACTER))
-            return null;
+        return parseStrategy.parseMessage(messageData,new SMSPeer(peerData));
+    }
 
-        //First part after hidden char must contain ONLY numbers, that is the application id
-        if (!splitData[0].substring(1).matches("[0-9]+"))
-            return null;
+    /**
+     * Translates a message into a string that can be sent via sms
+     *
+     * @param message to be translated/parsed
+     * @return the string to send
+     */
+    public String parseData(@NonNull final SMSMessage message){
+        return parseStrategy.parseData(message);
+    }
 
-        int appID = Integer.parseInt(splitData[0].substring(1));//we have to remove the special character first
-        try {
-            return new SMSMessage(appID, new SMSPeer(peerData), splitData[1]);
-        } catch (InvalidTelephoneNumberException te) {
-            Log.e("SMSMessageHandler", "Parsed message with illegal phone number, reason: " + te.getState());
-        } catch (InvalidSMSMessageException me) {
-            Log.e("SMSMessageHandler", "Parsed message with illegal data, reason: " + me.getState());
+    public class DefaultSMSMessageParseStrategy implements MessageParseStrategy<String, SMSPeer, SMSMessage>{
+
+        protected static final String HIDDEN_CHARACTER = (char) 0x02 + "";
+
+        /**
+         * Parses sms data into a SMSMessage if possible
+         * @param channelData read from the channel
+         * @param channelPeer that sent the data
+         * @return the parsed SMSMessage if the string was correct, null otherwise
+         */
+        @Override
+        public SMSMessage parseMessage(@NonNull final String channelData,@NonNull final SMSPeer channelPeer) {
+            //First character of the content must be the hidden char
+            if (!channelData.startsWith(HIDDEN_CHARACTER))
+                return null;
+            String messageData = channelData.substring(1);
+            return new SMSMessage(channelPeer, messageData);
         }
-        return null;
+
+        /**
+         * Parses SMSMessage into sms content data
+         * @param message from library
+         * @return the parsed sms content data ready to be sent
+         */
+        @Override
+        public String parseData(@NonNull final SMSMessage message) {
+            return HIDDEN_CHARACTER + message.getData();
+        }
     }
 
-    @Override
-    protected String getOutput(SMSMessage message) {
-        return HIDDEN_CHARACTER + message.getApplicationID() + SPLIT_CHARACTER + message.getData();
-    }
-
-    public boolean isLibraryMessage(String content) {
-        return parseMessage(content, EXAMPLE_TELEPHONE_NUMBER) != null;
-    }
 }
+
+

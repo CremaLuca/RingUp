@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void setup() {
         //Initialize the receiver
-        SMSHandler.getInstance(this).setup(123);
-        SMSHandler.getInstance(this).setReceivedMessageListener(MessageReceivedService.class);
+        SMSHandler.getInstance().setup(getApplicationContext());
+        SMSHandler.getInstance().setReceivedListener(MessageReceivedService.class);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if(!SMSHandler.checkPermissions(this)) {
+        if(!checkPermission()) {
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
         }else{
             Log.d("MainActivity", "You have the right permissions for this app");
@@ -127,8 +128,7 @@ public class MainActivity extends AppCompatActivity {
     public void sendTestMessage() {
         Log.d("MainActivity", "Sending test message");
 
-        SMSPeer peer = new SMSPeer(edtPhoneNumber.getText().toString());
-        SMSHandler.getInstance(this).sendMessage(new SMSMessage(123,peer.getAddress(),"Test message"));
+        SMSHandler.getInstance().sendMessage(new SMSMessage(new SMSPeer(edtPhoneNumber.getText().toString()),"Test message"));
     }
 
     /**
@@ -200,5 +200,16 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
         Log.d("MainActivity","Showing StopRingDialog...");
+    }
+
+    /**
+     * @return true if the app has permissions, false otherwise
+     */
+    public boolean checkPermission() {
+        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) ||
+                !(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
+            return false;
+        else
+            return true;
     }
 }

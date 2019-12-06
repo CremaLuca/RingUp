@@ -3,46 +3,41 @@ package com.gruppo4.sms.dataLink;
 import android.app.PendingIntent;
 import android.telephony.SmsManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
 /**
- * Wrapper for the Android Telephony Sms Library
- * This class is only used to interface with the core of Android
+ * Wrapper for the {@link android.telephony} library.
+ * This class is only used to interface with the core sms library of Android.
  *
  * @author Luca Crema
  */
-class SMSCore {
+final class SMSCore {
 
     /**
      * Calls the library method to send a single message
      *
-     * @param message     message to be sent
+     * @param message     to be sent
      * @param phoneNumber peer address
-     * @param sentPI      pending intent for a broadcast
+     * @param sentPI      {@link PendingIntent} for a broadcast on message sent, can be null
+     * @param deliveredPI {@link PendingIntent} for a broadcast on message received, can be null
      */
-    static void sendMessage(String message, String phoneNumber, PendingIntent sentPI) {
-        SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, sentPI, null);
-    }
-
-    /**
-     * Calls the library method to send a single message
-     *
-     * @param message     message to be sent
-     * @param phoneNumber peer address
-     */
-    static void sendMessage(String message, String phoneNumber) {
-        SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, null, null);
+    static void sendMessage(@NonNull final String message, @NonNull final String phoneNumber, @Nullable final PendingIntent sentPI, @Nullable final PendingIntent deliveredPI) {
+        SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
 
     /**
      * Calls the library method to send multiple messages
      *
-     * @param messages    arrayList of messages to be sent
-     * @param phoneNumber peer address
-     * @param sentPIs     arrayList of pending intents for a broadcast
+     * @param messages     {@link ArrayList} of messages to be sent
+     * @param phoneNumber  peer phone address
+     * @param sentPIs      {@link ArrayList} of pending intents for a broadcast on message sent, can be null
+     * @param deliveredPIs {@link ArrayList}  of pending intents for a broadcast on message delivered, can be null
      */
-    static void sendMessages(ArrayList<String> messages, String phoneNumber, ArrayList<PendingIntent> sentPIs) {
-        SmsManager.getDefault().sendMultipartTextMessage(phoneNumber, null, messages, sentPIs, null);
+    static void sendMessages(@NonNull final ArrayList<String> messages, @NonNull final String phoneNumber, @Nullable final ArrayList<PendingIntent> sentPIs, @Nullable final ArrayList<PendingIntent> deliveredPIs) {
+        SmsManager.getDefault().sendMultipartTextMessage(phoneNumber, null, messages, sentPIs, deliveredPIs);
     }
 
 }

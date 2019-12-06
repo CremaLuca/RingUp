@@ -1,174 +1,207 @@
 package com.gruppo4.sms.dataLink;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.telephony.SmsManager;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.gruppo4.communication.dataLink.CommunicationHandler;
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedListenerService;
+import com.gruppo4.sms.dataLink.listeners.SMSDeliveredListener;
+import com.gruppo4.sms.dataLink.listeners.SMSReceivedServiceListener;
 import com.gruppo4.sms.dataLink.listeners.SMSSentListener;
 import com.gruppo_4.preferences.PreferencesManager;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
+
 
 /**
- * Handles communications between peers of a sms communication channel
- * Every message has the applicationID to prevent interfering with other apps using the same library<br/>
+ * Communication handler for SMSs. It's a Singleton, you should
+ * access it with {@link #getInstance}, and before doing anything you
+ * should call {@link #setup}.<br/>
  *
- * If you need notifications to be captured you have to call
- * {@link com.gruppo4.sms.notifications.SMSNotificationHandler#automaticNotificationListenerSetup(Activity)}<br/>
- *
- * If you want to keep the receiver alive on app closed you have to call the two methods of {@link com.gruppo4.sms.dataLink.background.SMSBackgroundHandler}:
- * {@link com.gruppo4.sms.dataLink.background.SMSBackgroundHandler#onAppCreate(Context)}
- * {@link com.gruppo4.sms.dataLink.background.SMSBackgroundHandler#onAppDestroy(Context)}
- * when app is created and when app is closed
- *
- * @author Gruppo4
+ * @author Luca Crema, Marco Mariotto, Alberto Ursino, Marco Tommasini, Marco Cognolato
+ * @since 29/11/2019
  */
-public class SMSHandler extends CommunicationHandler<SMSMessage> {
+@SuppressWarnings({"WeakerAccess", "unused"})
+public class SMSHandler implements CommunicationHandler<SMSMessage> {
 
     public static final String SENT_MESSAGE_INTENT_ACTION = "SMS_SENT";
-    private static final String APPLICATION_CODE_PREFERENCES_KEY = "ApplicationCode";
+    public static final String DELIVERED_MESSAGE_INTENT_ACTION = "SMS_DELIVERED";
+    public static final int RANDOM_STARTING_COUNTER_VALUE_RANGE = 100000;
 
+    /**
+     * Singleton instance
+     */
     private static SMSHandler instance;
-    private Context ctx;
 
-    public static SMSHandler getInstance(Context context) {
+    /**
+     * Weak reference doesn't prevent garbage collector to
+     * de-allocate this class when it has reference to a
+     * context that is still running. Prevents memory leaks.
+     */
+    private WeakReference<Context> context;
+
+    /**
+     * This message counter is used so that we can have a different action name
+     * for pending intent (that will call broadcastReceiver). If we were to use the
+     * same action name for every message we would have a conflict and we wouldn't
+     * know what message has been sent
+     */
+    private int messageCounter;
+
+    /**
+     * Private constructor for Singleton
+     */
+    private SMSHandler() {
+        //Random because if we close and open the app the value probably differs
+        messageCounter = (int) (Math.random() * RANDOM_STARTING_COUNTER_VALUE_RANGE);
+    }
+
+    /**
+     * @return the current instance of this class
+     */
+    public static SMSHandler getInstance() {
         if (instance == null)
             instance = new SMSHandler();
-        instance.ctx = context;
         return instance;
     }
 
     /**
-     * @param applicationCode a integer code.
-     * @return true if the parameter application code is valid.
+     * Setup for the handler.
+     *
+     * @param context current context.
      */
-    public static boolean checkApplicationCodeIsValid(int applicationCode) {
-        return applicationCode > 0 && applicationCode < 1000;
+    public void setup(Context context) {
+        this.context = new WeakReference<>(context);
     }
 
     /**
-     * Checks if SEND_SMS permission is granted
+     * Sends a message to a destination peer via SMS.
+     * Requires {@link android.Manifest.permission#SEND_SMS}
      *
-     * @param ctx a valid context
-     * @return true if permission is granted
-     */
-    public static boolean checkSendPermission(Context ctx) {
-        boolean result = ctx.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
-        Log.d("1", "return del metodo checkSendPermission: " + result);
-        return result;
-    }
-
-    /**
-     * Checks if RECEIVE_SMS permission is granted
-     *
-     * @param ctx a valid context
-     * @return true if permission is granted
-     */
-    public static boolean checkReceivePermission(Context ctx) {
-        boolean result = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
-        Log.d("1", "return del metodo checkSendPermission: " + result);
-        return result;
-    }
-
-    /**
-     * Checks if both SEND_SMS & RECEIVE_SMS permissions are granted
-     *
-     * @param ctx a valid context
-     * @return true if both permissions are granted
-     */
-    public static boolean checkPermissions(Context ctx) {
-        return checkSendPermission(ctx) && checkReceivePermission(ctx);
-    }
-
-    /**
-     * Writes in the memory the application code.
-     *
-     * @param ctx             current app or service context.
-     * @param applicationCode a valid application code, checked with checkApplicationCodeIsValid.
-     */
-    private static void setApplicationCode(Context ctx, int applicationCode) {
-        PreferencesManager.setInt(ctx, APPLICATION_CODE_PREFERENCES_KEY, applicationCode);
-    }
-
-    /**
-     * Setup the handler, checks permissions and sets the application code
-     *
-     * @param applicationCode an identifier for the current application
-     */
-    public void setup(int applicationCode) {
-        if (!checkApplicationCodeIsValid(applicationCode))
-            throw new IllegalStateException("Application code not valid, check it with checkApplicationCodeIsValid() first");
-        setApplicationCode(ctx, applicationCode);
-    }
-
-    /**
-     * Send a SMSMessage, multiple packets could be sent
-     * Requires Manifest.permission.SEND_SMS permission
-     *
-     * @param message  the message to be sent via SMS
-     * @param listener called when the message is completely sent to the provider
-     */
-    public void sendMessage(final SMSMessage message, SMSSentListener listener) {
-        ArrayList<String> dividedBySystem = SmsManager.getDefault().divideMessage(message.getData());
-        if (dividedBySystem.size() > 1)
-            throw new IllegalStateException("The message is too long (???) how can it be? Are we dividing it in a wrong way?");
-        String smsContent = SMSMessageHandler.getInstance().getOutput(message);
-
-        SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver(message, listener);
-        ctx.registerReceiver(onSentReceiver, new IntentFilter(SENT_MESSAGE_INTENT_ACTION));
-        PendingIntent sentPI = PendingIntent.getBroadcast(ctx, 0, new Intent(SENT_MESSAGE_INTENT_ACTION), 0);
-
-        SMSCore.sendMessage(smsContent, message.getPeer().getAddress(), sentPI);
-    }
-
-    /**
-     * Gets the identifier application code from the memory.
-     *
-     * @return the current application code
-     */
-    public int getApplicationCode() {
-        int appCode = PreferencesManager.getInt(ctx, APPLICATION_CODE_PREFERENCES_KEY);
-        if (appCode < 0)
-            throw new IllegalStateException("Unable to perform the request, the SMS library has never been setup, call the setup() method at least once");
-        return appCode;
-    }
-
-    /**
-     * Overload for checkPermissions(Context)
-     *
-     * @return true if both SEND_SMS and RECEIVE_SMS permissions are granted
-     */
-    public boolean checkPermissions() {
-        return checkPermissions(ctx);
-    }
-
-    /**
-     * Send a SMSMessage, multiple packets could be sent
-     * Requires Manifest.permission.SEND_SMS permission
-     *
-     * @param message the message to be sent via SMS
+     * @param message to be sent in the channel to a peer
      */
     @Override
-    public void sendMessage(SMSMessage message) {
-        this.sendMessage(message, null);
+    public void sendMessage(final @NonNull SMSMessage message) {
+        sendMessage(message, null, null);
     }
 
     /**
-     * Sets a listener service class to be instantiated and started on a message arrival
+     * Sends a message to a destination peer via SMS then
+     * calls the listener.
      *
-     * @param service A class reference to a service that extends {@link SMSReceivedListenerService}
-     * @param <T>     The class type to be instantiated and started
+     * @param message      to be sent in the channel to a peer
+     * @param sentListener called on message sent or on error, can be null
      */
-    public <T extends SMSReceivedListenerService> void setReceivedMessageListener(Class<T> service) {
-        Log.v("SMSHandler", "Setting the received message listener");
-        PreferencesManager.setString(ctx, SMSReceivedBroadcastReceiver.SERVICE_CLASS_PREFERENCES_KEY, service.getName());
+    public void sendMessage(final @NonNull SMSMessage message, final @Nullable SMSSentListener sentListener) {
+        sendMessage(message, sentListener, null);
     }
+
+    /**
+     * Sends a message to a destination peer via SMS then
+     * calls the listener.
+     *
+     * @param message           to be sent in the channel to a peer
+     * @param deliveredListener called on message delivered or on error, can be null
+     */
+    public void sendMessage(final @NonNull SMSMessage message, final @Nullable SMSDeliveredListener deliveredListener) {
+        sendMessage(message, null, deliveredListener);
+    }
+
+    /**
+     * Sends a message to a destination peer via SMS then
+     * calls the listener.
+     *
+     * @param message           to be sent in the channel to a peer
+     * @param sentListener      called on message sent or on error, can be null
+     * @param deliveredListener called on message delivered or on error, can be null
+     */
+    public void sendMessage(final @NonNull SMSMessage message,
+                            final @Nullable SMSSentListener sentListener,
+                            final @Nullable SMSDeliveredListener deliveredListener) {
+        checkSetup();
+        PendingIntent sentPI = setupNewSentReceiver(message, sentListener);
+        PendingIntent deliveredPI = setupNewDeliverReceiver(message, deliveredListener);
+        SMSCore.sendMessage(getSMSContent(message), message.getPeer().getAddress(), sentPI, deliveredPI);
+    }
+
+    /**
+     * Creates a new {@link SMSSentBroadcastReceiver} and registers it to receive broadcasts
+     * with action {@value SENT_MESSAGE_INTENT_ACTION}
+     *
+     * @param message  that will be sent
+     * @param listener to call on broadcast received
+     * @return a {@link PendingIntent} to be passed to SMSCore
+     */
+    private PendingIntent setupNewSentReceiver(final @NonNull SMSMessage message, final @Nullable SMSSentListener listener) {
+        if (listener == null)
+            return null; //Doesn't make any sense to have a BroadcastReceiver if there is no listener
+
+        SMSSentBroadcastReceiver onSentReceiver = new SMSSentBroadcastReceiver(message, listener);
+        String actionName = SENT_MESSAGE_INTENT_ACTION + (messageCounter++);
+        context.get().registerReceiver(onSentReceiver, new IntentFilter(actionName));
+        return PendingIntent.getBroadcast(context.get(), 0, new Intent(actionName), 0);
+    }
+
+    /**
+     * Creates a new {@link SMSDeliveredBroadcastReceiver} and registers it to receive broadcasts
+     * with action {@value DELIVERED_MESSAGE_INTENT_ACTION}
+     *
+     * @param message  that will be sent
+     * @param listener to call on broadcast received
+     * @return a {@link PendingIntent} to be passed to SMSCore
+     */
+    private PendingIntent setupNewDeliverReceiver(final @NonNull SMSMessage message, final @Nullable SMSDeliveredListener listener) {
+        if (listener == null)
+            return null; //Doesn't make any sense to have a BroadcastReceiver if there is no listener
+
+        SMSDeliveredBroadcastReceiver onDeliveredReceiver = new SMSDeliveredBroadcastReceiver(message, listener);
+        String actionName = DELIVERED_MESSAGE_INTENT_ACTION + (messageCounter++);
+        context.get().registerReceiver(onDeliveredReceiver, new IntentFilter(actionName));
+        return PendingIntent.getBroadcast(context.get(), 0, new Intent(actionName), 0);
+    }
+
+    /**
+     * Checks if the handler has been setup
+     *
+     * @throws IllegalStateException if the handler has not been setup
+     */
+    private void checkSetup() {
+        if (context == null)
+            throw new IllegalStateException("You must call setup() first");
+    }
+
+    /**
+     * Saves in memory the service class name to wake up. It doesn't need an
+     * instance of the class, it just saves the name and instantiates it when needed.
+     *
+     * @param receivedListenerClassName the listener called on message received
+     * @param <T>                       the class type that extends {@link SMSReceivedServiceListener} to be called
+     */
+    public <T extends SMSReceivedServiceListener> void setReceivedListener(Class<T> receivedListenerClassName) {
+        checkSetup();
+        PreferencesManager.setString(context.get(), SMSReceivedBroadcastReceiver.SERVICE_CLASS_PREFERENCES_KEY, receivedListenerClassName.toString());
+    }
+
+    /**
+     * Unsubscribe the current {@link SMSReceivedServiceListener} from being called on message arrival
+     */
+    public void removeReceivedListener() {
+        checkSetup();
+        PreferencesManager.removeValue(context.get(), SMSReceivedBroadcastReceiver.SERVICE_CLASS_PREFERENCES_KEY);
+    }
+
+    /**
+     * Helper function that gets the message content by using the pre-setup parser in {@link SMSMessageHandler}
+     *
+     * @param message to get the data from
+     * @return the data parsed from the message
+     */
+    private String getSMSContent(SMSMessage message) {
+        return SMSMessageHandler.getInstance().parseData(message);
+    }
+
 }

@@ -1,22 +1,35 @@
 package com.gruppo4.sms.dataLink.exceptions;
 
+
 import com.gruppo4.sms.dataLink.SMSPeer;
 
-public class InvalidTelephoneNumberException extends RuntimeException {
+/**
+ * Exception usually thrown if a Peer has been instantiated without having the telephone number checked for validity
+ * @author Luca Crema, suggested by Marco Cognolato
+ */
+public class InvalidTelephoneNumberException extends RuntimeException{
 
-    private SMSPeer.TelephoneNumberState state;
+    /**
+     * Invalid state of the telephone number
+     */
+    private SMSPeer.TelephoneNumberState telephoneNumberState;
 
+    /**
+     * @param state Invalid state of telephone number, cannot be {@link SMSPeer.TelephoneNumberState#TELEPHONE_NUMBER_VALID}
+     */
+    public InvalidTelephoneNumberException(SMSPeer.TelephoneNumberState state){
+        if(state == SMSPeer.TelephoneNumberState.TELEPHONE_NUMBER_VALID)
+            throw new IllegalArgumentException("TelephoneNumberState cannot be TELEPHONE_NUMBER_VALID if InvalidTelephoneNumberException is thrown!");
+        this.telephoneNumberState = state;
+    }
+
+    /**
+     * @param state Invalid state of telephone number, cannot be {@link SMSPeer.TelephoneNumberState#TELEPHONE_NUMBER_VALID}
+     */
     public InvalidTelephoneNumberException(String message, SMSPeer.TelephoneNumberState state) {
         super(message);
-        this.state = state;
-    }
-
-    public InvalidTelephoneNumberException(Throwable cause, SMSPeer.TelephoneNumberState state) {
-        super(cause);
-        this.state = state;
-    }
-
-    public SMSPeer.TelephoneNumberState getState() {
-        return this.state;
+        if(state == SMSPeer.TelephoneNumberState.TELEPHONE_NUMBER_VALID)
+            throw new IllegalArgumentException("TelephoneNumberState cannot be TELEPHONE_NUMBER_VALID if InvalidTelephoneNumberException is thrown!");
+        this.telephoneNumberState = state;
     }
 }

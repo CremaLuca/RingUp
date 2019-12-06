@@ -2,33 +2,23 @@ package com.gruppo4.communication.dataLink;
 
 import java.io.Serializable;
 
-public abstract class Message<D, P extends Peer> implements Serializable {
-
-    protected D data;
-    protected P peer;
-
-    /**
-     * Constructor
-     *
-     * @param data valid data
-     * @param peer valid peer
-     */
-    public Message(D data, P peer) {
-        this.data = data;
-        this.peer = peer;
-    }
-
-    public D getData() {
-        return data;
-    }
+/**
+ * Encapsulation of a message in the network
+ * @param <D> Data to be transmitted
+ * @param <P> Peer type of users of the network
+ */
+public interface  Message<D, P extends Peer> extends Serializable {
 
     /**
-     * telephoneNumber is either the number from which the message comes from, or the number where to send the message
-     *
-     * @return the telephone number
+     * Retrieves the data sent or to be sent in the network
+     * @return data contained in this message
      */
-    public P getPeer() {
-        return peer;
-    }
+    D getData();
+
+    /**
+     * Retrieves the sender or the destination
+     * @return Peer associated with this message
+     */
+    P getPeer();
 
 }
