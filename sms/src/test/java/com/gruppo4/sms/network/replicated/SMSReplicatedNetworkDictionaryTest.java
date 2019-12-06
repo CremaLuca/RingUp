@@ -1,6 +1,6 @@
 package com.gruppo4.sms.network.replicated;
 
-import com.gruppo4.sms.dataLink.SMSPeer;
+import com.eis.smslibrary.SMSPeer;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -37,39 +37,4 @@ public class SMSDistributedNetworkDictionaryTest {
         defaultDictionary.removeUser(DEFAULT_USER_ADDRESS);
     }
 
-    @Test
-    public void removeAllUsers() {
-    }
-
-    @Test
-    public void setResource() {
-    }
-
-    @Test
-    public void setAllResources() {
-    }
-
-    @Test
-    public void removeResource() {
-    }
-
-    @Test
-    public void removeAllResources() {
-    }
-
-    @Test
-    public void getValue() {
-    }
-
-    @Test
-    public void getAllValues() {
-    }
-
-    @Test
-    public void getKeys() {
-    }
-
-    @Test
-    public void getValues() {
-    }
 }

@@ -1,3 +1,3 @@
-[submodule "eis-sms-library"]
-	path = eis-sms-library
+[submodule "smslibrary"]
+	path = smslibrary
 	url = https://github.com/Cogno-IDU/smslibrary.git
