@@ -13,8 +13,8 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.listeners.SMSReceivedServiceListener;
+import com.eis.smslibrary.SMSMessage;
+import com.eis.smslibrary.listeners.SMSReceivedServiceListener;
 
 
 /**

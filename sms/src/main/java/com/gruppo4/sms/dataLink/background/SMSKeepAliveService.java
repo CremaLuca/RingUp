@@ -6,7 +6,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.gruppo4.sms.dataLink.SMSReceivedBroadcastReceiver;
+import com.eis.smslibrary.SMSReceivedBroadcastReceiver;
 
 /**
  * Android service that is kept alive and has the BroadcastReceiver attached so that it doesn't die on app closed

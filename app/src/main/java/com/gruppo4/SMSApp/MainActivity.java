@@ -18,9 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.gruppo4.sms.dataLink.SMSHandler;
-import com.gruppo4.sms.dataLink.SMSMessage;
-import com.gruppo4.sms.dataLink.SMSPeer;
+import com.eis.smslibrary.SMSHandler;
+import com.eis.smslibrary.SMSMessage;
+import com.eis.smslibrary.SMSPeer;
 import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
 
 /**
