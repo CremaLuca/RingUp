@@ -74,7 +74,6 @@ public class RingtoneHandler {
      *
      * @param ringtone set as default
      */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void playRingtone(Ringtone ringtone) {
         playRingtone(ringtone, AudioAttributes.USAGE_ALARM);
     }

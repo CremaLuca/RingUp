@@ -3,38 +3,38 @@
 3    package="com.gruppo_4.preferences.test" >
 4
 5    <uses-sdk
-5-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:5:5-74
+5-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:5:5-74
 6        android:minSdkVersion="21"
-6-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:5:15-41
+6-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:5:15-41
 7        android:targetSdkVersion="29" />
-7-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:5:42-71
+7-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:5:42-71
 8
 9    <instrumentation
-9-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:11:5-15:79
+9-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:11:5-15:79
 10        android:name="androidx.test.runner.AndroidJUnitRunner"
-10-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:11:22-76
+10-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:11:22-76
 11        android:functionalTest="false"
-11-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:14:22-52
+11-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:14:22-52
 12        android:handleProfiling="false"
-12-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:13:22-53
+12-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:13:22-53
 13        android:label="Tests for com.gruppo_4.preferences.test"
-13-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:15:22-77
+13-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:15:22-77
 14        android:targetPackage="com.gruppo_4.preferences.test" />
-14-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:12:22-75
+14-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:12:22-75
 15
 16    <uses-permission android:name="android.permission.REORDER_TASKS" />
 16-->[androidx.test:core:1.2.0] C:\Users\letto\.gradle\caches\transforms-2\files-2.1\8b905dc169db8069fa57dc4a2866d2d4\core-1.2.0\AndroidManifest.xml:24:5-72
 16-->[androidx.test:core:1.2.0] C:\Users\letto\.gradle\caches\transforms-2\files-2.1\8b905dc169db8069fa57dc4a2866d2d4\core-1.2.0\AndroidManifest.xml:24:22-69
 17
 18    <application
-18-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:7:5-9:19
+18-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:7:5-9:19
 19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 19-->[androidx.core:core:1.1.0] C:\Users\letto\.gradle\caches\transforms-2\files-2.1\f01b27bb220ecb79298884ef36a7a2fb\core-1.1.0\AndroidManifest.xml:24:18-86
 20        android:debuggable="true" >
-20-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:7:18-43
+20-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:7:18-43
 21        <uses-library android:name="android.test.runner" />
-21-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:8:9-60
-21-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger6244352965116343994.xml:8:23-57
+21-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:8:9-60
+21-->C:\Users\letto\Desktop\LocalRepository\SMSApp\preferences\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger5382409171157088674.xml:8:23-57
 22
 23        <activity
 23-->[androidx.test:core:1.2.0] C:\Users\letto\.gradle\caches\transforms-2\files-2.1\8b905dc169db8069fa57dc4a2866d2d4\core-1.2.0\AndroidManifest.xml:27:9-33:20

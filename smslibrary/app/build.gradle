@@ -4,11 +4,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId 'com.gruppo4.SMSApp'
-        minSdkVersion 23
+        applicationId 'com.eis.smslibproject'
+        minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
-        versionName '0.01'
+        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,23 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.android.support:recyclerview-v7:29.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'org.jetbrains:annotations-java5:15.0'
-    implementation 'com.github.Cogno-IDU:smslibrary:v2.1'
-    implementation project(path: ':preferences')
+    implementation project(path: ':smslibrary')
 }

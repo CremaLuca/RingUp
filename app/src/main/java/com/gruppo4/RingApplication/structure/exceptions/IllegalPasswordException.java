@@ -5,6 +5,6 @@ package com.gruppo4.RingApplication.structure.exceptions;
  *
  * @author Alberto Ursino
  */
-public class WrongPasswordException extends RuntimeException {
+public class IllegalPasswordException extends RuntimeException {
 
 }
