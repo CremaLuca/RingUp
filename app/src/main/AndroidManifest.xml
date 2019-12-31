@@ -21,7 +21,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".structure.ReceivedMessageListener" />
+        <service
+            android:name=".structure.ReceivedMessageListener"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

@@ -28,7 +28,8 @@ import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
 import com.gruppo4.RingApplication.structure.*;
 import com.gruppo4.RingApplication.structure.dialog.*;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
-import com.gruppo_4.preferences.PreferencesManager;
+
+import it.lucacrema.preferences.PreferencesManager;
 
 /**
  * @author Gruppo4
@@ -58,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         Context context = getApplicationContext();
 
-        SMSManager smsManager = SMSManager.getInstance();
         RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
 
         passwordManager = new PasswordManager(context);
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             checkPermission();
         }
 
-        smsManager.setReceivedListener(ReceivedMessageListener.class, context);
+        SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, context);
 
         ringButton.setOnClickListener(v -> sendRingCommand());
     }

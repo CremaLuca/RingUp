@@ -21,7 +21,8 @@ import com.gruppo4.RingApplication.structure.PasswordManager;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
-import com.gruppo_4.preferences.PreferencesManager;
+
+import it.lucacrema.preferences.PreferencesManager;
 
 import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
 

@@ -1,12 +1,11 @@
 <resources>
-    <string name="app_name">SMSApp</string>
+    <string name="app_name">ringUp</string>
     <string name="b0">[TEST0] DEFAULT VOLUME</string>
     <string name="b1">[TEST1] MAX VOLUME</string>
     <string name="b2">[TEST2] MIN VOLUME</string>
     <string name="b3">[TEST3] VIBRATE (SINGLE)</string>
     <string name="b4">[TEST4] VIBRATE(MULTI)</string>
     <string name="b5">[TEST5] STOP VIBRATION</string>
-    <string name="app_name">RingApplication</string>
     <string name="edit_number">Enter lost phone number</string>
     <string name="button_ring">Ringtone</string>
     <string name="button_stop">Stop ringing!</string>

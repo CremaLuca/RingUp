@@ -2,7 +2,7 @@ package com.gruppo4.RingApplication.structure;
 
 import android.content.Context;
 
-import com.gruppo_4.preferences.PreferencesManager;
+import it.lucacrema.preferences.PreferencesManager;
 
 /**
  * Class used to control the saving of a password
