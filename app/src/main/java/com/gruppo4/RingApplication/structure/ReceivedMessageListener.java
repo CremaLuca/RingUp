@@ -16,16 +16,6 @@ import com.gruppo4.RingApplication.structure.exceptions.IllegalPasswordException
 public class ReceivedMessageListener extends SMSReceivedServiceListener {
 
     private RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
-    private Context context;
-
-    /**
-     * Constructor which define a context
-     *
-     * @param context The current application context
-     */
-    public ReceivedMessageListener(Context context) {
-        this.context = context;
-    }
 
     /**
      * Creation of the command upon receipt of the message
@@ -39,9 +29,9 @@ public class ReceivedMessageListener extends SMSReceivedServiceListener {
         RingCommand ringCommand = RingCommandHandler.getInstance().parseMessage(smsMessage);
         if (ringCommand != null)
             try {
-                AppManager.getInstance().onRingCommandReceived(context, ringCommand, ringtoneHandler.getDefaultRingtone(context));
+                AppManager.getInstance().onRingCommandReceived(getApplicationContext(), ringCommand, ringtoneHandler.getDefaultRingtone(getApplicationContext()));
             } catch (IllegalPasswordException e) {
-                Toast.makeText(context, smsMessage.getPeer() + " sent you a wrong password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), smsMessage.getPeer() + " sent you a wrong password", Toast.LENGTH_SHORT).show();
             }
         else
             Log.d("Invalid RingCommand", "The message received is not a valid RingCommand");
