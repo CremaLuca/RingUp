@@ -1,10 +1,13 @@
 package com.gruppo4.RingApplication;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         setContentView(R.layout.activity_main);
 
         setSupportActionBar(findViewById(R.id.actionBar));
+        createNotificationChannel();
 
         Context context = getApplicationContext();
 
@@ -71,12 +75,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         passwordField = findViewById(R.id.password_field);
         ringButton = findViewById(R.id.ring_button);
 
+        checkPermission();
+
         //Password stored: if NOT -> open the dialog, if YES -> check permissions
-        if (!passwordManager.isPassSaved()) {
+        if (!passwordManager.isPassSaved())
             openDialog();
-        } else {
-            checkPermission();
-        }
 
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, context);
 
@@ -94,6 +97,24 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             passwordDialog.show(getSupportFragmentManager(), "Device Password");
         } else {
             throw new IllegalCommandException();
+        }
+    }
+
+    /**
+     * Creates a notification channel
+     *
+     * @author Alberto Ursino. Sources: https://developer.android.com/training/notify-user/build-notification#java
+     */
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(AppManager.getInstance().getChannelId(),
+                    "Stop the ringtone", NotificationManager.IMPORTANCE_HIGH);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 
