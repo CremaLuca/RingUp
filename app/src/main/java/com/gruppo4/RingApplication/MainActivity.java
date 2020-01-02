@@ -194,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         if (password.isEmpty())
             Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
         else {
-            final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
             try {
+                final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
                 SMSSentListener smsSentListener = (message, sentState) ->
                         Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, smsSentListener);
