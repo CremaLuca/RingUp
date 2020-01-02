@@ -1,15 +1,18 @@
 package com.gruppo4.RingApplication;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
 import com.eis.smslibrary.SMSMessage;
@@ -45,13 +49,15 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
     private static final int WAIT_TIME_PERMISSION = 2000;
     private static final int WAIT_TIME_RINGTONE = 30 * 1000; //30 seconds by default
-    private Ringtone ringtone;
+    private static Ringtone ringtone;
     private EditText phoneNumberField;
     private EditText passwordField;
     private Button ringButton;
     private PasswordManager passwordManager = null;
     public static final String SETTINGS_NAME = "Settings";
     public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
+    public static final String CHANNEL_NAME = "TestChannelName";
+    public static final String CHANNEL_ID = "123";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         passwordManager = new PasswordManager(context);
 
         setupTimerValue();
+
+        //Only if the activity is started by a service
+        startFromService();
 
         ringtone = ringtoneHandler.getDefaultRingtone(getApplicationContext());
 
@@ -101,21 +110,85 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * Creates a notification channel
-     *
-     * @author Alberto Ursino. Sources: https://developer.android.com/training/notify-user/build-notification#java
+     * Creates the NotificationChannel, but only on API 26+ because
+     * the NotificationChannel class is new and not in the support library
+     * <p>
+     * Register the channel with the system; you can't change the importance
+     * or other notification behaviors after this
      */
     private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(AppManager.getInstance().getChannelId(),
-                    "Stop the ringtone", NotificationManager.IMPORTANCE_HIGH);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+            String description = "TestChannelDescription";
+            //IMPORTANCE_HIGH makes pop-up the notification
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(description);
+
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    /**
+     * Updates intent obtained from a service's call
+     *
+     * @param intent to updates
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        startFromService();
+    }
+
+    /**
+     * Manages action from intent
+     */
+    private void startFromService() {
+        Log.d("MainActivity", "startFromService called");
+        Intent intent = getIntent();
+        if (intent != null) {
+            switch (intent.getAction()) {
+                case AppManager.ALERT_ACTION: {
+                    createStopRingDialog();
+                    Log.d("MainActivity", "Creating StopRingDialog...");
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Creates and shows AlertDialog with one option:
+     * [stop] --> stop the ringtone and cancel the notification
+     */
+    private void createStopRingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Your phone is ringing, stop it from here if you want");
+        builder.setCancelable(true);
+        Log.d("MainActivity", "StopRingDialog created");
+
+        builder.setPositiveButton(
+                "Stop", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        AppManager appManager = AppManager.getInstance();
+                        appManager.stopRingtone();
+                        Log.d("MainActivity", "Stopping ringtone");
+                        //cancel the right notification by id
+                        int id = getIntent().getIntExtra(appManager.NOTIFICATION_ID, -1);
+                        NotificationManagerCompat.from(getApplicationContext()).cancel(id);
+                        Log.d("MainActivity", "Notification " + id + " cancelled");
+                        dialogInterface.dismiss();
+                    }
+                }
+        );
+
+        AlertDialog alert = builder.create();
+        alert.show();
+        Log.d("MainActivity", "Showing StopRingDialog...");
     }
 
     /**

@@ -1,8 +1,6 @@
 package com.gruppo4.RingApplication.structure;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.listeners.SMSReceivedServiceListener;
@@ -31,7 +29,7 @@ public class ReceivedMessageListener extends SMSReceivedServiceListener {
             try {
                 AppManager.getInstance().onRingCommandReceived(getApplicationContext(), ringCommand, ringtoneHandler.getDefaultRingtone(getApplicationContext()));
             } catch (IllegalPasswordException e) {
-                Toast.makeText(getApplicationContext(), smsMessage.getPeer() + " sent you a wrong password", Toast.LENGTH_SHORT).show();
+                Log.d("Invalid Password", "Password received is not valid");
             }
         else
             Log.d("Invalid RingCommand", "The message received is not a valid RingCommand");
