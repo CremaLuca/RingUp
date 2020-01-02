@@ -1,22 +1,26 @@
 package com.gruppo4.RingApplication;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Ringtone;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
 import com.eis.smslibrary.SMSPeer;
@@ -35,18 +39,18 @@ import it.lucacrema.preferences.PreferencesManager;
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
     static final int CHANGE_PASS_COMMAND = 0;
-    private static final int SET_PASS_COMMAND = 1;
-    private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
-    private static final int WAIT_TIME_RINGTONE = 30 * 1000; //30 seconds by default
-    private static final int WAIT_TIME_PERMISSION = 1500;
-    private Ringtone ringtone;
     private EditText phoneNumberField;
     private EditText passwordField;
     private Button ringButton;
     private PasswordManager passwordManager;
-    private RingtoneHandler ringtoneHandler;
+    private static final int SET_PASS_COMMAND = 1;
+    private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
+    private static final int WAIT_TIME_RINGTONE = 30 * 1000; //30 seconds by default
+    private static final int WAIT_TIME_PERMISSION = 1500;
     public static final String SETTINGS_NAME = "Settings";
     public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
+    public static final String CHANNEL_NAME = "TestChannelName";
+    public static final String CHANNEL_ID = "123";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         //Setting up the action bar
         setSupportActionBar(findViewById(R.id.actionBar));
+        createNotificationChannel();
 
         //Checking the if permissions are granted
         requestPermissions();
@@ -62,8 +67,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         //Setting up the timer
         setupTimerValue();
 
-        ringtoneHandler = RingtoneHandler.getInstance();
-        ringtone = ringtoneHandler.getDefaultRingtone(getApplicationContext());
+        //Only if the activity is started by a service
+        startFromService();
+
         passwordManager = new PasswordManager(getApplicationContext());
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
@@ -71,8 +77,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         //A dialog will be opened if password is not stored
         if (!passwordManager.isPassSaved())
-            openDialog();
+            openDialog(SET_PASS_COMMAND);
 
+        //Setting up the listener in order to receive messages
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, getApplicationContext());
 
         ringButton.setOnClickListener(v -> sendRingCommand());
@@ -81,28 +88,104 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     /**
      * Creates the dialog used to insert a non empty password or exit/abort
      *
-     * @throws IllegalCommandException
+     * @param command Specified type of dialog that should be opened, represented by an int value
+     * @throws IllegalCommandException usually thrown when the dialog command passed is not valid
+     * @author Alberto Ursino
      */
-    void openDialog() throws IllegalCommandException {
-        if (PasswordDialog.isCommandSetPass(SET_PASS_COMMAND)) {
-            PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
-            passwordDialog.show(getSupportFragmentManager(), "Device Password");
-        } else {
-            throw new IllegalCommandException();
+    void openDialog(int command) throws IllegalCommandException {
+        switch (command) {
+            case SET_PASS_COMMAND:
+                PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
+                passwordDialog.show(getSupportFragmentManager(), "Device Password");
+                break;
+            default:
+                throw new IllegalCommandException();
         }
     }
 
     /**
-     * Method used to stop the ringtone when the user presses on the button
-     *
-     * @param view of the application
+     * Creates the NotificationChannel, but only on API 26+ because
+     * the NotificationChannel class is new and not in the support library
+     * <p>
+     * Register the channel with the system; you can't change the importance
+     * or other notification behaviors after this
      */
-    public void stopRingtone(View view) {
-        RingtoneHandler.getInstance().stopRingtone(ringtone);
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String description = "TestChannelDescription";
+            //IMPORTANCE_HIGH makes pop-up the notification
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     /**
-     * Method used to send the ring command when the user presses on the "RING" button
+     * Updates intent obtained from a service's call
+     *
+     * @param intent to updates
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        startFromService();
+    }
+
+    /**
+     * Manages action from intent
+     */
+    private void startFromService() {
+        Log.d("MainActivity", "startFromService called");
+        Intent intent = getIntent();
+        if (intent != null) {
+            switch (intent.getAction()) {
+                case AppManager.ALERT_ACTION: {
+                    createStopRingDialog();
+                    Log.d("MainActivity", "Creating StopRingDialog...");
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Creates and shows AlertDialog with one option:
+     * [stop] --> stop the ringtone and cancel the notification
+     */
+    private void createStopRingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Your phone is ringing, stop it from here if you want");
+        builder.setCancelable(true);
+        Log.d("MainActivity", "StopRingDialog created");
+
+        builder.setPositiveButton(
+                "Stop", (dialogInterface, i) -> {
+                    AppManager.getInstance().stopRingtone();
+                    Log.d("MainActivity", "Stopping ringtone");
+                    //cancel the right notification by id
+                    int id = getIntent().getIntExtra(AppManager.NOTIFICATION_ID, -1);
+                    NotificationManagerCompat.from(getApplicationContext()).cancel(id);
+                    Log.d("MainActivity", "Notification " + id + " cancelled");
+                    dialogInterface.dismiss();
+                }
+        );
+
+        AlertDialog alert = builder.create();
+        alert.show();
+        Log.d("MainActivity", "Showing StopRingDialog...");
+    }
+
+    /**
+     * Method used to send the ring command through the {@link AppManager#sendCommand(Context, RingCommand, SMSSentListener)} method
+     *
+     * @author Alberto Ursino
+     * @author Luca Crema
      */
     public void sendRingCommand() {
         String phoneNumber = phoneNumberField.getText().toString();
@@ -111,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         if (password.isEmpty())
             Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
         else {
-            final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), createPassword(password));
+            final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
             try {
                 SMSSentListener smsSentListener = (message, sentState) ->
                         Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
@@ -125,15 +208,9 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * @param password given by the user
-     * @return the passwords with a special character at the beginning
-     */
-    private String createPassword(String password) {
-        return SPLIT_CHARACTER + password;
-    }
-
-    /**
      * Opens a new activity with the application settings
+     *
+     * @author Alberto Ursino
      */
     public void openSettingsActivity() {
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -142,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Controls if a timer value is present on memory, if not we need a default value -> 30 seconds
+     *
+     * @author Luca Crema
      */
     private void setupTimerValue() {
         if (PreferencesManager.getInt(getApplicationContext(), TIMEOUT_TIME_PREFERENCES_KEY) == (PreferencesManager.DEFAULT_INTEGER_RETURN)) {
@@ -151,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * @return true if the app has both RECEIVE_SMS and SEND_SMS permissions, false otherwise
+     * @author Alberto Ursino
      */
     public boolean checkPermissions() {
         Context context = getApplicationContext();
@@ -160,6 +240,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Checks if permissions are granted, if not then requests them to the user
+     *
+     * @author Alberto Ursino
      */
     public void requestPermissions() {
         if (!checkPermissions())

@@ -1,8 +1,6 @@
 package com.gruppo4.RingApplication.structure;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.listeners.SMSReceivedServiceListener;
@@ -28,22 +26,17 @@ public class ReceivedMessageListener extends SMSReceivedServiceListener {
      * @param smsMessage A valid SMSMessage object received
      */
     @Override
-    public void onMessageReceived(SMSMessage smsMessage){
+    public void onMessageReceived(SMSMessage smsMessage) {
         Log.d(TAG, "Received a message in the service");
         RingCommand ringCommand = RingCommandHandler.getInstance().parseMessage(smsMessage);
-        Context appContext = getApplicationContext();
-
-        if (ringCommand == null) {
-            Log.w(TAG, "The message received is not a valid RingCommand");
-            return;
-        }
-
-        try {
-            AppManager.getInstance().onRingCommandReceived(appContext, ringCommand, ringtoneHandler.getDefaultRingtone(appContext));
-        } catch (IllegalPasswordException e) {
-            Toast.makeText(appContext, String.format(getString(R.string.number_sent_you_wrong_password), smsMessage.getPeer()), Toast.LENGTH_SHORT).show();
-        }
-
+        if (ringCommand != null)
+            try {
+                AppManager.getInstance().onRingCommandReceived(getApplicationContext(), ringCommand, ringtoneHandler.getDefaultRingtone(getApplicationContext()));
+            } catch (IllegalPasswordException e) {
+                Log.d("Invalid Password", "Password received is not valid");
+            }
+        else
+            Log.d("Invalid RingCommand", "The message received is not a valid RingCommand");
     }
 
 }

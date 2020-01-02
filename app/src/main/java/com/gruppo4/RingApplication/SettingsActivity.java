@@ -24,6 +24,7 @@ import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
 
 /**
  * @author Alberto Ursino
+ * @author Luca Crema
  */
 public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener {
 
@@ -42,13 +43,15 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         FloatingActionButton changePasswordButton = findViewById(R.id.change_password_button);
 
         //Button used to open a dialog where the user can change the password
-        changePasswordButton.setOnClickListener(v -> openDialog());
+        changePasswordButton.setOnClickListener(v -> openDialog(CHANGE_PASS_COMMAND));
 
     }
 
     /**
      * Sets up the timer spinner by populating it and set default to previous selection
      * Also adds the callback for spinner value changed
+     *
+     * @author Luca Crema
      */
     private void setupTimeSpinner() {
         Spinner spinner = findViewById(R.id.timeout_time_spinner);
@@ -83,10 +86,11 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
     }
 
     /**
-     * Looks into preferences and finds the current timeout time, checks every timer_values resources array and
+     * Searches for the current timeout value with {@link PreferencesManager}, checks every timer_values resources array and
      * finds the index of the current timeout time
      *
-     * @return
+     * @return the found timer value
+     * @author Luca Crema
      */
     private int findCurrentTimeoutSpinnerIndex() {
         int[] resourcesTimerValues = getResources().getIntArray(R.array.timer_values);
@@ -105,16 +109,20 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
     }
 
     /**
-     * Creates the dialog used to insert a valid password or exit/abort
+     * Creates the dialog used to insert a non empty password or exit/abort
      *
-     * @throws IllegalCommandException
+     * @param command Specified type of dialog that should be opened, represented by an int value
+     * @throws IllegalCommandException usually thrown when the dialog command passed is not valid
+     * @author Alberto Ursino
      */
-    void openDialog() {
-        if (PasswordDialog.isCommandChangePass(CHANGE_PASS_COMMAND)) {
-            PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
-            passwordDialog.show(getSupportFragmentManager(), "Change Password");
-        } else {
-            throw new IllegalCommandException();
+    void openDialog(int command) throws IllegalCommandException {
+        switch (command) {
+            case CHANGE_PASS_COMMAND:
+                PasswordDialog passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
+                passwordDialog.show(getSupportFragmentManager(), "Device Password");
+                break;
+            default:
+                throw new IllegalCommandException();
         }
     }
 
