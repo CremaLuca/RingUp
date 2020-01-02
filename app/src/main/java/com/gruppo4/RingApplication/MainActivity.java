@@ -19,12 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.eis.smslibrary.SMSManager;
-import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
-import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
 import com.gruppo4.RingApplication.structure.*;
 import com.gruppo4.RingApplication.structure.dialog.*;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
@@ -34,19 +32,19 @@ import it.lucacrema.preferences.PreferencesManager;
 /**
  * @author Gruppo4
  */
-public class MainActivity extends AppCompatActivity implements PasswordDialogListener, PermissionInterface {
+public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
-    private static final int PERMISSION_CODE = 0;
     static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
     private static final String SPLIT_CHARACTER = RingCommandHandler.SPLIT_CHARACTER;
-    private static final int WAIT_TIME_PERMISSION = 2000;
     private static final int WAIT_TIME_RINGTONE = 30 * 1000; //30 seconds by default
+    private static final int WAIT_TIME_PERMISSION = 1500;
     private Ringtone ringtone;
     private EditText phoneNumberField;
     private EditText passwordField;
     private Button ringButton;
-    private PasswordManager passwordManager = null;
+    private PasswordManager passwordManager;
+    private RingtoneHandler ringtoneHandler;
     public static final String SETTINGS_NAME = "Settings";
     public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
 
@@ -55,30 +53,27 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Setting up the action bar
         setSupportActionBar(findViewById(R.id.actionBar));
 
-        Context context = getApplicationContext();
+        //Checking the if permissions are granted
+        requestPermissions();
 
-        RingtoneHandler ringtoneHandler = RingtoneHandler.getInstance();
-
-        passwordManager = new PasswordManager(context);
-
+        //Setting up the timer
         setupTimerValue();
 
+        ringtoneHandler = RingtoneHandler.getInstance();
         ringtone = ringtoneHandler.getDefaultRingtone(getApplicationContext());
-
+        passwordManager = new PasswordManager(getApplicationContext());
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
         ringButton = findViewById(R.id.ring_button);
 
-        //Password stored: if NOT -> open the dialog, if YES -> check permissions
-        if (!passwordManager.isPassSaved()) {
+        //A dialog will be opened if password is not stored
+        if (!passwordManager.isPassSaved())
             openDialog();
-        } else {
-            checkPermission();
-        }
 
-        SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, context);
+        SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, getApplicationContext());
 
         ringButton.setOnClickListener(v -> sendRingCommand());
     }
@@ -113,17 +108,13 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         String phoneNumber = phoneNumberField.getText().toString();
         String password = passwordField.getText().toString();
 
-        if (password.equals(""))
+        if (password.isEmpty())
             Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
         else {
             final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), createPassword(password));
             try {
-                SMSSentListener smsSentListener = new SMSSentListener() {
-                    @Override
-                    public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
+                SMSSentListener smsSentListener = (message, sentState) ->
                         Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
-                    }
-                };
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, smsSentListener);
             } catch (InvalidTelephoneNumberException e) {
                 Toast.makeText(getApplicationContext(), "Invalid phone number", Toast.LENGTH_SHORT).show();
@@ -158,6 +149,23 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }
     }
 
+    /**
+     * @return true if the app has both RECEIVE_SMS and SEND_SMS permissions, false otherwise
+     */
+    public boolean checkPermissions() {
+        Context context = getApplicationContext();
+        return (context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) &&
+                (context.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    /**
+     * Checks if permissions are granted, if not then requests them to the user
+     */
+    public void requestPermissions() {
+        if (!checkPermissions())
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 0);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -175,27 +183,16 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-            finish();
-            System.exit(0);
+            Toast.makeText(getApplicationContext(), "The application needs these permissions", Toast.LENGTH_SHORT).show();
+            //Let's wait the toast ends
+            Handler handler = new Handler();
+            handler.postDelayed(() -> requestPermissions(), WAIT_TIME_PERMISSION);
         }
     }
 
     @Override
     public void onPasswordSet(String password, Context context) {
         passwordManager.setPassword(password);
-        //Ask for permission after a short period of time
-        waitForPermissions(WAIT_TIME_PERMISSION);
     }
 
-    @Override
-    public void checkPermission() {
-        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
-            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
-    }
-
-    @Override
-    public void waitForPermissions(int time) {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> checkPermission(), time);
-    }
 }

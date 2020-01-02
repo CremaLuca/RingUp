@@ -1,11 +1,8 @@
 package com.gruppo4.RingApplication;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +13,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.gruppo4.RingApplication.structure.Interfaces.PermissionInterface;
 import com.gruppo4.RingApplication.structure.PasswordManager;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
@@ -29,11 +25,9 @@ import static com.gruppo4.RingApplication.MainActivity.CHANGE_PASS_COMMAND;
 /**
  * @author Alberto Ursino
  */
-public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener, PermissionInterface {
+public class SettingsActivity extends AppCompatActivity implements PasswordDialogListener {
 
     public static final int DEFAULT_TIMER_VALUE = 30000;
-    private static final int WAIT_TIME = 2000;
-    private static final int PERMISSION_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +102,6 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
     public void onPasswordSet(String password, Context context) {
         new PasswordManager(context).setPassword(password);
         Toast.makeText(getApplicationContext(), "Password saved", Toast.LENGTH_SHORT).show();
-        waitForPermissions(WAIT_TIME);
     }
 
     /**
@@ -123,18 +116,6 @@ public class SettingsActivity extends AppCompatActivity implements PasswordDialo
         } else {
             throw new IllegalCommandException();
         }
-    }
-
-    @Override
-    public void checkPermission() {
-        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
-            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE);
-    }
-
-    @Override
-    public void waitForPermissions(int time) {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> checkPermission(), time);
     }
 
 }
