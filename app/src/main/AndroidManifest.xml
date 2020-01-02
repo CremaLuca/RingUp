@@ -7,12 +7,14 @@
 
     <application
         android:allowBackup="true"
-        android:label="ringUp"
         android:icon="@mipmap/first_icon"
+        android:label="ringUp"
         android:roundIcon="@mipmap/first_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".SettingsActivity" android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +28,13 @@
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".NotificationActionReceiver">
+            <intent-filter>
+                <action android:name="stopAction" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

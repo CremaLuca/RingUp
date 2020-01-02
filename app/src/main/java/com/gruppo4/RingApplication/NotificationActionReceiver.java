@@ -1,10 +1,12 @@
-package com.gruppo4.RingApplication.structure;
+package com.gruppo4.RingApplication;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
 import androidx.core.app.NotificationManagerCompat;
+
+import com.gruppo4.RingApplication.structure.AppManager;
 
 /**
  * Manages the result of an action triggered by a notification

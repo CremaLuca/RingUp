@@ -17,6 +17,7 @@ import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
 import com.gruppo4.RingApplication.MainActivity;
+import com.gruppo4.RingApplication.NotificationActionReceiver;
 import com.gruppo4.RingApplication.R;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalPasswordException;
 
