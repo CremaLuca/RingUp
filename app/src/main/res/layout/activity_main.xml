@@ -31,11 +31,9 @@
         android:id="@+id/phone_number_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="70dp"
+        android:layout_marginTop="80dp"
         android:ems="10"
-        android:hint="+39..."
+        android:hint="phone number"
         android:inputType="phone"
         android:textAlignment="center"
         android:textStyle="italic"
@@ -48,6 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="70dp"
         android:ems="10"
         android:hint="password"
@@ -60,15 +59,37 @@
 
     <Button
         android:id="@+id/ring_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#504C4C"
-        android:text="ring"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/button_background"
+        android:text="R"
         android:textColor="#FFFFFF"
+        android:textSize="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_field" />
+
+    <Button
+        android:id="@+id/change_pass_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="110dp"
+        android:background="@drawable/change_pass_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ring_button"
+        app:layout_constraintTop_toBottomOf="@+id/password_field" />
+
+    <TextView
+        android:id="@+id/alpha_edition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="alpha edition"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

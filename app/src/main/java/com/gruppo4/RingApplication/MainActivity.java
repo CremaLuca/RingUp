@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,24 +30,19 @@ import com.gruppo4.RingApplication.structure.*;
 import com.gruppo4.RingApplication.structure.dialog.*;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
 
-import it.lucacrema.preferences.PreferencesManager;
-
 /**
  * @author Gruppo4
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
     static final int CHANGE_PASS_COMMAND = 0;
-    private EditText phoneNumberField;
-    private EditText passwordField;
-    private Button ringButton;
+    private EditText phoneNumberField, passwordField;
+    private Button ringButton, changePasswordButton;
     private PasswordManager passwordManager;
     private static final int SET_PASS_COMMAND = 1;
     private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
-    private static final int WAIT_TIME_RINGTONE = 30 * 1000; //30 seconds by default
     private static final int WAIT_TIME_PERMISSION = 1500;
-    public static final String SETTINGS_NAME = "Settings";
-    public final static String TIMEOUT_TIME_PREFERENCES_KEY = "Timer";
+    private static final String DIALOG_TAG = "Device Password";
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
 
@@ -64,9 +58,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         //Checking the if permissions are granted
         requestPermissions();
 
-        //Setting up the timer
-        setupTimerValue();
-
         //Only if the activity is started by a service
         startFromService();
 
@@ -74,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
         ringButton = findViewById(R.id.ring_button);
+        changePasswordButton = findViewById(R.id.change_pass_button);
 
         //A dialog will be opened if password is not stored
         if (!passwordManager.isPassSaved())
@@ -83,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, getApplicationContext());
 
         ringButton.setOnClickListener(v -> sendRingCommand());
+        changePasswordButton.setOnClickListener(v -> openDialog(CHANGE_PASS_COMMAND));
     }
 
     /**
@@ -93,10 +86,15 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @author Alberto Ursino
      */
     void openDialog(int command) throws IllegalCommandException {
+        PasswordDialog passwordDialog;
         switch (command) {
             case SET_PASS_COMMAND:
-                PasswordDialog passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
-                passwordDialog.show(getSupportFragmentManager(), "Device Password");
+                passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
+                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
+                break;
+            case CHANGE_PASS_COMMAND:
+                passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
+                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
                 break;
             default:
                 throw new IllegalCommandException();
@@ -147,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                     Log.d("MainActivity", "Creating StopRingDialog...");
                     break;
                 }
-
                 default:
                     break;
             }
@@ -208,27 +205,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     }
 
     /**
-     * Opens a new activity with the application settings
-     *
-     * @author Alberto Ursino
-     */
-    public void openSettingsActivity() {
-        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * Controls if a timer value is present on memory, if not we need a default value -> 30 seconds
-     *
-     * @author Luca Crema
-     */
-    private void setupTimerValue() {
-        if (PreferencesManager.getInt(getApplicationContext(), TIMEOUT_TIME_PREFERENCES_KEY) == (PreferencesManager.DEFAULT_INTEGER_RETURN)) {
-            PreferencesManager.setInt(getApplicationContext(), TIMEOUT_TIME_PREFERENCES_KEY, WAIT_TIME_RINGTONE);
-        }
-    }
-
-    /**
      * @return true if the app has both RECEIVE_SMS and SEND_SMS permissions, false otherwise
      * @author Alberto Ursino
      */
@@ -246,20 +222,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public void requestPermissions() {
         if (!checkPermissions())
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 0);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle().toString().equals(SETTINGS_NAME))
-            openSettingsActivity();
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

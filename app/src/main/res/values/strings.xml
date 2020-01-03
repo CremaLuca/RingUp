@@ -1,16 +1,5 @@
 <resources>
     <string name="app_name">ringUp</string>
-    <string name="b0">[TEST0] DEFAULT VOLUME</string>
-    <string name="b1">[TEST1] MAX VOLUME</string>
-    <string name="b2">[TEST2] MIN VOLUME</string>
-    <string name="b3">[TEST3] VIBRATE (SINGLE)</string>
-    <string name="b4">[TEST4] VIBRATE(MULTI)</string>
-    <string name="b5">[TEST5] STOP VIBRATION</string>
-    <string name="edit_number">Enter lost phone number</string>
-    <string name="button_ring">Ringtone</string>
-    <string name="button_stop">Stop ringing!</string>
-    <string name="button_alarm">Alarm</string>
-    <string name="settings_name">Settings</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main2">Action Bar</string>
     <string name="number_sent_you_wrong_password">%s sent you a wrong password</string>
 </resources>

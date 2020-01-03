@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:29.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'org.jetbrains:annotations-java5:15.0'
-    implementation 'com.github.Cogno-IDU:smslibrary:-SNAPSHOT'
+    implementation 'com.github.AlbertoUrsino:smslibrary:service-at-boot-time-SNAPSHOT'
     implementation 'com.github.CremaLuca:android-preferences:v3.1.1'
+    //implementation 'com.github.Cogno-IDU:smslibrary:-SNAPSHOT'
 }
