@@ -33,6 +33,7 @@ public class AppManager {
     public final static String ALERT_ACTION = "alertAction";
     public final static String NOTIFICATION_ID = "notificationID";
     private static Ringtone defaultRing;
+    public static int notificationFlag = 0;
 
     /**
      * Instance of the class that is instantiated in getInstance method
@@ -74,7 +75,8 @@ public class AppManager {
         //Timer: the defaultRing is playing for TIMEOUT_TIME seconds.
         new Handler(Looper.getMainLooper()).postDelayed(() -> stopRingtone(), TIMEOUT_TIME);
 
-        createNotification(context);
+        if (notificationFlag == 0)
+            createNotification(context);
     }
 
     /**
@@ -95,6 +97,8 @@ public class AppManager {
      * @author Implemented by Alberto Ursino
      */
     private void createNotification(Context context) {
+
+        notificationFlag++;
 
         final int notification_id = (int) System.currentTimeMillis();
 
