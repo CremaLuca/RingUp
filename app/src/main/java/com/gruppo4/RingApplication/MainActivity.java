@@ -39,11 +39,11 @@ import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
-    static final int CHANGE_PASS_COMMAND = 0;
+    private static final int CHANGE_PASS_COMMAND = 0;
+    private static final int SET_PASS_COMMAND = 1;
     private EditText phoneNumberField, passwordField;
     private Button ringButton;
     private PasswordManager passwordManager;
-    private static final int SET_PASS_COMMAND = 1;
     private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
     private static final int WAIT_TIME_PERMISSION = 1500;
     private static final int WAIT_TIME_RING_BTN_ENABLED = 5 * 1000;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
     public static final String BAR_TITLE = "ringUp";
+    private static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Stop Ringtone Notification";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,28 +63,26 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         toolbar.setTitle(BAR_TITLE);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-        createNotificationChannel();
 
         //Checking the if permissions are granted
         requestPermissions();
 
-        //Only if the activity is started by a service
-        startFromService();
-
         passwordManager = new PasswordManager(getApplicationContext());
-        phoneNumberField = findViewById(R.id.phone_number_field);
-        passwordField = findViewById(R.id.password_field);
-        ringButton = findViewById(R.id.ring_button);
-
-        //A dialog will be opened if password is not stored
+        //If the device password is not already set, a dialog will be open
         if (!passwordManager.isPassSaved())
             openDialog(SET_PASS_COMMAND);
 
-        //Setting up the listener in order to receive messages
+        createNotificationChannel();
+
+        //Only if the activity is started by a service
+        startFromService();
+
+        //Setting up the custom listener in order to receive messages
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, getApplicationContext());
-
+        phoneNumberField = findViewById(R.id.phone_number_field);
+        passwordField = findViewById(R.id.password_field);
+        ringButton = findViewById(R.id.ring_button);
         ringButton.setOnClickListener(v -> sendRingCommand());
-
     }
 
 
@@ -101,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     /**
      * Called when the user selects an item from the {@link menu/app_menu.xml}
+     *
+     * @author Alberto Ursino
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -145,20 +146,23 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String description = "TestChannelDescription";
             //IMPORTANCE_HIGH makes pop-up the notification
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription(description);
+            channel.setDescription(NOTIFICATION_CHANNEL_DESCRIPTION);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            } else {
+                Log.d("Notification Manager", "getSystemService(NotificationManager.class) returns a null object");
+            }
         }
     }
 
     /**
      * Updates intent obtained from a service's call
      *
-     * @param intent to updates
+     * @param intent to handle
      */
     @Override
     protected void onNewIntent(Intent intent) {
@@ -183,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 default:
                     break;
             }
+        } else {
+            Log.d("startFromService intent", "getIntent returns a null intent");
         }
     }
 
@@ -192,12 +198,12 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      */
     private void createStopRingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Your phone is ringing, stop it from here if you want");
+        builder.setMessage(getString(R.string.text_stop_ring_dialog));
         builder.setCancelable(true);
         Log.d("MainActivity", "StopRingDialog created");
 
         builder.setPositiveButton(
-                "Stop", (dialogInterface, i) -> {
+                getString(R.string.text_notification_button), (dialogInterface, i) -> {
                     AppManager.getInstance().stopRingtone();
                     Log.d("MainActivity", "Stopping ringtone");
                     //cancel the right notification by id
@@ -224,38 +230,30 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         String password = passwordField.getText().toString();
 
         if (password.isEmpty() && phoneNumber.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Insert a number and its password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_pass_phone_number_absent), Toast.LENGTH_SHORT).show();
         } else if (phoneNumber.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Insert a number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_phone_number_absent), Toast.LENGTH_SHORT).show();
         } else if (password.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_password_absent), Toast.LENGTH_SHORT).show();
         } else {
             try {
                 //Creation of the ring command
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
 
-                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, new SMSSentListener() {
-                    @Override
-                    public void onSMSSent(SMSMessage message, SMSMessage.SentState sentState) {
-                        Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
-                        ringButton.setEnabled(true);
-                    }
+                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (message, sentState) -> {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_message_sent_listener) + phoneNumber, Toast.LENGTH_SHORT).show();
+                    ringButton.setEnabled(true);
                 });
                 ringButton.setEnabled(false);
             } catch (InvalidTelephoneNumberException e) {
-                Toast.makeText(getApplicationContext(), "Invalid phone number", Toast.LENGTH_SHORT).show();
-            } catch (InvalidSMSMessageException e) {
-                //This should never happen, the message is a prefixed code, user has nothing to do with it
+                Toast.makeText(getApplicationContext(), getString(R.string.toast_invalid_phone_number), Toast.LENGTH_SHORT).show();
             }
 
             //Sets the button enabled after a while
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!ringButton.isEnabled())
-                        ringButton.setEnabled(true);
-                }
+            handler.postDelayed(() -> {
+                if (!ringButton.isEnabled())
+                    ringButton.setEnabled(true);
             }, WAIT_TIME_RING_BTN_ENABLED);
         }
     }
@@ -289,13 +287,16 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-            Toast.makeText(getApplicationContext(), "The application needs these permissions", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
             //Let's wait the toast ends
             Handler handler = new Handler();
             handler.postDelayed(() -> requestPermissions(), WAIT_TIME_PERMISSION);
         }
     }
 
+    /**
+     * Overridden method used to capture the set password in the dialog
+     */
     @Override
     public void onPasswordSet(String password, Context context) {
         passwordManager.setPassword(password);
