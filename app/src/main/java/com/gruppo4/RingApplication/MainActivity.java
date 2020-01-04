@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     static final int CHANGE_PASS_COMMAND = 0;
     private EditText phoneNumberField, passwordField;
-    private Button ringButton;
+    private ImageButton ringButton;
     private PasswordManager passwordManager;
     private static final int SET_PASS_COMMAND = 1;
     private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
@@ -221,9 +222,13 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         String phoneNumber = phoneNumberField.getText().toString();
         String password = passwordField.getText().toString();
 
-        if (password.isEmpty())
+        if (password.isEmpty() && phoneNumber.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Insert a number and its password", Toast.LENGTH_SHORT).show();
+        } else if (phoneNumber.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Insert a number", Toast.LENGTH_SHORT).show();
+        } else if (password.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
-        else {
+        } else {
             try {
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
                 SMSSentListener smsSentListener = (message, sentState) ->
