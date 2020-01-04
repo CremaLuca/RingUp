@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -26,6 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
+import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final int SET_PASS_COMMAND = 1;
     private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
     private static final int WAIT_TIME_PERMISSION = 1500;
+    private static final int WAIT_TIME_RING_BTN_ENABLED = 5000;
     private static final String DIALOG_TAG = "Device Password";
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
@@ -222,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         String phoneNumber = phoneNumberField.getText().toString();
         String password = passwordField.getText().toString();
 
+        if (!ringButton.isEnabled())
+            Toast.makeText(getApplicationContext(), "Button isn't enable", Toast.LENGTH_SHORT).show();
         if (password.isEmpty() && phoneNumber.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Insert a number and its password", Toast.LENGTH_SHORT).show();
         } else if (phoneNumber.isEmpty()) {
@@ -230,10 +233,26 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             Toast.makeText(getApplicationContext(), "Insert a password", Toast.LENGTH_SHORT).show();
         } else {
             try {
+                ringButton.setEnabled(false);
+
+                //Creation of the ring command
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
-                SMSSentListener smsSentListener = (message, sentState) ->
-                        Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
+
+                SMSSentListener smsSentListener = (SMSMessage message, SMSMessage.SentState sentState) -> {
+                    Toast.makeText(getApplicationContext(), "Command sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
+                };
+
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, smsSentListener);
+
+                //Sets the button enabled after a while
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ringButton.setEnabled(true);
+                    }
+                }, WAIT_TIME_RING_BTN_ENABLED);
+
             } catch (InvalidTelephoneNumberException e) {
                 Toast.makeText(getApplicationContext(), "Invalid phone number", Toast.LENGTH_SHORT).show();
             } catch (InvalidSMSMessageException e) {
