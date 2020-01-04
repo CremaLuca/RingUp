@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,32 +84,31 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     }
 
-    /**
-     * Called when the user presses an {@code item} in the status bar
-     *
-     * @author Alberto Ursino
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.change_password_action:
-                openDialog(CHANGE_PASS_COMMAND);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     /**
-     * Method used to show up the {@link menu/changepassword.xml}
+     * Method used to show up the {@link menu/app_menu.xml}
      *
      * @author Alberto Ursino
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.changepassword, menu);
+        inflater.inflate(R.menu.app_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Called when the user selects an item from the {@link menu/app_menu.xml}
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_password_menu_item:
+                openDialog(CHANGE_PASS_COMMAND);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
