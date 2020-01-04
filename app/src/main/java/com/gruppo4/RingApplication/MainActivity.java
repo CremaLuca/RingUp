@@ -7,18 +7,22 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     static final int CHANGE_PASS_COMMAND = 0;
     private EditText phoneNumberField, passwordField;
-    private Button ringButton, changePasswordButton;
+    private Button ringButton;
     private PasswordManager passwordManager;
     private static final int SET_PASS_COMMAND = 1;
     private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final String DIALOG_TAG = "Device Password";
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
+    public static final String BAR_TITLE = "ringUp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,10 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         setContentView(R.layout.activity_main);
 
         //Setting up the action bar
-        setSupportActionBar(findViewById(R.id.actionBar));
+        Toolbar toolbar = findViewById(R.id.actionBar);
+        toolbar.setTitle(BAR_TITLE);
+        toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
         createNotificationChannel();
 
         //Checking the if permissions are granted
@@ -65,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
         ringButton = findViewById(R.id.ring_button);
-        changePasswordButton = findViewById(R.id.change_pass_button);
 
         //A dialog will be opened if password is not stored
         if (!passwordManager.isPassSaved())
@@ -75,7 +82,35 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, getApplicationContext());
 
         ringButton.setOnClickListener(v -> sendRingCommand());
-        changePasswordButton.setOnClickListener(v -> openDialog(CHANGE_PASS_COMMAND));
+
+    }
+
+    /**
+     * Called when the user presses an {@code item} in the status bar
+     *
+     * @author Alberto Ursino
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_password_action:
+                openDialog(CHANGE_PASS_COMMAND);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Method used to show up the {@link menu/changepassword.xml}
+     *
+     * @author Alberto Ursino
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.changepassword, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -224,6 +259,12 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 0);
     }
 
+    /**
+     * Callback for the permissions request
+     *
+     * @author Alberto Ursino
+     * @author Luca Crema
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
