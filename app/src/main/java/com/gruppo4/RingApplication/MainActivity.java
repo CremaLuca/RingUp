@@ -250,24 +250,28 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 });
                 ringButton.setEnabled(false);
                 adviceTextView.setText(adviceText);
+
+                //Button disabling
+                new CountDownTimer(WAIT_TIME_RING_BTN_ENABLED, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        timerValue = (int) millisUntilFinished;
+                        adviceTextView.setText("Wait " + timerValue / 1000 + " seconds for send a new find request");
+                    }
+
+                    public void onFinish() {
+                        if (!ringButton.isEnabled())
+                            ringButton.setEnabled(true);
+                        adviceTextView.setText("");
+                        timerValue = WAIT_TIME_RING_BTN_ENABLED;
+                    }
+                }.start();
+
             } catch (InvalidTelephoneNumberException e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.toast_invalid_phone_number), Toast.LENGTH_SHORT).show();
             }
 
-            new CountDownTimer(WAIT_TIME_RING_BTN_ENABLED, 1000) {
 
-                public void onTick(long millisUntilFinished) {
-                    timerValue = (int) millisUntilFinished;
-                    adviceTextView.setText("Wait " + timerValue / 1000 + " seconds for send a new find request");
-                }
-
-                public void onFinish() {
-                    if (!ringButton.isEnabled())
-                        ringButton.setEnabled(true);
-                    adviceTextView.setText("");
-                    timerValue = WAIT_TIME_RING_BTN_ENABLED;
-                }
-            }.start();
         }
     }
 
