@@ -33,6 +33,11 @@ public class AppManager {
     public final static String ALERT_ACTION = "alertAction";
     public final static String NOTIFICATION_ID = "notificationID";
     private static Ringtone defaultRing;
+
+    /**
+     * flag used to avoid creating more than one stop-notification
+     * 1 -> one stop-notification is already pending. 0 -> otherwise
+     */
     public static int notificationFlag = 0;
 
     /**
@@ -98,7 +103,7 @@ public class AppManager {
      */
     private void createNotification(Context context) {
 
-        notificationFlag++;
+        notificationFlag = 1;
 
         final int notification_id = (int) System.currentTimeMillis();
 

@@ -25,9 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
-import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.SMSPeer;
-import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
 import com.gruppo4.RingApplication.structure.*;
@@ -205,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         builder.setPositiveButton(
                 getString(R.string.text_notification_button), (dialogInterface, i) -> {
                     AppManager.getInstance().stopRingtone();
+                    AppManager.notificationFlag = 0;
                     Log.d("MainActivity", "Stopping ringtone");
                     //cancel the right notification by id
                     int id = getIntent().getIntExtra(AppManager.NOTIFICATION_ID, -1);
@@ -241,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
 
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (message, sentState) -> {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_message_sent_listener) + phoneNumber, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Toast.LENGTH_SHORT).show();
                     ringButton.setEnabled(true);
                 });
                 ringButton.setEnabled(false);

@@ -24,9 +24,9 @@ public class NotificationActionReceiver extends BroadcastReceiver {
             switch (intent.getAction()) {
                 case AppManager.STOP_ACTION: {
                     AppManager.getInstance().stopRingtone();
+                    AppManager.notificationFlag = 0;
                     int id = intent.getIntExtra(AppManager.NOTIFICATION_ID, -1);
                     notificationManager.cancel(id);
-                    AppManager.notificationFlag--;
                     break;
                 }
                 default:

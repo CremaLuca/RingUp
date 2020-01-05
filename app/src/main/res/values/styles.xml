@@ -5,11 +5,11 @@
 
     <!-- Customize your theme here. -->
     <style name="CustomToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/nice_grey</item>
-        <item name="android:textColorSecondary">@color/white</item> <!---3 dots menu color -->
+        <item name="android:background">@color/nice_grey</item> <!--- toolbar background -->
+        <item name="android:textColorSecondary">@color/white</item> <!--- 3 dots menu color -->
     </style>
 
-    <!-- Menu your theme here. -->
+    <!-- Menu theme here. -->
     <style name="CustomPopupStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/white</item>
         <item name="overlapAnchor">false</item>
