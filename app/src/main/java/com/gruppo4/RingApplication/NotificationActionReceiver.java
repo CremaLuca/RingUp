@@ -20,11 +20,11 @@ public class NotificationActionReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent != null) {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            AppManager.notificationFlag = 0;
 
             switch (intent.getAction()) {
                 case AppManager.STOP_ACTION: {
                     AppManager.getInstance().stopRingtone();
-                    AppManager.notificationFlag = 0;
                     int id = intent.getIntExtra(AppManager.NOTIFICATION_ID, -1);
                     notificationManager.cancel(id);
                     break;

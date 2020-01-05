@@ -19,6 +19,7 @@ import com.eis.smslibrary.listeners.SMSSentListener;
 import com.gruppo4.RingApplication.MainActivity;
 import com.gruppo4.RingApplication.NotificationActionReceiver;
 import com.gruppo4.RingApplication.R;
+import com.gruppo4.RingApplication.structure.audioUtility.AudioUtilityManager;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalPasswordException;
 
 /**
@@ -77,6 +78,7 @@ public class AppManager {
 
         //Exception weren't thrown so let's play the defaultRing!
         RingtoneHandler.getInstance().playRingtone(defaultRing);
+        AudioUtilityManager.setMaxVolume(context, AudioUtilityManager.ALARM);
         //Timer: the defaultRing is playing for TIMEOUT_TIME seconds.
         new Handler(Looper.getMainLooper()).postDelayed(() -> stopRingtone(), TIMEOUT_TIME);
 
@@ -123,7 +125,7 @@ public class AppManager {
         PendingIntent openPI = PendingIntent.getActivity(context, notification_id, openIntent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.first_icon_foreground)
+                .setSmallIcon(R.drawable.foreground_icon)
                 .setContentTitle("Your phone is ringing")
                 .setContentText("Stop it from here or open the app")
                 .addAction(android.R.drawable.ic_lock_idle_alarm, "Stop", stopPI)
