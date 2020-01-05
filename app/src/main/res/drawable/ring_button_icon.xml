@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="true"
-        android:drawable="@drawable/ring_button_icon_default">
-    </item>
-    <item android:state_enabled="false"
-        android:drawable="@drawable/ring_button_icon_disabled">
-    </item>
+    <item android:drawable="@drawable/ring_button_default" android:state_enabled="true"></item>
+    <item android:drawable="@drawable/ring_button_disabled" android:state_enabled="false"></item>
+    <item android:drawable="@drawable/ring_button_pressed" android:state_pressed="true"></item>
 </selector>

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,9 +44,12 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private EditText phoneNumberField, passwordField;
     private Button ringButton;
     private PasswordManager passwordManager;
+    private TextView adviceTextView;
     private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
     private static final int WAIT_TIME_PERMISSION = 1500;
-    private static final int WAIT_TIME_RING_BTN_ENABLED = 5 * 1000;
+    private static final int WAIT_TIME_RING_BTN_ENABLED = 10 * 1000;
+    private static int timerValue = WAIT_TIME_RING_BTN_ENABLED;
+    private static String adviceText = "Wait " + timerValue + " seconds for a new ring";
     private static final String DIALOG_TAG = "Device Password";
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, getApplicationContext());
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
+        adviceTextView = findViewById(R.id.advice_text_view);
         ringButton = findViewById(R.id.ring_button);
         ringButton.setOnClickListener(v -> sendRingCommand());
     }
@@ -152,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
             } else {
-                Log.d("Notification Manager", "getSystemService(NotificationManager.class) returns a null object");
+                Log.d("MainActivity", "getSystemService(NotificationManager.class), in createNotificationChannel method, returns a null object");
             }
         }
     }
@@ -186,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                     break;
             }
         } else {
-            Log.d("startFromService intent", "getIntent returns a null intent");
+            Log.d("MainActivity", "getIntent, in startFromService method, returns a null intent");
         }
     }
 
@@ -241,19 +247,27 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (message, sentState) -> {
                     Toast.makeText(getApplicationContext(), getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Toast.LENGTH_SHORT).show();
-                    ringButton.setEnabled(true);
                 });
                 ringButton.setEnabled(false);
+                adviceTextView.setText(adviceText);
             } catch (InvalidTelephoneNumberException e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.toast_invalid_phone_number), Toast.LENGTH_SHORT).show();
             }
 
-            //Sets the button enabled after a while
-            final Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                if (!ringButton.isEnabled())
-                    ringButton.setEnabled(true);
-            }, WAIT_TIME_RING_BTN_ENABLED);
+            new CountDownTimer(WAIT_TIME_RING_BTN_ENABLED, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    timerValue = (int) millisUntilFinished;
+                    adviceTextView.setText("Wait " + timerValue / 1000 + " seconds for send a new find request");
+                }
+
+                public void onFinish() {
+                    if (!ringButton.isEnabled())
+                        ringButton.setEnabled(true);
+                    adviceTextView.setText("");
+                    timerValue = WAIT_TIME_RING_BTN_ENABLED;
+                }
+            }.start();
         }
     }
 
