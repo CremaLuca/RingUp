@@ -7,15 +7,19 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,8 +34,13 @@ import com.eis.smslibrary.SMSManager;
 import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
-import com.gruppo4.RingApplication.structure.*;
-import com.gruppo4.RingApplication.structure.dialog.*;
+import com.gruppo4.RingApplication.structure.AppManager;
+import com.gruppo4.RingApplication.structure.PasswordManager;
+import com.gruppo4.RingApplication.structure.ReceivedMessageListener;
+import com.gruppo4.RingApplication.structure.RingCommand;
+import com.gruppo4.RingApplication.structure.RingCommandHandler;
+import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
+import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
 
 /**
@@ -41,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     private static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
+    private static final int PICK_CONTACT = 1;
     private EditText phoneNumberField, passwordField;
     private Button ringButton;
     private PasswordManager passwordManager;
@@ -282,7 +292,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public boolean checkPermissions() {
         Context context = getApplicationContext();
         return (context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) &&
-                (context.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED);
+                (context.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) &&
+                (context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED);
     }
 
     /**
@@ -292,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      */
     public void requestPermissions() {
         if (!checkPermissions())
-            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 0);
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS}, 0);
     }
 
     /**
@@ -303,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+        if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
             Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
             //Let's wait the toast ends
             Handler handler = new Handler();
@@ -319,4 +330,55 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         passwordManager.setPassword(password);
     }
 
+    /**
+     * Method to open the system address book
+     *
+     * @param view The view calling the method
+     * @author Alessandra Tonin
+     */
+    public void openAddressBook(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(intent, PICK_CONTACT);
+    }
+
+    /**
+     * Method to handle the picked contact
+     *
+     * @param requestCode The code of the request
+     * @param resultCode  The result of  the request
+     * @param data        The data of the result
+     * @author Alessandra Tonin
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_CONTACT) {
+            if (resultCode == RESULT_OK) {
+                Uri contactData = data.getData();
+                String number = "";
+                Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
+                cursor.moveToFirst();
+                String hasPhone = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                if (hasPhone.equals("1")) {
+                    Cursor phones = getContentResolver().query
+                            (ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                                            + " = " + contactId, null, null);
+                    while (phones.moveToNext()) {
+                        number = phones.getString(phones.getColumnIndex
+                                (ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[-() ]", "");
+                    }
+                    phones.close();
+                    //Put the number in the phoneNumberField
+                    phoneNumberField.setText(number);
+                } else {
+                    Toast.makeText(getApplicationContext(), "This contact has no phone number", Toast.LENGTH_LONG).show();
+                }
+                cursor.close();
+            }
+        }
+    }
 }
+
+
