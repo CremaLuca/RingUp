@@ -79,6 +79,20 @@
         app:layout_constraintTop_toBottomOf="@+id/ring_button"
         app:layout_constraintVertical_bias="0.050000012" />
 
+    <Button
+        android:id="@+id/addressbook_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="34dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="61dp"
+        android:layout_marginBottom="22dp"
+        android:background="@drawable/ic_person_phonebook"
+        android:onClick="openAddressBook"
+        app:layout_constraintBottom_toTopOf="@+id/password_field"
+        app:layout_constraintEnd_toEndOf="@+id/phone_number_field"
+        app:layout_constraintTop_toBottomOf="@+id/actionBar"
+        app:layout_constraintVertical_bias="1.0" />
+
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
 

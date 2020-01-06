@@ -5,9 +5,9 @@
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission
-        android:name="android.permission.WAKE_LOCK"
-        tools:node="replace" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    android:name="android.permission.WAKE_LOCK"
+    tools:node="replace" />
 
     <application
         android:allowBackup="true"
