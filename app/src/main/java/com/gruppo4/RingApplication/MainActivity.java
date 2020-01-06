@@ -31,6 +31,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
+import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 //Creation of the ring command
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
 
-                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (message, sentState) -> {
+                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (SMSMessage message, SMSMessage.SentState sentState) -> {
                     Toast.makeText(getApplicationContext(), getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Toast.LENGTH_SHORT).show();
                 });
                 ringButton.setEnabled(false);
