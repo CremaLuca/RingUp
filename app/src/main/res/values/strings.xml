@@ -4,7 +4,7 @@
     <string name="text_notification_button">Stop</string>
     <string name="toast_password_absent">Insert a password</string>
     <string name="toast_phone_number_absent">Insert a number</string>
-    <string name="toast_pass_phone_number_absent">Insert a number and its password</string>
+    <string name="toast_pass_phone_number_absent">Insert the lost device phone number and its password</string>
     <string name="toast_invalid_phone_number">Invalid phone number</string>
     <string name="toast_message_sent_listener">Command sent to</string>
     <string name="toast_app_needs_permissions">The application needs these permissions</string>

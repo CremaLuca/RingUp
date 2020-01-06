@@ -68,6 +68,7 @@ public class AppManager {
      * @param ringCommand received
      * @param ringtone    A valid defaultRing to be played
      * @throws IllegalPasswordException Exception thrown when the password received is not valid
+     * @author Alberto Ursino
      */
     public void onRingCommandReceived(Context context, @NonNull RingCommand ringCommand, final Ringtone ringtone) throws IllegalPasswordException {
         defaultRing = ringtone;
@@ -88,6 +89,8 @@ public class AppManager {
 
     /**
      * Stops the defaultRing
+     *
+     * @author Alberto Ursino
      */
     public void stopRingtone() {
         if (defaultRing.isPlaying())
@@ -153,6 +156,8 @@ public class AppManager {
      * @param smsSentListener Listener used to inform that the message has been sent
      * @throws InvalidSMSMessageException      could be launched by the RingCommandHandler method "parseCommand"
      * @throws InvalidTelephoneNumberException could be launched by the RingCommandHandler method "parseCommand"
+     * @author Alberto Ursino
+     * @author Luca Crema
      */
     public void sendCommand(Context context, @NonNull RingCommand ringCommand, SMSSentListener smsSentListener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         SMSManager.getInstance().sendMessage(RingCommandHandler.getInstance().parseCommand(ringCommand), smsSentListener, context);
@@ -164,6 +169,8 @@ public class AppManager {
      * @param context     a valid context
      * @param ringCommand a valid RingCommand object
      * @return a boolean: true if passwords corresponds, false otherwise
+     * @author Alberto Ursino
+     * @author Luca Crema
      */
     private boolean checkPassword(Context context, @NonNull RingCommand ringCommand) {
         return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());

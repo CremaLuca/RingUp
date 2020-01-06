@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private Button ringButton;
     private PasswordManager passwordManager;
     private TextView adviceTextView;
-    private static final String IDENTIFIER = RingCommandHandler.SPLIT_CHARACTER;
+    private static final String IDENTIFIER = RingCommandHandler.SIGNATURE;
     private static final int WAIT_TIME_PERMISSION = 1500;
     private static final int WAIT_TIME_RING_BTN_ENABLED = 10 * 1000;
     private static int timerValue = WAIT_TIME_RING_BTN_ENABLED;
