@@ -1,2 +1,2 @@
-include ':app', ':sms', ':preferences'
-rootProject.name='SMSApp'
+include ':app'
+rootProject.name='ringUp'
