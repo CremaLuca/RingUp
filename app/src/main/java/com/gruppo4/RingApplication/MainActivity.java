@@ -36,10 +36,12 @@ import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
 import com.gruppo4.RingApplication.structure.AppManager;
+import com.gruppo4.RingApplication.structure.NotificationHandler;
 import com.gruppo4.RingApplication.structure.PasswordManager;
 import com.gruppo4.RingApplication.structure.ReceivedMessageListener;
 import com.gruppo4.RingApplication.structure.RingCommand;
 import com.gruppo4.RingApplication.structure.RingCommandHandler;
+import com.gruppo4.RingApplication.structure.RingtoneHandler;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialog;
 import com.gruppo4.RingApplication.structure.dialog.PasswordDialogListener;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalCommandException;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public static final String CHANNEL_ID = "123";
     public static final String BAR_TITLE = "ringUp";
     private static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Stop Ringtone Notification";
+    private static final int COUNTDOWN_INTERVAL = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,140 +103,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         ringButton.setOnClickListener(v -> sendRingCommand());
     }
 
-
-    /**
-     * Method used to show up the {@link menu/app_menu.xml}
-     *
-     * @author Alberto Ursino
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.app_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Called when the user selects an item from the {@link menu/app_menu.xml}
-     *
-     * @author Alberto Ursino
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.change_password_menu_item:
-                openDialog(CHANGE_PASS_COMMAND);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * Creates the dialog used to insert a non empty password or exit/abort
-     *
-     * @param command Specified type of dialog that should be opened, represented by an int value
-     * @throws IllegalCommandException usually thrown when the dialog command passed is not valid
-     * @author Alberto Ursino
-     */
-    void openDialog(int command) throws IllegalCommandException {
-        PasswordDialog passwordDialog;
-        switch (command) {
-            case SET_PASS_COMMAND:
-                passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
-                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
-                break;
-            case CHANGE_PASS_COMMAND:
-                passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
-                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
-                break;
-            default:
-                throw new IllegalCommandException();
-        }
-    }
-
-    /**
-     * Creates the NotificationChannel, but only on API 26+ because
-     * the NotificationChannel class is new and not in the support library
-     * <p>
-     * Register the channel with the system; you can't change the importance
-     * or other notification behaviors after this
-     */
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //IMPORTANCE_HIGH makes pop-up the notification
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription(NOTIFICATION_CHANNEL_DESCRIPTION);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            } else {
-                Log.d("MainActivity", "getSystemService(NotificationManager.class), in createNotificationChannel method, returns a null object");
-            }
-        }
-    }
-
-    /**
-     * Updates intent obtained from a service's call
-     *
-     * @param intent to handle
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        startFromService();
-    }
-
-    /**
-     * Manages action from intent
-     */
-    private void startFromService() {
-        Log.d("MainActivity", "startFromService called");
-        Intent intent = getIntent();
-        if (intent != null) {
-            switch (intent.getAction()) {
-                case AppManager.ALERT_ACTION: {
-                    createStopRingDialog();
-                    Log.d("MainActivity", "Creating StopRingDialog...");
-                    break;
-                }
-                default:
-                    break;
-            }
-        } else {
-            Log.d("MainActivity", "getIntent, in startFromService method, returns a null intent");
-        }
-    }
-
-    /**
-     * Creates and shows AlertDialog with one option:
-     * [stop] --> stop the ringtone and cancel the notification
-     */
-    private void createStopRingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage(getString(R.string.text_stop_ring_dialog));
-        builder.setCancelable(true);
-        Log.d("MainActivity", "StopRingDialog created");
-
-        builder.setPositiveButton(
-                getString(R.string.text_notification_button), (dialogInterface, i) -> {
-                    AppManager.getInstance().stopRingtone();
-                    AppManager.notificationFlag = 0;
-                    Log.d("MainActivity", "Stopping ringtone");
-                    //cancel the right notification by id
-                    int id = getIntent().getIntExtra(AppManager.NOTIFICATION_ID, -1);
-                    NotificationManagerCompat.from(getApplicationContext()).cancel(id);
-                    Log.d("MainActivity", "Notification " + id + " cancelled");
-                    dialogInterface.dismiss();
-                }
-        );
-
-        AlertDialog alert = builder.create();
-        alert.show();
-        Log.d("MainActivity", "Showing StopRingDialog...");
-    }
+    //**************************************SEND_COMMAND**************************************
 
     /**
      * Method used to send the ring command through the {@link AppManager#sendCommand(Context, RingCommand, SMSSentListener)} method
@@ -263,11 +133,11 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 adviceTextView.setText(adviceText);
 
                 //Button disabling
-                new CountDownTimer(WAIT_TIME_RING_BTN_ENABLED, 1000) {
+                new CountDownTimer(WAIT_TIME_RING_BTN_ENABLED, COUNTDOWN_INTERVAL) {
 
                     public void onTick(long millisUntilFinished) {
                         timerValue = (int) millisUntilFinished;
-                        adviceTextView.setText("Wait " + timerValue / 1000 + " seconds for send a new find request");
+                        adviceTextView.setText("Wait " + timerValue / COUNTDOWN_INTERVAL + " seconds for send a new find request");
                     }
 
                     public void onFinish() {
@@ -286,50 +156,37 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }
     }
 
-    /**
-     * @return true if the app has both RECEIVE_SMS and SEND_SMS permissions, false otherwise
-     * @author Alberto Ursino
-     */
-    public boolean checkPermissions() {
-        Context context = getApplicationContext();
-        return (context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) &&
-                (context.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) &&
-                (context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED);
-    }
+    //**************************************MENU**************************************
 
     /**
-     * Checks if permissions are granted, if not then requests them to the user
+     * Method used to show up the {@link menu/app_menu.xml}
      *
      * @author Alberto Ursino
-     */
-    public void requestPermissions() {
-        if (!checkPermissions())
-            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS}, 0);
-    }
-
-    /**
-     * Callback for the permissions request
-     *
-     * @author Alberto Ursino
-     * @author Luca Crema
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
-            //Let's wait the toast ends
-            Handler handler = new Handler();
-            handler.postDelayed(() -> requestPermissions(), WAIT_TIME_PERMISSION);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.app_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Called when the user selects an item from the {@link menu/app_menu.xml}
+     *
+     * @author Alberto Ursino
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_password_menu_item:
+                openDialog(CHANGE_PASS_COMMAND);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    /**
-     * Overridden method used to capture the set password in the dialog
-     */
-    @Override
-    public void onPasswordSet(String password, Context context) {
-        passwordManager.setPassword(password);
-    }
+    //**************************************RUBRIC**************************************
 
     /**
      * Method to open the system address book
@@ -374,12 +231,172 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                     //Put the number in the phoneNumberField
                     phoneNumberField.setText(number);
                 } else {
-                    Toast.makeText(getApplicationContext(), "This contact has no phone number", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_contact_has_no_phone_number), Toast.LENGTH_LONG).show();
                 }
                 cursor.close();
             }
         }
     }
+
+    //**************************************PASSWORD_DIALOG**************************************
+
+    /**
+     * Creates the dialog used to insert a non empty password or exit/abort
+     *
+     * @param command Specified type of dialog that should be opened, represented by an int value
+     * @throws IllegalCommandException usually thrown when the dialog command passed is not valid
+     * @author Alberto Ursino
+     */
+    void openDialog(int command) throws IllegalCommandException {
+        PasswordDialog passwordDialog;
+        switch (command) {
+            case SET_PASS_COMMAND:
+                passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
+                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
+                break;
+            case CHANGE_PASS_COMMAND:
+                passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
+                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
+                break;
+            default:
+                throw new IllegalCommandException();
+        }
+    }
+
+    /**
+     * Overridden method used to capture the set password in the dialog
+     *
+     * @author Alberto Ursino
+     */
+    @Override
+    public void onPasswordSet(String password, Context context) {
+        passwordManager.setPassword(password);
+    }
+
+    //**************************************NOTIFICATION**************************************
+
+    /**
+     * Creates the NotificationChannel, but only on API 26+ because
+     * the NotificationChannel class is new and not in the support library
+     * <p>
+     * Register the channel with the system; you can't change the importance
+     * or other notification behaviors after this
+     */
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //IMPORTANCE_HIGH makes pop-up the notification
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(NOTIFICATION_CHANNEL_DESCRIPTION);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            } else {
+                Log.d("MainActivity", "getSystemService(NotificationManager.class), in createNotificationChannel method, returns a null object");
+            }
+        }
+    }
+
+    /**
+     * Updates intent obtained from a service's call
+     *
+     * @param intent to handle
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        startFromService();
+    }
+
+    /**
+     * Manages action from intent
+     */
+    private void startFromService() {
+        Log.d("MainActivity", "startFromService called");
+        Intent intent = getIntent();
+        if (intent != null) {
+            switch (intent.getAction()) {
+                case NotificationHandler.ALERT_ACTION: {
+                    createStopRingDialog();
+                    Log.d("MainActivity", "Creating StopRingDialog...");
+                    break;
+                }
+                default:
+                    break;
+            }
+        } else {
+            Log.d("MainActivity", "getIntent, in startFromService method, returns a null intent");
+        }
+    }
+
+    /**
+     * Creates and shows AlertDialog with one option:
+     * [stop] --> stop the ringtone and cancel the notification
+     */
+    private void createStopRingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(getString(R.string.text_stop_ring_dialog));
+        builder.setCancelable(true);
+        Log.d("MainActivity", "StopRingDialog created");
+
+        builder.setPositiveButton(
+                getString(R.string.text_notification_button), (dialogInterface, i) -> {
+                    RingtoneHandler.getInstance().stopRingtone(AppManager.defaultRing);
+                    Log.d("MainActivity", "Stopping ringtone");
+                    //cancel the right notification by id
+                    int id = getIntent().getIntExtra(NotificationHandler.NOTIFICATION_ID, -1);
+                    NotificationManagerCompat.from(getApplicationContext()).cancel(id);
+                    NotificationHandler.notificationFlag = false;
+                    Log.d("MainActivity", "Notification " + id + " cancelled");
+                    dialogInterface.dismiss();
+                }
+        );
+
+        AlertDialog alert = builder.create();
+        alert.show();
+        Log.d("MainActivity", "Showing StopRingDialog...");
+    }
+
+    //**************************************PERMISSIONS**************************************
+
+    /**
+     * @return true if the app has both RECEIVE_SMS and SEND_SMS permissions, false otherwise
+     * @author Alberto Ursino
+     */
+    public boolean checkPermissions() {
+        Context context = getApplicationContext();
+        return (context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) &&
+                (context.checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) &&
+                (context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    /**
+     * Checks if permissions are granted, if not then requests them to the user
+     *
+     * @author Alberto Ursino
+     */
+    public void requestPermissions() {
+        if (!checkPermissions())
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS}, 0);
+    }
+
+    /**
+     * Callback for the permissions request
+     *
+     * @author Alberto Ursino
+     * @author Luca Crema
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
+            //Let's wait the toast ends
+            Handler handler = new Handler();
+            handler.postDelayed(() -> requestPermissions(), WAIT_TIME_PERMISSION);
+        }
+    }
+
 }
 
 

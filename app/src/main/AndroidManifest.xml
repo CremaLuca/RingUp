@@ -31,12 +31,11 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name=".NotificationActionReceiver">
+        <receiver android:name=".structure.NotificationHandler">
             <intent-filter>
                 <action android:name="stopAction" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

@@ -8,4 +8,5 @@
     <string name="toast_invalid_phone_number">Invalid phone number</string>
     <string name="toast_message_sent_listener">Command sent to</string>
     <string name="toast_app_needs_permissions">The application needs these permissions</string>
+    <string name="toast_contact_has_no_phone_number">This contact has no phone number</string>
 </resources>

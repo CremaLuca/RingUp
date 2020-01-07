@@ -1,26 +1,20 @@
 package com.gruppo4.RingApplication.structure;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.media.Ringtone;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
 import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
-import com.gruppo4.RingApplication.MainActivity;
-import com.gruppo4.RingApplication.NotificationActionReceiver;
-import com.gruppo4.RingApplication.R;
 import com.gruppo4.RingApplication.structure.audioUtility.AudioUtilityManager;
 import com.gruppo4.RingApplication.structure.exceptions.IllegalPasswordException;
+
+import static com.gruppo4.RingApplication.structure.NotificationHandler.notificationFlag;
 
 /**
  * This is a singleton class used to manage a received RingCommand or to send one
@@ -29,17 +23,8 @@ import com.gruppo4.RingApplication.structure.exceptions.IllegalPasswordException
  */
 public class AppManager {
 
-    private static final int TIMEOUT_TIME = 30 * 1000;
-    public final static String STOP_ACTION = "stopAction";
-    public final static String ALERT_ACTION = "alertAction";
-    public final static String NOTIFICATION_ID = "notificationID";
-    private static Ringtone defaultRing;
-
-    /**
-     * flag used to avoid creating more than one stop-notification
-     * 1 -> one stop-notification is already pending. 0 -> otherwise
-     */
-    public static int notificationFlag = 0;
+    public static final int TIMEOUT_TIME = 20 * 1000;
+    public static Ringtone defaultRing;
 
     /**
      * Instance of the class that is instantiated in getInstance method
@@ -79,72 +64,16 @@ public class AppManager {
 
         //Exception weren't thrown so let's play the defaultRing!
         RingtoneHandler.getInstance().playRingtone(defaultRing);
-        AudioUtilityManager.setMaxVolume(context, AudioUtilityManager.ALARM);
+        AudioUtilityManager.setMinVolume(context, AudioUtilityManager.ALARM);
+
+        if (!notificationFlag)
+            NotificationHandler.createNotification(context);
+
         //Timer: the defaultRing is playing for TIMEOUT_TIME seconds.
-        new Handler(Looper.getMainLooper()).postDelayed(() -> stopRingtone(), TIMEOUT_TIME);
-
-        if (notificationFlag == 0)
-            createNotification(context);
-    }
-
-    /**
-     * Stops the defaultRing
-     *
-     * @author Alberto Ursino
-     */
-    public void stopRingtone() {
-        if (defaultRing.isPlaying())
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             RingtoneHandler.getInstance().stopRingtone(defaultRing);
-    }
-
-    /**
-     * Creates a notification and sets a Intent for managing commands from there
-     *
-     * @param context of the application
-     * @author Marco Tommasini
-     * @author Luca Crema
-     * @author Alessandra Tonin
-     * @author Implemented by Alberto Ursino
-     */
-    private void createNotification(Context context) {
-
-        notificationFlag = 1;
-
-        final int notification_id = (int) System.currentTimeMillis();
-
-        //StopAction stops the defaultRing
-        Intent stopIntent = new Intent(context, NotificationActionReceiver.class);
-        stopIntent.setAction(STOP_ACTION);
-        stopIntent.putExtra(NOTIFICATION_ID, notification_id);
-        PendingIntent stopPI = PendingIntent.getBroadcast(context, notification_id, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        //OpenAction opens the MainActivity
-        //LAG_ACTIVITY_SINGLE_TOP is used for having only one MainActivity running
-        //otherwise the AlertDialog will not show up
-        Intent openIntent = new Intent(context, MainActivity.class);
-        openIntent.setAction(ALERT_ACTION);
-        openIntent.putExtra(NOTIFICATION_ID, notification_id);
-        openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent openPI = PendingIntent.getActivity(context, notification_id, openIntent, 0);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.foreground_icon)
-                .setContentTitle("Your phone is ringing")
-                .setContentText("Stop it from here or open the app")
-                .addAction(android.R.drawable.ic_lock_idle_alarm, "Stop", stopPI)
-                .setContentIntent(openPI)
-                .setAutoCancel(true);
-
-        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(notification_id, builder.build());
-        Log.d("MessageReceivedService", "Notification created");
-
-        //Cancel the notification after 30 seconds (as the defaultRing stops playing)
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> {
-            Log.d("MessageReceivedService", "Ringtone stopped");
-            notificationManager.cancel(notification_id);
         }, TIMEOUT_TIME);
+
 
     }
 
@@ -154,8 +83,8 @@ public class AppManager {
      * @param context         of the application
      * @param ringCommand     to send
      * @param smsSentListener Listener used to inform that the message has been sent
-     * @throws InvalidSMSMessageException      could be launched by the RingCommandHandler method "parseCommand"
-     * @throws InvalidTelephoneNumberException could be launched by the RingCommandHandler method "parseCommand"
+     * @throws InvalidSMSMessageException      could be launched by {@link RingCommandHandler#parseCommand(RingCommand)}
+     * @throws InvalidTelephoneNumberException could be launched by {@link RingCommandHandler#parseCommand(RingCommand)}
      * @author Alberto Ursino
      * @author Luca Crema
      */
