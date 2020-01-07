@@ -44,7 +44,7 @@ public class RingCommandHandler {
      */
     public RingCommand parseMessage(SMSMessage smsMessage) {
         String smsMessageData = smsMessage.getData();
-        Log.d("parseMessage", "Message arrived: " + smsMessageData);
+        Log.d("RingCommandHandler", "Message arrived: " + smsMessageData);
         //Control if the smsMessage received contains at least 17 character (SIGNATURE length)
         if (!(smsMessageData.length() > SIGNATURE.length())) {
             Log.d("RingCommandHandler", "The smsMessage received is not long enough, it can't be a right ring command");

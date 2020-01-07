@@ -28,14 +28,15 @@ public class ReceivedMessageListener extends SMSReceivedServiceListener {
     public void onMessageReceived(SMSMessage smsMessage) {
         Log.d(TAG, "Received a message in the service");
         RingCommand ringCommand = RingCommandHandler.getInstance().parseMessage(smsMessage);
-        if (ringCommand != null)
+        if (ringCommand == null)
+            Log.d("Invalid RingCommand", "The message received is not a valid RingCommand");
+        else {
             try {
                 AppManager.getInstance().onRingCommandReceived(getApplicationContext(), ringCommand, ringtoneHandler.getDefaultRingtone(getApplicationContext()));
             } catch (IllegalPasswordException e) {
                 Log.d("Invalid Password", "Password received is not valid");
             }
-        else
-            Log.d("Invalid RingCommand", "The message received is not a valid RingCommand");
+        }
     }
 
 }

@@ -35,4 +35,5 @@ dependencies {
     implementation 'com.github.CremaLuca:android-preferences:v3.1.1'
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
     implementation 'com.github.Cogno-IDU:smslibrary:v2.2'
+    testImplementation fileTree(dir: 'C:\\Users\\letto\\Desktop\\LocalRepository\\ringUp\\powermock-easymock-junit-2.0.2', include: ['*.aar', '*.jar'], exclude: [])
 }
