@@ -59,7 +59,7 @@ public class PermissionsActivity extends AppCompatActivity {
      * @return true if the app has all permissions granted, false otherwise.
      * @author Francesco Bau'
      */
-    public boolean isGranted(String permission) {
+    private boolean isGranted(String permission) {
         return getApplicationContext().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
