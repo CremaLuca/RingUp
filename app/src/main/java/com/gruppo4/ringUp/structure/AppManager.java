@@ -102,7 +102,7 @@ public class AppManager {
      * @author Luca Crema
      */
     private boolean checkPassword(Context context, @NonNull RingCommand ringCommand) {
-        return ringCommand.getPassword().equals(new PasswordManager(context).getPassword());
+        return ringCommand.getPassword().equals(PasswordManager.getPassword(context));
     }
 
 }

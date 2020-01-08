@@ -64,7 +64,7 @@ public class PasswordDialog extends AppCompatDialogFragment {
             if (passwordIsEmpty(password)) {
                 Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show();
             } else {
-                passwordDialogListener.onPasswordSet(password, context);
+                passwordDialogListener.onPasswordSet(context, password);
                 Toast.makeText(context, "Password saved", Toast.LENGTH_SHORT).show();
                 //Close the dialog
                 dismiss();

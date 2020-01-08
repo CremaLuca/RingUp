@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final int PICK_CONTACT = 1;
     private EditText phoneNumberField, passwordField;
     private Button ringButton;
-    private PasswordManager passwordManager;
     private TextView adviceTextView;
     private static final String IDENTIFIER = RingCommandHandler.SIGNATURE;
     private static final int WAIT_TIME_PERMISSION = 1500;
@@ -82,11 +81,12 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         setSupportActionBar(toolbar);
 
         //Checking the if permissions are granted
+        //TODO We need to implement the permissionsActivity
         requestPermissions();
 
-        passwordManager = new PasswordManager(getApplicationContext());
         //If the device password is not already set, a dialog will be open
-        if (!passwordManager.isPassSaved())
+        //TODO We need to implement the InstructionActivity
+        if (!PasswordManager.isPassSaved(getApplicationContext()))
             openDialog(SET_PASS_COMMAND);
 
         createNotificationChannel();
@@ -269,8 +269,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @author Alberto Ursino
      */
     @Override
-    public void onPasswordSet(String password, Context context) {
-        passwordManager.setPassword(password);
+    public void onPasswordSet(Context context, String password) {
+        PasswordManager.setPassword(context, password);
     }
 
     //**************************************NOTIFICATION**************************************

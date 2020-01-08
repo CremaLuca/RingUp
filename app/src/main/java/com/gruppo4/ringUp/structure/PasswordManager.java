@@ -16,28 +16,17 @@ public class PasswordManager {
      */
     private static final String PREFERENCES_PASSWORD_KEY = "secret_password";
 
-    private Context context;
-
-    /**
-     * Constructor captures the context that will then be used in the methods of this class
-     *
-     * @param context of the application
-     */
-    public PasswordManager(Context context) {
-        this.context = context;
-    }
-
     /**
      * @return the password saved in memory
      */
-    public String getPassword() {
+    public static String getPassword(Context context) {
         return PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY);
     }
 
     /**
      * @param password that want to be saved in memory
      */
-    public void setPassword(String password) {
+    public static void setPassword(Context context, String password) {
         PreferencesManager.setString(context, PREFERENCES_PASSWORD_KEY, password);
     }
 
@@ -46,14 +35,14 @@ public class PasswordManager {
      *
      * @return true if is it present, false otherwise
      */
-    public boolean isPassSaved() {
+    public static boolean isPassSaved(Context context) {
         return !(PreferencesManager.getString(context, PREFERENCES_PASSWORD_KEY).equals(PreferencesManager.DEFAULT_STRING_RETURN));
     }
 
     /**
      * Deletes the password saved in memory
      */
-    public void deletePassword() {
+    public static void deletePassword(Context context) {
         PreferencesManager.removeValue(context, PREFERENCES_PASSWORD_KEY);
     }
 
