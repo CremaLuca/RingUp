@@ -38,20 +38,6 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks if a single permission is granted.
-     *
-     * @param permission The permission(s) to check.
-     * @return true if the app has all permissions granted, false otherwise.
-     * @author Francesco Bau'
-     */
-    public boolean isGranted(String permission) {
-        Context context = getApplicationContext();
-        if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
-            return true;
-        return false;
-    }
-
-    /**
      * Checks if all permissions are granted.
      *
      * @param permissions The permission(s) to check. It can't be null.
@@ -67,6 +53,17 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     /**
+     * Checks if a single permission is granted.
+     *
+     * @param permission The permission(s) to check.
+     * @return true if the app has all permissions granted, false otherwise.
+     * @author Francesco Bau'
+     */
+    public boolean isGranted(String permission) {
+        return getApplicationContext().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
      * Checks which permissions are NOT granted.
      *
      * @param permissions The permission(s) to check.
@@ -76,7 +73,7 @@ public class PermissionsActivity extends AppCompatActivity {
     public ArrayList<String> getDeniedPermissions(String[] permissions) {
         ArrayList<String> deniedPermissions = new ArrayList<>();
         for (String permission : permissions) {
-            if(!isGranted(permission))
+            if (!isGranted(permission))
                 deniedPermissions.add(permission);
         }
         return deniedPermissions;
