@@ -15,6 +15,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.easymock.EasyMock.expect;
+import static com.gruppo4.ringUp.structure.RingCommandHandler.CLASS_TAG;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
 
 /**
  * Unit testing of the class RingCommandHandler
@@ -22,7 +25,7 @@ import static org.easymock.EasyMock.expect;
  * @author Alberto Ursino
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Log.class})
+@PrepareForTest(Log.class)
 public class RingCommandHandlerTest {
 
     private static final String SIGNATURE = "ringUp password: ";
@@ -30,10 +33,10 @@ public class RingCommandHandlerTest {
     private static final String VALID_PASSWORD = "pass";
     private static final String INVALID_SIGNATURE = "ciao" + SIGNATURE;
     private static final String VALID_CONTENT = SIGNATURE + VALID_PASSWORD;
-    private static final String WRONG_CONTENT = VALID_PASSWORD;
     private static final SMSPeer SMS_PEER = new SMSPeer(VALID_NUMBER);
-    private RingCommandHandler ringCommandHandler = null;
-    private SMSMessage smsMessage = new SMSMessage(new SMSPeer(VALID_NUMBER), VALID_CONTENT);
+    private static RingCommandHandler ringCommandHandler;
+    private static final SMSMessage VALID_SMS_MESSAGE = new SMSMessage(new SMSPeer(VALID_NUMBER), VALID_CONTENT);
+    private static final RingCommand VALID_RING_COMMAND = new RingCommand(new SMSPeer(VALID_NUMBER), VALID_PASSWORD);
 
     @Before
     public void init() {
@@ -43,38 +46,47 @@ public class RingCommandHandlerTest {
 
     @Test
     public void parseMessage_content_isValid() {
-        expect(Log.d("RingCommandHandler", "Message arrived: " + smsMessage.getData())).andReturn(0);
-        PowerMock.replay(Log.class);
-        Assert.assertNotNull(ringCommandHandler.parseMessage(smsMessage));
-        PowerMock.verify(Log.class);
+        expect(Log.d(CLASS_TAG, "Message received: " + VALID_SMS_MESSAGE.getData())).andReturn(0);
+        replay(Log.class);
+        Assert.assertNotNull(ringCommandHandler.parseMessage(VALID_SMS_MESSAGE));
+        verify(Log.class);
     }
 
     @Test
     public void parseMessage_content_is_isTooShort() {
-        expect(Log.d("RingCommandHandler", "Message arrived: " + WRONG_CONTENT)).andReturn(0);
-        expect(Log.d("RingCommandHandler", "The smsMessage received is not long enough, it can't be a right ring command")).andReturn(1);
-        PowerMock.replay(Log.class);
-        Assert.assertNull(ringCommandHandler.parseMessage(new SMSMessage(new SMSPeer(VALID_NUMBER), WRONG_CONTENT)));
-        PowerMock.verify();
+        SMSMessage smsMessage = new SMSMessage(new SMSPeer(VALID_NUMBER), VALID_PASSWORD);
+        expect(Log.d(CLASS_TAG, "Message received: " + smsMessage.getData())).andReturn(0);
+        expect(Log.d(CLASS_TAG, "The smsMessage received is not long enough, it can't be a right ring command")).andReturn(1);
+        replay(Log.class);
+        Assert.assertNull(ringCommandHandler.parseMessage(smsMessage));
+        verify(Log.class);
     }
 
     @Test
     public void parseMessage_content_hasInvalidSignature() {
-        expect(Log.d("RingCommandHandler", "Message arrived: " + INVALID_SIGNATURE)).andReturn(0);
-        expect(Log.d("RingCommandHandler", "The ring command received doesn't contain the right signature")).andReturn(1);
-        PowerMock.replay(Log.class);
-        Assert.assertNull(ringCommandHandler.parseMessage(new SMSMessage(new SMSPeer(VALID_NUMBER), INVALID_SIGNATURE)));
-        PowerMock.verify();
+        SMSMessage smsMessage = new SMSMessage(new SMSPeer(VALID_NUMBER), INVALID_SIGNATURE);
+        expect(Log.d(CLASS_TAG, "Message received: " + smsMessage.getData())).andReturn(0);
+        expect(Log.d(CLASS_TAG, "The ring command received does not contain the right signature")).andReturn(1);
+        replay(Log.class);
+        Assert.assertNull(ringCommandHandler.parseMessage(smsMessage));
+        verify(Log.class);
     }
 
     @Test
-    public void parseMessage_ringCommandPasswords_areEquals() {
-        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_PASSWORD).getPassword(), ringCommandHandler.parseMessage(smsMessage).getPassword());
+    public void parseMessage_ringCommand_tests() {
+        expect(Log.d(CLASS_TAG, "Message received: " + VALID_SMS_MESSAGE.getData())).andReturn(0);
+        expect(Log.d(CLASS_TAG, "Message received: " + VALID_SMS_MESSAGE.getData())).andReturn(1);
+        replay(Log.class);
+        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_PASSWORD).getPassword(), ringCommandHandler.parseMessage(VALID_SMS_MESSAGE).getPassword());
+        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_CONTENT).getPeer(), ringCommandHandler.parseMessage(VALID_SMS_MESSAGE).getPeer());
+        verify(Log.class);
     }
 
     @Test
-    public void parseMessage_ringCommandPeers_areEquals() {
-        Assert.assertEquals(new RingCommand(SMS_PEER, VALID_CONTENT).getPeer(), ringCommandHandler.parseMessage(smsMessage).getPeer());
+    public void parseContent_tests() {
+        //Same password
+        Assert.assertEquals(VALID_PASSWORD, ringCommandHandler.parseCommand(VALID_RING_COMMAND).getData());
+        //Same peer
+        Assert.assertEquals(VALID_SMS_MESSAGE.getPeer(), ringCommandHandler.parseCommand(VALID_RING_COMMAND).getPeer());
     }
-
 }

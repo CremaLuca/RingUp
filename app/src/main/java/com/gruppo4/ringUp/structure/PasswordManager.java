@@ -14,7 +14,7 @@ public class PasswordManager {
     /**
      * Through this key we can access the memory location where we store the password
      */
-    private static final String PREFERENCES_PASSWORD_KEY = "secret_password";
+    static final String PREFERENCES_PASSWORD_KEY = "secret_password";
 
     /**
      * @return the password saved in memory

@@ -14,6 +14,7 @@ import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 public class RingCommandHandler {
 
     public static final String SIGNATURE = "ringUp password: ";
+    public static final String CLASS_TAG = "RingCommandHandler";
 
     /**
      * Instance of the class that is instantiated in getInstance method
@@ -37,27 +38,29 @@ public class RingCommandHandler {
 
     /**
      * Extracts the password from the message received and create a RingCommand
-     * A valid content is the following: "ringUp password: password"
+     * A valid content is the following: "ringUp password: {@code password}"
      *
      * @param smsMessage to parse
      * @return a RingCommand object, null if the message doesn't contain a valid one
      */
     public RingCommand parseMessage(SMSMessage smsMessage) {
         String smsMessageData = smsMessage.getData();
-        Log.d("RingCommandHandler", "Message arrived: " + smsMessageData);
+        Log.d(CLASS_TAG, "Message received: " + smsMessageData);
+
         //Control if the smsMessage received contains at least 17 character (SIGNATURE length)
         if (!(smsMessageData.length() > SIGNATURE.length())) {
-            Log.d("RingCommandHandler", "The smsMessage received is not long enough, it can't be a right ring command");
+            Log.d(CLASS_TAG, "The smsMessage received is not long enough, it can't be a right ring command");
             return null;
-        } else {
-            String possibleSignature = smsMessageData.substring(0, SIGNATURE.length());
-            if (possibleSignature.equals(SIGNATURE)) {
-                return new RingCommand(smsMessage.getPeer(), smsMessageData.substring(17));
-            } else {
-                Log.d("RingCommandHandler", "The ring command received doesn't contain the right signature");
-                return null;
-            }
         }
+
+        String possibleSignature = smsMessageData.substring(0, SIGNATURE.length());
+        if (possibleSignature.equals(SIGNATURE)) {
+            return new RingCommand(smsMessage.getPeer(), smsMessageData.substring(17));
+        }
+
+        Log.d(CLASS_TAG, "The ring command received does not contain the right signature");
+        return null;
+
     }
 
     /**

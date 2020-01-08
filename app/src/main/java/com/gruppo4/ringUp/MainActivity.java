@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
             Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
-            //Let's wait the toast ends
+            //Let's wait the toast ends and request permissions again, APP NEEDS THEM
             Handler handler = new Handler();
             handler.postDelayed(() -> requestPermissions(), WAIT_TIME_PERMISSION);
         }
