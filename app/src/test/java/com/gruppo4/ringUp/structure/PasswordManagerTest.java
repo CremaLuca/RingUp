@@ -2,6 +2,7 @@ package com.gruppo4.ringUp.structure;
 
 import android.content.Context;
 
+import org.easymock.EasyMock;
 import org.easymock.Mock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +16,6 @@ import it.lucacrema.preferences.PreferencesManager;
 
 import static com.gruppo4.ringUp.structure.PasswordManager.PREFERENCES_PASSWORD_KEY;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.mock;
 
 /**
  * @author Alberto Ursino
@@ -33,7 +33,7 @@ public class PasswordManagerTest {
 
     @Before
     public void init() {
-        mockedContext = mock(Context.class);
+        mockedContext = EasyMock.mock(Context.class);
         PowerMock.mockStatic(PreferencesManager.class);
     }
 

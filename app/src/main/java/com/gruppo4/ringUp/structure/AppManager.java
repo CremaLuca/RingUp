@@ -73,8 +73,6 @@ public class AppManager {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             RingtoneHandler.getInstance().stopRingtone(defaultRing);
         }, TIMEOUT_TIME);
-
-
     }
 
     /**

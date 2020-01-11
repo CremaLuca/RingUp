@@ -36,5 +36,9 @@ dependencies {
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
     implementation 'com.github.Cogno-IDU:smslibrary:v2.2'
     testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
-    testImplementation fileTree(dir: 'C:\\Users\\letto\\Desktop\\LocalRepository\\ringUp\\powermock-easymock-junit-2.0.2', include: ['*.aar', '*.jar'], exclude: [])
+    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.4'
+    testImplementation group: 'org.powermock', name: 'powermock-api-easymock', version: '2.0.4'
+    testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.4'
+
+
 }
