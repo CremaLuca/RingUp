@@ -1,7 +1,10 @@
 package com.gruppo4.ringUp;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +22,18 @@ public class PermissionsActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 0;
 
+    //TODO: Cambiare bottone, prendendolo dal layout.
+    Button dummyButton = new Button(getApplicationContext());
+
+    static final String[] permissions = new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permissions);
+
+
+        dummyButton.setOnClickListener(v -> requestPermissions(permissions));
     }
 
     /**
