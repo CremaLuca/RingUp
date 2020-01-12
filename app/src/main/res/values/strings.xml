@@ -11,4 +11,11 @@
     <string name="toast_contact_has_no_phone_number">This contact has no phone number</string>
     <string name="instructions_text">ringUp will find a lost phone.\nJust insert its phone number and the password associated.\n\nIn order to let other people to find your phone you have to set YOUR device password…</string>
     <string name="instructions_title">Instructions</string>
+
+    <string name="title_SMSPermission">SMS</string>
+    <string name="title_contactsPermission">CONTACTS</string>
+    <string name="description_SMSPermission">This app sends commands via SMS, in order to make the target phone ring.</string>
+    <string name="description_contactsPermission">We need to have access to Contacts in order to make a target number ring, choosing it from the Contact List.</string>
+    <string name="button_OK_description">Ok, understood</string>
+    <string name="button_cancel_description">Cancel</string>
 </resources>
