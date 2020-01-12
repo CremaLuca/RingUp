@@ -36,6 +36,7 @@ public class PermissionsActivity extends AppCompatActivity {
 
         PermissionDialog permissionDialog = new PermissionDialog();
         permissionDialog.setupDialog();
+        //TODO: Inflate ...
 
     }
 

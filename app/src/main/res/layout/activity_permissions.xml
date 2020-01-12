@@ -7,6 +7,7 @@
     tools:context="com.gruppo4.ringUp.PermissionsActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -15,36 +16,41 @@
             android:id="@+id/textView_SMSPermission_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/title_SMSPermission" />
 
         <TextView
             android:id="@+id/textView_SMSPermission_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/description_SMSPermission" />
 
         <TextView
-            android:id="@+id/textView_addressBookPermission_title"
+            android:id="@+id/textView_contactsPermission_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/title_contactsPermission" />
 
         <TextView
-            android:id="@+id/textView_addressBookPermission_description"
+            android:id="@+id/textView_contactsPermission_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/description_contactsPermission" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_OK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="@string/button_OK_description"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_marginEnd="16dp"
+        android:text="@string/button_cancel_description"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toStartOf="@+id/button_OK" />
 </androidx.constraintlayout.widget.ConstraintLayout>
