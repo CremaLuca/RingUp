@@ -7,4 +7,10 @@ import android.content.Context;
  */
 public interface PasswordDialogListener {
     void onPasswordSet(String password, Context context);
+
+    void onPasswordNotSet();
+
+    //TODO void onPasswordChanged();
+
+    //TODO void onPasswordNotChanged();
 }

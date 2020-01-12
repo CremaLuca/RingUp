@@ -28,54 +28,55 @@ public class PasswordDialog extends AppCompatDialogFragment {
     private static final int SET_PASS_COMMAND = 1;
     private static final String SET_DELIVERY = "Set your device password";
     private static final String CHANGE_DELIVERY = "Change your password device";
+    private Context context;
 
-    public PasswordDialog(int command) {
+    /**
+     * @param command to manage
+     * @param context of the application
+     */
+    public PasswordDialog(int command, Context context) {
         PasswordDialog.command = command;
+        this.context = context;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.password_dialog, null);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
 
-        final Context context = getContext();
         final TextView delivery_message = view.findViewById(R.id.delivery);
-        final EditText device_password = view.findViewById(R.id.devicePassword);
-        final Button set_button = view.findViewById(R.id.setPass);
-        final Button close_button = view.findViewById(R.id.exit); //It can be the "EXIT" or the "ABORT" button
+        final EditText field_to_fill = view.findViewById(R.id.devicePassword);
+        final Button positive_button = view.findViewById(R.id.setPass);
+        final Button negative_button = view.findViewById(R.id.exit);
 
-        /**
-         * Fix the dialog interface depending on the command received in the constructor
-         */
-        if (isCommandSetPass(command)) {
-            close_button.setText("Exit");
+        //Fix the dialog interface "negative" button depending on the command received in the constructor
+        if (command == SET_PASS_COMMAND) {
+            negative_button.setText("Exit");
             delivery_message.setText(SET_DELIVERY);
-        } else if (isCommandChangePass(command)) {
-            close_button.setText("Abort");
+        } else if (command == CHANGE_PASS_COMMAND) {
+            negative_button.setText("Abort");
             delivery_message.setText(CHANGE_DELIVERY);
         }
 
-        set_button.setOnClickListener(v -> {
-            String password = device_password.getText().toString();
-            if (passwordIsEmpty(password)) {
+        positive_button.setOnClickListener(v -> {
+            String password = field_to_fill.getText().toString();
+            if (password.isEmpty()) {
                 Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show();
             } else {
                 passwordDialogListener.onPasswordSet(password, context);
                 Toast.makeText(context, "Password saved", Toast.LENGTH_SHORT).show();
-                //Close the dialog
                 dismiss();
             }
         });
 
-        close_button.setOnClickListener(v -> {
-            if (isCommandSetPass(command))
-                System.exit(0);
-            else if (isCommandChangePass(command)) {
-                //Do nothing
+        negative_button.setOnClickListener(v -> {
+            if (command == SET_PASS_COMMAND) {
+                //Instead of exiting the application a listener has been called
+                passwordDialogListener.onPasswordNotSet();
+                dismiss();
+            } else if (command == CHANGE_PASS_COMMAND) {
                 Toast.makeText(context, "Nothing changed", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
@@ -91,27 +92,6 @@ public class PasswordDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         passwordDialogListener = (PasswordDialogListener) context;
-    }
-
-    /**
-     * Check if the password is empty, true = yes, false = no
-     */
-    private static boolean passwordIsEmpty(String password) {
-        return password.equals("");
-    }
-
-    /**
-     * Check if the command is CHANGE_PASSWORD
-     */
-    public static boolean isCommandChangePass(int command) {
-        return command == CHANGE_PASS_COMMAND;
-    }
-
-    /**
-     * Check if the command is SET_PASSWORD
-     */
-    public static boolean isCommandSetPass(int command) {
-        return command == SET_PASS_COMMAND;
     }
 
 }

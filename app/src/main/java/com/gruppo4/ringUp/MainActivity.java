@@ -51,19 +51,19 @@ import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
-    private static final int CHANGE_PASS_COMMAND = 0;
-    private static final int SET_PASS_COMMAND = 1;
-    private static final int PICK_CONTACT = 1;
-    private EditText phoneNumberField, passwordField;
     private Button ringButton;
-    private PasswordManager passwordManager;
     private TextView adviceTextView;
+    private EditText phoneNumberField, passwordField;
     private static final String IDENTIFIER = RingCommandHandler.SIGNATURE;
-    private static final int WAIT_TIME_PERMISSION = 1500;
     private static final int WAIT_TIME_RING_BTN_ENABLED = 10 * 1000;
     private static int timerValue = WAIT_TIME_RING_BTN_ENABLED;
     private static String adviceText = "Wait " + timerValue + " seconds for a new ring";
-    private static final String DIALOG_TAG = "Device Password";
+    static final int CHANGE_PASS_COMMAND = 0;
+    static final int SET_PASS_COMMAND = 1;
+    static final String DIALOG_TAG = "Device Password";
+    private static final int PICK_CONTACT = 1;
+    private static final int WAIT_TIME_PERMISSION = 1500;
+    private PasswordManager passwordManager;
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
     public static final String BAR_TITLE = "ringUp";
@@ -75,19 +75,31 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        passwordManager = new PasswordManager(getApplicationContext());
+
+        Intent preActIntent;
+        if (!passwordManager.isPassSaved()) {
+            preActIntent = new Intent(getApplicationContext(), InstructionsActivity.class);
+            startActivity(preActIntent);
+            this.finish();
+        }
+        /*TODO //Starting pre activities
+        if (!(checkPermissions() && passwordManager.isPassSaved())) {
+            preActIntent = new Intent(getApplicationContext(), PermissionsActivity.class);
+            startActivity(preActIntent);
+        } else if (!checkPermissions()) {
+            preActIntent = new Intent(getApplicationContext(), PermissionsActivity.class);
+            startActivity(preActIntent);
+        } else if (!passwordManager.isPassSaved()) {
+            preActIntent = new Intent(getApplicationContext(), InstructionsActivity.class);
+            startActivity(preActIntent);
+        }*/
+
         //Setting up the action bar
         Toolbar toolbar = findViewById(R.id.actionBar);
         toolbar.setTitle(BAR_TITLE);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-
-        //Checking the if permissions are granted
-        requestPermissions();
-
-        passwordManager = new PasswordManager(getApplicationContext());
-        //If the device password is not already set, a dialog will be open
-        if (!passwordManager.isPassSaved())
-            openDialog(SET_PASS_COMMAND);
 
         createNotificationChannel();
 
@@ -249,28 +261,27 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      */
     void openDialog(int command) throws IllegalCommandException {
         PasswordDialog passwordDialog;
-        switch (command) {
-            case SET_PASS_COMMAND:
-                passwordDialog = new PasswordDialog(SET_PASS_COMMAND);
-                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
-                break;
-            case CHANGE_PASS_COMMAND:
-                passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND);
-                passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
-                break;
-            default:
-                throw new IllegalCommandException();
+        if (command == CHANGE_PASS_COMMAND) {
+            passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND, getApplicationContext());
+            passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
+        } else {
+            throw new IllegalCommandException();
         }
     }
 
     /**
-     * Overridden method used to capture the set password in the dialog
+     * Method used to capture the set password in the dialog
      *
      * @author Alberto Ursino
      */
     @Override
     public void onPasswordSet(String password, Context context) {
         passwordManager.setPassword(password);
+    }
+
+    //Useless in the MainActivity
+    @Override
+    public void onPasswordNotSet() {
     }
 
     //**************************************NOTIFICATION**************************************
@@ -315,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private void startFromService() {
         Log.d("MainActivity", "startFromService called");
         Intent intent = getIntent();
-        if (intent != null) {
+        if (intent != null && intent.getAction() != null) {
             switch (intent.getAction()) {
                 case NotificationHandler.ALERT_ACTION: {
                     createStopRingDialog();
@@ -388,7 +399,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @author Luca Crema
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
             Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
             //Let's wait the toast ends

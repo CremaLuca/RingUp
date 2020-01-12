@@ -9,4 +9,6 @@
     <string name="toast_message_sent_listener">Command sent to</string>
     <string name="toast_app_needs_permissions">The application needs these permissions</string>
     <string name="toast_contact_has_no_phone_number">This contact has no phone number</string>
+    <string name="instructions_text">ringUp will find a lost phone.\nJust insert its phone number and the password associated.\n\nIn order to let other people to find your phone you have to set YOUR device password…</string>
+    <string name="instructions_title">Instructions</string>
 </resources>
