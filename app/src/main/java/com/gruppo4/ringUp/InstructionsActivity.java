@@ -1,8 +1,8 @@
 package com.gruppo4.ringUp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Class used to inform the user on what ringUp is and what it is used for.

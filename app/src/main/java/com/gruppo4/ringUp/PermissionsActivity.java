@@ -1,6 +1,5 @@
 package com.gruppo4.ringUp;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
