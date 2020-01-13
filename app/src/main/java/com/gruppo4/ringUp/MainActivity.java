@@ -269,19 +269,25 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }
     }
 
-    /**
-     * Method used to capture the set password in the dialog
-     *
-     * @author Alberto Ursino
-     */
+    //Useless in this activity
     @Override
     public void onPasswordSet(String password, Context context) {
+    }
+
+    //Useless in this activity
+    @Override
+    public void onPasswordNotSet(Context context) {
+    }
+
+    @Override
+    public void onPasswordChanged(String password, Context context) {
+        Toast.makeText(context, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
         passwordManager.setPassword(password);
     }
 
-    //Useless in the MainActivity
     @Override
-    public void onPasswordNotSet() {
+    public void onPasswordNotChanged(Context context) {
+        Toast.makeText(context, getString(R.string.toast_password_not_changed), Toast.LENGTH_LONG).show();
     }
 
     //**************************************NOTIFICATION**************************************

@@ -25,7 +25,7 @@ public class PermissionsActivity extends AppCompatActivity {
     //TODO: Cambiare bottone, prendendolo dal layout.
     Button dummyButton = new Button(getApplicationContext());
 
-    static final String[] permissions = new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS}
+    static final String[] permissions = new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,8 @@ public class PermissionsActivity extends AppCompatActivity {
         dummyButton.setOnClickListener(v -> requestPermissions(permissions));
 
         PermissionDialog permissionDialog = new PermissionDialog();
-        permissionDialog.setupDialog();
+        //permissionDialog.setupDialog();
         //TODO: Inflate ...
-
     }
 
     /**

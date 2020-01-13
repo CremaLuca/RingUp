@@ -60,14 +60,19 @@ public class InstructionsActivity extends AppCompatActivity implements PasswordD
         this.finish();
     }
 
-    /**
-     * If the user doesn't set a password just throws a toast and does not allow the user to switch to {@link MainActivity}
-     *
-     * @author Alberto Ursino
-     */
     @Override
-    public void onPasswordNotSet() {
-        Toast.makeText(getApplicationContext(), "You must set a device password", Toast.LENGTH_SHORT).show();
+    public void onPasswordNotSet(Context context) {
+        Toast.makeText(context, getString(R.string.toast_password_must_be_set), Toast.LENGTH_LONG).show();
+    }
+
+    //Useless in this activity
+    @Override
+    public void onPasswordChanged(String password, Context context) {
+    }
+
+    //Useless in this activity
+    @Override
+    public void onPasswordNotChanged(Context context) {
     }
 
     /**
