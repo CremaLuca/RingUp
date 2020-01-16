@@ -1,6 +1,7 @@
-package com.gruppo4.SMSApp;
+package com.example.app;
 
 import android.content.Context;
+
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -21,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.gruppo_4.el_ing_sw", appContext.getPackageName());
+        assertEquals("com.example.app", appContext.getPackageName());
     }
 }

@@ -1,3 +1,2 @@
-include ':sms', ':preferences', ':smslibrary'
-rootProject.name='SMSApp'
-project(':smslibrary').projectDir = new File('eis-sms-library/smslibrary')
+include ':app'
+rootProject.name='ringUp'
