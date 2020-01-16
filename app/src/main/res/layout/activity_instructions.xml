@@ -18,11 +18,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/instructionToolbar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/instructionToolbar"
-        layout="@layout/default_toolbar" />
 
     <TextView
         android:id="@+id/instructions_text"

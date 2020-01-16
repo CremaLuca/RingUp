@@ -3,12 +3,7 @@ package com.gruppo4.ringUp;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,13 +11,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.gruppo4.permissions.PermissionsHandler;
 import com.gruppo4.ringUp.structure.PasswordManager;
 
-import static com.gruppo4.ringUp.MainActivity.BAR_TITLE;
-import static com.gruppo4.ringUp.MainActivity.appName;
+import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 /**
  * Class used to inform the user of which permissions the app needed and requires them
@@ -46,29 +39,14 @@ public class PermissionsActivity extends AppCompatActivity {
         PermissionsHandler permissionsHandler = new PermissionsHandler();
         Activity activity = this;
 
-        //Setting up the default ringUp action bar
-        Toolbar toolbar = findViewById(R.id.permissionsToolbar);
-        toolbar.setTitle(BAR_TITLE);
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-
-        TextView SMSPermissionsTextView = findViewById(R.id.sms_permissions_text_view);
-        TextView ContactsPermissionsTextView = findViewById(R.id.contacts_permissions_text_view);
-        //Setting up the permissions text
-        String smsPermissionsText = getString(R.string.permissions_text_SMS);
-        String contactsPermissionsText = getString(R.string.permissions_text_CONTACTS);
-        SpannableString ssSMS = new SpannableString(smsPermissionsText);
-        SpannableString ssContacts = new SpannableString(contactsPermissionsText);
-        ssSMS.setSpan(new ForegroundColorSpan(getColor(R.color.ring_up_color)), smsPermissionsText.indexOf(appName), smsPermissionsText.indexOf(appName) + appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssContacts.setSpan(new ForegroundColorSpan(getColor(R.color.ring_up_color)), contactsPermissionsText.indexOf(appName), contactsPermissionsText.indexOf(appName) + appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        SMSPermissionsTextView.setText(ssSMS);
-        ContactsPermissionsTextView.setText(ssContacts);
+        TextView permissionsTextView = findViewById(R.id.permissions_text_view);
+        permissionsTextView.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
 
         Button permissionsButton = findViewById(R.id.request_permissions_button);
         permissionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                permissionsHandler.requestPermissions(activity, getApplicationContext(), permissions);
+                permissionsHandler.requestPermissions(activity, permissionsHandler.getDeniedPermissions(getApplicationContext(), permissions));
             }
         });
 
@@ -85,10 +63,17 @@ public class PermissionsActivity extends AppCompatActivity {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (!(new PermissionsHandler().checkAllPermissions(getApplicationContext(), permissions)))
+        boolean check = true;
 
-            Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
-        else {
+        for (int i = 0; i < grantResults.length; i++) {
+            if (grantResults[i] == -1) {
+                Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
+                check = false;
+                break;
+            }
+        }
+
+        if (check) {
             Intent nextActivity;
             if (new PasswordManager(getApplicationContext()).isPassSaved()) {
                 //Start the MainActivity

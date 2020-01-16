@@ -2,21 +2,18 @@ package com.gruppo4.ringUp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.gruppo4.ringUp.structure.PasswordManager;
 import com.gruppo4.ringUp.structure.dialog.PasswordDialog;
 import com.gruppo4.ringUp.structure.dialog.PasswordDialogListener;
 import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
 
-import static com.gruppo4.ringUp.MainActivity.BAR_TITLE;
 import static com.gruppo4.ringUp.MainActivity.DIALOG_TAG;
 import static com.gruppo4.ringUp.MainActivity.SET_PASS_COMMAND;
 
@@ -35,12 +32,6 @@ public class InstructionsActivity extends AppCompatActivity implements PasswordD
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
-
-        //Setting up the default ringUp action bar
-        Toolbar toolbar = findViewById(R.id.instructionToolbar);
-        toolbar.setTitle(BAR_TITLE);
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
 
         passwordManager = new PasswordManager(getApplicationContext());
 

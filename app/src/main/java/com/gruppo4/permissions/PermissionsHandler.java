@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 /**
  * Class used to manage permissions.
  * Through this class you can request permissions, check them and other useful things such as get all denied permissions.
@@ -22,9 +24,8 @@ public class PermissionsHandler {
      * @param permissions The permission to check.
      * @author Francesco Bau', helped by Alberto Ursino.
      */
-    public void requestPermissions(Activity activity, Context context, String[] permissions) {
-        if (!checkAllPermissions(context, permissions))
-            activity.requestPermissions(getDeniedPermissions(context, permissions), REQUEST_CODE);
+    public void requestPermissions(Activity activity, String[] permissions) {
+        activity.requestPermissions(permissions, REQUEST_CODE);
     }
 
     /**
@@ -34,7 +35,7 @@ public class PermissionsHandler {
      * @return true if the app has all permissions granted, false otherwise.
      * @author Francesco Bau', helped by Alberto Ursino.
      */
-    public boolean checkAllPermissions(Context context, @NonNull String[] permissions) {
+    public boolean checkPermissions(Context context, @NonNull String[] permissions) {
         for (String permission : permissions) {
             if (!isGranted(context, permission))
                 return false;
@@ -51,19 +52,22 @@ public class PermissionsHandler {
      * @author Alberto Ursino
      */
     public String[] getDeniedPermissions(Context context, String[] permissions) {
-        String[] deniedPermissions = new String[permissions.length];
+        ArrayList<String> deniedPermissions = new ArrayList<>();
+        int arrayLength = 0;
         for (int i = 0; i < permissions.length; i++) {
-            if (!isGranted(context, permissions[i]))
-                deniedPermissions[i] = permissions[i];
+            if (!isGranted(context, permissions[i])) {
+                deniedPermissions.add(permissions[i]);
+                arrayLength++;
+            }
         }
-        return deniedPermissions;
+        return deniedPermissions.toArray(new String[arrayLength]);
     }
 
     /**
      * Checks if a single permission is granted.
      *
-     * @param permission The permission(s) to check.
-     * @return true if the app has all permissions granted, false otherwise.
+     * @param permission The permission to check.
+     * @return true if the permission is granted, false otherwise.
      * @author Francesco Bau'
      */
     private boolean isGranted(Context context, String permission) {

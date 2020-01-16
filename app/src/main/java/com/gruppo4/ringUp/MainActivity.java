@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,7 +48,7 @@ import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
  */
 public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
 
-    public static final String appName = "ringUp";
+    public static final String APP_NAME = "RingUp";
 
     private Button ringButton;
     private TextView adviceTextView;
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private PasswordManager passwordManager;
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
-    public static final String BAR_TITLE = "ringUp";
     private static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Stop Ringtone Notification";
     private static final int COUNTDOWN_INTERVAL = 1000;
 
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         Intent preActIntent;
         //If the permissions are not given, the permissionsActivity is opened
-        if (!permissionsHandler.checkAllPermissions(context, PermissionsActivity.permissions)) {
+        if (!permissionsHandler.checkPermissions(context, PermissionsActivity.permissions)) {
             preActIntent = new Intent(context, PermissionsActivity.class);
             startActivity(preActIntent);
             this.finish();
@@ -94,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         //Setting up the action bar
         Toolbar toolbar = findViewById(R.id.actionBar);
-        toolbar.setTitle(BAR_TITLE);
-        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setTitle(APP_NAME);
+        toolbar.setTitleTextColor(getColor(R.color.black));
         setSupportActionBar(toolbar);
 
         createNotificationChannel();

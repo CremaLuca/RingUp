@@ -1,33 +1,37 @@
 <resources>
-    <string name="app_name">ringUp</string>
+    <string name="app_name">RingUp</string>
     <string name="text_stop_ring_dialog">Your phone is ringing, stop it from here if you want</string>
     <string name="text_notification_button">Stop</string>
 
     <string name="toast_password_absent">Insert a password</string>
     <string name="toast_phone_number_absent">Insert a number</string>
-    <string name="toast_pass_phone_number_absent">Insert the lost device phone number and its password</string>
+    <string name="toast_pass_phone_number_absent">Insert a phone number and its password</string>
     <string name="toast_invalid_phone_number">Invalid phone number</string>
     <string name="toast_message_sent_listener">Command sent to</string>
-    <string name="toast_app_needs_permissions">The application needs these permissions</string>
-    <string name="toast_contact_has_no_phone_number">This contact has no phone number</string>
+    <string name="toast_app_needs_permissions">App needs these permissions</string>
+    <string name="toast_contact_has_no_phone_number">This contact does not have a phone number</string>
     <string name="toast_password_set">Password has been set</string>
     <string name="toast_password_not_set">Password has not been set</string>
     <string name="toast_password_changed">Password has been changed</string>
     <string name="toast_password_not_changed">Password has not been changed</string>
     <string name="toast_password_must_be_set">Password must be set</string>
 
-    <string name="instructions_text">ringUp will find a lost phone.\nJust insert its phone number and the password associated.\n\nIn order to let other people to find your phone you have to set YOUR device password…</string>
-    <string name="instructions_title">Instructions</string>
+    <string name="instructions_text">RingUp will find a lost phone.\nJust insert its phone number and the password associated.\n\nIn order to let other people to find your phone you have to set YOUR device password…</string>
+    <string name="instructions_title">Instruction activity</string>
+
+    <string name="welcome_message">Welcome to RingUp!\n</string>
+    <string name="permissions_text">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS.\nFurthermore, the app needs to read contacts from the address book.</string>
+    <string name="give_permissions_button_text">Got it!</string>
+
     <string name="title_SMSPermission">SMS</string>
     <string name="title_contactsPermission">CONTACTS</string>
     <string name="description_SMSPermission">This app sends commands via SMS, in order to make the target phone ring.</string>
-    <string name="description_contactsPermission">We need to have access to Contacts in order to make a target number ring, choosing it from the Contact List.</string>
-    <string name="button_OK_description">Ok, understood</string>
-    <string name="button_cancel_description">Cancel</string>
+    <string name="description_contactsPermission">We need to have access to contacts in order to make a target number ring, choosing it from the address book.</string>
     <string name="exit_dialog_button">Exit</string>
     <string name="abort_dialog_button">Abort</string>
-    <string name="permissions_text_SMS">In order to find a phone and let others find yours, ringUp needs the permission to send and receive SMS.\n</string>
-    <string name="permissions_text_CONTACTS">In order to select a phone number from the rubric, ringUp needs the permissions to read contacts.</string>
-    <string name="give_permissions_button_text">give permissions</string>
-    <string name="permissions_activity_text_title">Permissions Request</string>
+    <string name="hint_phone_number">phone number</string>
+    <string name="hint_password">password</string>
+    <string name="alpha_edition">alpha edition</string>
+    <string name="menu_change_password">Change password</string>
+
 </resources>
