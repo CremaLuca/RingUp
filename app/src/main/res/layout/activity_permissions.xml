@@ -4,57 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.gruppo4.ringUp.PermissionsActivity">
+
+    <include
+        android:id="@+id/permissionsToolbar"
+        layout="@layout/default_toolbar" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/permissions_activity_text_title"
+        android:textColor="@color/nice_grey"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/permissionsToolbar" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <TextView
+            android:id="@+id/sms_permissions_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/nice_grey"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/contacts_permissions_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/nice_grey"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/nice_grey"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/textView_SMSPermission_title"
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_SMSPermission" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView_SMSPermission_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/description_SMSPermission" />
+            <Button
+                android:id="@+id/request_permissions_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="239dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@color/white"
+                android:text="@string/give_permissions_button_text"
+                android:textColor="#157E69"
+                android:textSize="22sp" />
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/textView_contactsPermission_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_contactsPermission" />
-
-        <TextView
-            android:id="@+id/textView_contactsPermission_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/description_contactsPermission" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/button_OK"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_OK_description"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/button_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/button_cancel_description"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-        app:layout_constraintEnd_toStartOf="@+id/button_OK" />
 </androidx.constraintlayout.widget.ConstraintLayout>

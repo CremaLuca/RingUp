@@ -26,4 +26,8 @@
     <string name="button_cancel_description">Cancel</string>
     <string name="exit_dialog_button">Exit</string>
     <string name="abort_dialog_button">Abort</string>
+    <string name="permissions_text_SMS">In order to find a phone and let others find yours, ringUp needs the permission to send and receive SMS.\n</string>
+    <string name="permissions_text_CONTACTS">In order to select a phone number from the rubric, ringUp needs the permissions to read contacts.</string>
+    <string name="give_permissions_button_text">give permissions</string>
+    <string name="permissions_activity_text_title">Permissions Request</string>
 </resources>

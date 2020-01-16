@@ -4,9 +4,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
 
     <!-- Customize your theme here. -->
-    <style name="CustomToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ringUpToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/nice_grey</item> <!--- toolbar background -->
-        <item name="android:textColorSecondary">@color/white</item> <!--- 3 dots menu color -->
+        <item name="android:textColorSecondary">@color/white</item> <!--- 3 dots menu and app title color -->
     </style>
 
     <!-- Menu theme here. -->
