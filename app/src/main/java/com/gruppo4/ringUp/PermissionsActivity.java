@@ -36,7 +36,6 @@ public class PermissionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permissions);
 
-        PermissionsHandler permissionsHandler = new PermissionsHandler();
         Activity activity = this;
 
         TextView permissionsTextView = findViewById(R.id.permissions_text_view);
@@ -46,7 +45,13 @@ public class PermissionsActivity extends AppCompatActivity {
         permissionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                permissionsHandler.requestPermissions(activity, permissionsHandler.getDeniedPermissions(getApplicationContext(), permissions));
+                String[] requiredPermissions = PermissionsHandler.getDeniedPermissions(getApplicationContext(), permissions);
+                if (requiredPermissions.length != 0)
+                    requestPermissions(PermissionsHandler.getDeniedPermissions(getApplicationContext(), permissions), PermissionsHandler.REQUEST_CODE);
+                else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_permissions_already_granted), Toast.LENGTH_SHORT).show();
+                    changeActivity();
+                }
             }
         });
 
@@ -54,40 +59,53 @@ public class PermissionsActivity extends AppCompatActivity {
 
     /**
      * Callback for the permissions request.
-     * If the user has not granted all the permissions he cannot continue and a toast will be displayed telling that the app needs the permissions.
-     * Otherwise checks if a password is saved in the memory:
-     * If YES, the {@link MainActivity} is opened by closing the {@link PermissionsActivity};
-     * If NOT, the {@link InstructionsActivity} is opened by closing the {@link PermissionsActivity}.
+     * If the user has not granted all the permissions he cannot continue and a toast will be displayed telling that the app needs the permissions, otherwise calls {@link #changeActivity()}.
+     * If the user has selected the option "Don't show it again" must go to the app settings and give them.
      *
+     * @param requestCode  has to be equals to {@link PermissionsHandler#REQUEST_CODE}
+     * @param permissions  requested by the {@link Activity#requestPermissions(String[], int)}
+     * @param grantResults Result of this callback: 0 -> Permissions GRANTED; -1 -> Permissions NOT GRANTED
      * @author Alberto Ursino
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean check = true;
 
-        for (int i = 0; i < grantResults.length; i++) {
-            if (grantResults[i] == -1) {
-                Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
-                check = false;
-                break;
+        if (requestCode == PermissionsHandler.REQUEST_CODE) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == -1) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
+                    check = false;
+                    break;
+                }
             }
-        }
 
-        if (check) {
-            Intent nextActivity;
-            if (new PasswordManager(getApplicationContext()).isPassSaved()) {
-                //Start the MainActivity
-                nextActivity = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(nextActivity);
-                //This activity will no longer be necessary
-                this.finish();
-            } else {
-                //Start the InstructionsActivity
-                nextActivity = new Intent(getApplicationContext(), InstructionsActivity.class);
-                startActivity(nextActivity);
-                //This activity will no longer be necessary
-                this.finish();
-            }
+            if (check)
+                changeActivity();
         }
     }
+
+    /**
+     * Starts the next activity, it can be the {@link InstructionsActivity} or the {@link MainActivity} if a password is already set
+     * This activity will then be closed
+     *
+     * @author Alberto Ursino
+     */
+    public void changeActivity() {
+        Intent nextActivity;
+        if (new PasswordManager(getApplicationContext()).isPassSaved()) {
+            //Start the MainActivity
+            nextActivity = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(nextActivity);
+            //This activity will no longer be necessary
+            this.finish();
+        } else {
+            //Start the InstructionsActivity
+            nextActivity = new Intent(getApplicationContext(), InstructionsActivity.class);
+            startActivity(nextActivity);
+            //This activity will no longer be necessary
+            this.finish();
+        }
+    }
+
 }

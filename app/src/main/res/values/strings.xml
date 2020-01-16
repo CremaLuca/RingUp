@@ -33,5 +33,7 @@
     <string name="hint_password">password</string>
     <string name="alpha_edition">alpha edition</string>
     <string name="menu_change_password">Change password</string>
+    <string name="toast_dont_show_again">You have to go on the application setting menu and give it the necessary permissions</string>
+    <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.gruppo4.permissions;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
@@ -16,17 +15,7 @@ import java.util.ArrayList;
  */
 public class PermissionsHandler {
 
-    private static final int REQUEST_CODE = 0;
-
-    /**
-     * Checks if permissions are granted, if not then requests not granted ones to the user.
-     *
-     * @param permissions The permission to check.
-     * @author Francesco Bau', helped by Alberto Ursino.
-     */
-    public void requestPermissions(Activity activity, String[] permissions) {
-        activity.requestPermissions(permissions, REQUEST_CODE);
-    }
+    public static final int REQUEST_CODE = 0;
 
     /**
      * Checks if all permissions are granted.
@@ -35,9 +24,9 @@ public class PermissionsHandler {
      * @return true if the app has all permissions granted, false otherwise.
      * @author Francesco Bau', helped by Alberto Ursino.
      */
-    public boolean checkPermissions(Context context, @NonNull String[] permissions) {
+    public static boolean checkPermissions(Context context, @NonNull String[] permissions) {
         for (String permission : permissions) {
-            if (!isGranted(context, permission))
+            if (isGranted(context, permission))
                 return false;
         }
         return true;
@@ -51,11 +40,11 @@ public class PermissionsHandler {
      * @author Francesco Bau'
      * @author Alberto Ursino
      */
-    public String[] getDeniedPermissions(Context context, String[] permissions) {
+    public static String[] getDeniedPermissions(Context context, String[] permissions) {
         ArrayList<String> deniedPermissions = new ArrayList<>();
         int arrayLength = 0;
         for (int i = 0; i < permissions.length; i++) {
-            if (!isGranted(context, permissions[i])) {
+            if (isGranted(context, permissions[i])) {
                 deniedPermissions.add(permissions[i]);
                 arrayLength++;
             }
@@ -70,8 +59,8 @@ public class PermissionsHandler {
      * @return true if the permission is granted, false otherwise.
      * @author Francesco Bau'
      */
-    private boolean isGranted(Context context, String permission) {
-        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    private static boolean isGranted(Context context, String permission) {
+        return context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED;
     }
 
 }

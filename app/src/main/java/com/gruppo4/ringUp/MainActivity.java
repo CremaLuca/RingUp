@@ -75,11 +75,10 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         Context context = getApplicationContext();
 
         passwordManager = new PasswordManager(context);
-        PermissionsHandler permissionsHandler = new PermissionsHandler();
 
         Intent preActIntent;
         //If the permissions are not given, the permissionsActivity is opened
-        if (!permissionsHandler.checkPermissions(context, PermissionsActivity.permissions)) {
+        if (!PermissionsHandler.checkPermissions(context, PermissionsActivity.permissions)) {
             preActIntent = new Intent(context, PermissionsActivity.class);
             startActivity(preActIntent);
             this.finish();
