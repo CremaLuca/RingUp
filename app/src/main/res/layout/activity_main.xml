@@ -79,7 +79,7 @@
         android:layout_width="34dp"
         android:layout_height="37dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/baseline_contacts_white_18dp"
+        android:background="@drawable/baseline_contacts_black_48dp"
         android:backgroundTint="@color/colorPrimary"
         android:onClick="openAddressBook"
         app:layout_constraintStart_toEndOf="@+id/phone_number_field"

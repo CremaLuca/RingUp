@@ -10,7 +10,7 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="206dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="32dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,13 +51,13 @@
                 android:id="@+id/instruction_step_1_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:text="@string/instructions_step_1"
                 android:textAlignment="center"
-                android:gravity="center_vertical"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +76,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/instruction_step_1_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_phonelink_lock_white_18dp" />
+                app:srcCompat="@drawable/baseline_phonelink_lock_black_48dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,11 +89,11 @@
                 android:id="@+id/instruction_step_2_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:text="@string/instructions_step_2"
                 android:textAlignment="center"
                 android:textColor="@color/black"
@@ -107,14 +107,16 @@
                 android:id="@+id/instruction_step_2_image"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:tint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/instruction_step_2_text"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_new_releases_white_18dp" />
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/baseline_device_unknown_black_48dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,11 +129,11 @@
                 android:id="@+id/instruction_step_3_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:text="@string/instructions_step_3"
                 android:textAlignment="center"
                 android:textColor="@color/black"
@@ -145,14 +147,14 @@
                 android:id="@+id/instruction_step_3_image"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:tint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/instruction_step_3_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_group_white_18dp" />
+                app:srcCompat="@drawable/baseline_people_black_48dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,11 +167,11 @@
                 android:id="@+id/instruction_step_4_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:text="@string/instructions_step_4"
                 android:textAlignment="center"
                 android:textColor="@color/black"
@@ -183,14 +185,14 @@
                 android:id="@+id/instruction_step_4_image"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:tint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/instruction_step_4_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_ring_volume_white_18dp" />
+                app:srcCompat="@drawable/baseline_ring_volume_black_48dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
@@ -201,7 +203,7 @@
         style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="25dp"
         android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp"
         android:text="@string/set_pass_button_text"
@@ -209,6 +211,8 @@
         android:textColorHighlight="@color/nice_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

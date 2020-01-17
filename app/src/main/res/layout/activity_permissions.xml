@@ -64,7 +64,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/sms_permission_text_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_textsms_white_18dp" />
+                app:srcCompat="@drawable/baseline_message_black_48dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -99,7 +99,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/contact_list_permission_text_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_contacts_black_18dp" />
+                app:srcCompat="@drawable/baseline_contacts_black_48dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
@@ -108,7 +108,7 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="206dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="40dp"
         android:contentDescription="TODO"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +120,7 @@
         style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="25dp"
         android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp"
         android:text="@string/give_permissions_button_text"
@@ -128,6 +128,8 @@
         android:textColorHighlight="@color/nice_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
