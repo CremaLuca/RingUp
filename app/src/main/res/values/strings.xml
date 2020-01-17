@@ -17,17 +17,22 @@
     <string name="toast_password_must_be_set">Password must be set</string>
 
     <string name="how_ring_up_works">How does RingUp work?</string>
-    <string name="instructions_text">All you have to do to find someone\'s phone is to make sure RingUp is installed on that phone, after which you just need to know it\'s password!\nFor this reason, your phone will also need a password.</string>
+    <string name="instructions_step_1">Set your own device\'s password</string>
+    <string name="instructions_step_2">Forget where you left your phone</string>
+    <string name="instructions_step_3">Ask someone else to install this app then send yourself a RingUp</string>
+    <string name="instructions_step_4">Listen carefully for your ringtone and find your phone!</string>
     <string name="set_pass_button_text">Set password</string>
 
-    <string name="welcome_message">Welcome to RingUp!\n</string>
-    <string name="permissions_text">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS. The app also needs to read contacts from the contact list.</string>
+    <string name="welcome_message">Welcome to RingUp!</string>
+    <string name="permission_explanation">In order for RingUp to work properly, it needs the following permissions:</string>
+    <string name="contacts_permission_explanation">When you want to ring another phone you can choose between one of your contacts from the contacts list.</string>
+    <string name="sms_permission_explanation">The app works without data connection so it needs to be able to send and receive SMS messages.</string>
     <string name="give_permissions_button_text">Got it!</string>
 
     <string name="title_SMSPermission">SMS</string>
-    <string name="title_contactsPermission">CONTACTS</string>
+    <string name="title_contactsPermission">Contacts</string>
     <string name="description_SMSPermission">This app uses SMS to communicate between phones.</string>
-    <string name="description_contactsPermission">This applicazion uses contact list to let you select the contacts to ring the phone to.</string>
+    <string name="description_contactsPermission">This application uses contact list to let you select the contacts to ring the phone to.</string>
     <string name="exit_dialog_button">Exit</string>
     <string name="abort_dialog_button">Abort</string>
     <string name="hint_phone_number">phone number</string>
@@ -36,7 +41,6 @@
     <string name="menu_change_password">Change password</string>
     <string name="toast_dont_show_again" translatable="false">You have to go on the application setting menu and give it the necessary permissions</string>
     <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
-    <string name="set_dialog_button_text">SET</string>
-
+    <string name="set_dialog_button_text">Set</string>
 
 </resources>

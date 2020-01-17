@@ -7,7 +7,6 @@
     <string name="give_permissions_button_text">Capito</string>
     <string name="hint_password">password</string>
     <string name="hint_phone_number">numero di telefono</string>
-    <string name="instructions_text">RingUp aiuta a trovare il telefono se lo hai perso. Basta inserire il numero di telefono e la password. Per far si che altri possano aiutarti a trovare il telefono devi impostare la password del TUO dispositivo.</string>
     <string name="menu_change_password">Cambia password</string>
     <string name="text_notification_button">Ferma</string>
     <string name="text_stop_ring_dialog">Il telefono sta squillando, puoi fermarlo da qui.</string>
@@ -30,7 +29,13 @@
     <string name="description_SMSPermission">Questa applicazione utilizza gli SMS per la comunicazione tra telefoni.</string>
     <string name="description_contactsPermission">Questa applicazione usa la lista dei contatti per selezionare i contatti a cui far squillare il telefono.</string>
     <string name="how_ring_up_works">Come funziona RingUp?</string>
-    <string name="set_pass_button_text">Imposta password</string>
-    <string name="set_dialog_button_text">IMPOSTA</string>
-    <string name="permissions_text">Per poter trovare un telefono e fare in modo che altri trovino il tuo, RingUp ha bisogno dei permessi per inviare e ricevere SMS. Inoltre l\'app ha bisogno di poter leggere i contatti dalla rubrica.</string>
+    <string name="set_pass_button_text">Imposta la password</string>
+    <string name="set_dialog_button_text">Imposta</string>
+    <string name="permission_explanation">Perché RingUp funzioni correttamente, ha bisogno dei seguenti permessi:</string>
+    <string name="contacts_permission_explanation">Quando vuoi far squillare un altro telefono potrai selezionare un contatto dalla lista dei contatti.</string>
+    <string name="sms_permission_explanation">L\'app non usa la connessione dati e deve essere in grado di inviare e ricevere messaggi SMS.</string>
+    <string name="instructions_step_1">Imposta la password del tuo telefono</string>
+    <string name="instructions_step_2">Dimenticati dove hai lasciato il telefono</string>
+    <string name="instructions_step_3">Chiedi a qualcuno di installare quest\'app e mandati un RingUp</string>
+    <string name="instructions_step_4">Ascolta attentamente se senti la tua suoneria e trova il tuo telefono!</string>
 </resources>
