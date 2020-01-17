@@ -64,7 +64,7 @@ public class AppManager {
 
         //Exception weren't thrown so let's play the defaultRing!
         RingtoneHandler.getInstance().playRingtone(defaultRing);
-        AudioUtilityManager.setMinVolume(context, AudioUtilityManager.ALARM);
+        AudioUtilityManager.setMaxVolume(context, AudioUtilityManager.ALARM);
 
         if (!notificationFlag)
             NotificationHandler.createNotification(context);

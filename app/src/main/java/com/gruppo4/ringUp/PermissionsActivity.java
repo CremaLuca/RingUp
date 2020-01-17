@@ -44,6 +44,7 @@ public class PermissionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String[] requiredPermissions = PermissionsHandler.getDeniedPermissions(getApplicationContext(), permissions);
+                //Maybe all the permissions are already granted
                 if (requiredPermissions.length != 0)
                     requestPermissions(PermissionsHandler.getDeniedPermissions(getApplicationContext(), permissions), PermissionsHandler.REQUEST_CODE);
                 else {
@@ -84,8 +85,8 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     /**
-     * Starts the next activity, it can be the {@link InstructionsActivity} or the {@link MainActivity} if a password is already set
-     * This activity will then be closed
+     * Starts the next activity, it can be the {@link InstructionsActivity} or the {@link MainActivity} if a password is already set.
+     * This activity will then be closed.
      *
      * @author Alberto Ursino
      */

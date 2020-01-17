@@ -16,6 +16,8 @@ import com.gruppo4.ringUp.R;
 
 /**
  * Class used to handle the ringUp notifications
+ *
+ * @author Alberto Ursino
  */
 public class NotificationHandler extends BroadcastReceiver {
 
