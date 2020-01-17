@@ -24,12 +24,12 @@
     <string name="how_ring_up_works">Come funziona RingUp?</string>
     <string name="set_pass_button_text">Imposta la password</string>
     <string name="set_dialog_button_text">Imposta</string>
-    <string name="contacts_permission_explanation">Quando vuoi far squillare un altro telefono potrai selezionare un contatto dalla lista dei contatti.</string>
-    <string name="sms_permission_explanation">L\'app non usa la connessione dati e deve essere in grado di inviare e ricevere messaggi SMS.</string>
+    <string name="contacts_permission_explanation">Quando vuoi far squillare un altro telefono potrai selezionare un contatto dalla rubrica.</string>
+    <string name="sms_permission_explanation">L\' app non usa la connessione dati e deve essere in grado di inviare e ricevere messaggi SMS.</string>
     <string name="instructions_step_1">Imposta la password del tuo telefono</string>
     <string name="instructions_step_2">Dimenticati dove hai lasciato il telefono</string>
-    <string name="instructions_step_3">Chiedi a qualcuno di installare quest\'app e mandati un RingUp</string>
-    <string name="instructions_step_4">Ascolta attentamente se senti la tua suoneria e trova il tuo telefono!</string>
+    <string name="instructions_step_3">Chiedi a qualcuno di installare quest\'app e mandarti un RingUp</string>
+    <string name="instructions_step_4">Ascolta attentamente se senti la tua suoneria e trova il telefono!</string>
     <string name="change_device_password">Cambia la password del telefono</string>
     <string name="set_device_password">Imposta la password del telefono</string>
 </resources>
