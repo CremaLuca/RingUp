@@ -26,9 +26,11 @@
     <string name="sms_permission_explanation">The app works without data connection so it needs to be able to send and receive SMS messages.</string>
     <string name="give_permissions_button_text">Got it!</string>
 
-    <string name="exit_dialog_button">Exit</string>
+    <string name="exit_dialog_button">Cancel</string>
     <string name="hint_phone_number">phone number</string>
-    <string name="hint_password">password</string>
+    <string name="hint_password">Password</string>
+    <string name="set_device_password">Set device password</string>
+    <string name="change_device_password">Change device password</string>
     <string name="alpha_edition">alpha edition</string>
     <string name="menu_change_password">Change password</string>
     <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>

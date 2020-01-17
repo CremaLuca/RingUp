@@ -26,8 +26,8 @@ public class PasswordDialog extends AppCompatDialogFragment {
     private PasswordDialogListener passwordDialogListener;
     private static final int CHANGE_PASS_COMMAND = 0;
     private static final int SET_PASS_COMMAND = 1;
-    private static final String SET_PASS_DELIVERY = "Set your device password";
-    private static final String CHANGE_PASS_DELIVERY = "Change your device password";
+    private static final int SET_PASS_DELIVERY = R.string.set_device_password;
+    private static final int CHANGE_PASS_DELIVERY = R.string.change_device_password;
     private Context context;
     private int command;
 
@@ -54,9 +54,9 @@ public class PasswordDialog extends AppCompatDialogFragment {
 
         //Fix the dialog title
         if (command == SET_PASS_COMMAND) {
-            dialogTitle.setText(SET_PASS_DELIVERY);
+            dialogTitle.setText(getString(SET_PASS_DELIVERY));
         } else if (command == CHANGE_PASS_COMMAND) {
-            dialogTitle.setText(CHANGE_PASS_DELIVERY);
+            dialogTitle.setText(getString(CHANGE_PASS_DELIVERY));
         }
 
         positiveButton.setOnClickListener(v -> {
