@@ -16,18 +16,18 @@
     <string name="toast_password_not_changed">Password has not been changed</string>
     <string name="toast_password_must_be_set">Password must be set</string>
 
-    <string name="how_ring_up_works">How RingUp works?\n</string>
+    <string name="how_ring_up_works">How does RingUp work?</string>
     <string name="instructions_text">All you have to do to find someone\'s phone is to make sure RingUp is installed on that phone, after which you just need to know it\'s password!\nFor this reason, your phone will also need a password.</string>
     <string name="set_pass_button_text">Set password</string>
 
     <string name="welcome_message">Welcome to RingUp!\n</string>
-    <string name="permissions_text" translatable="false">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS.\nFurthermore, the app needs to read contacts from the address book.</string>
+    <string name="permissions_text">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS. The app also needs to read contacts from the contact list.</string>
     <string name="give_permissions_button_text">Got it!</string>
 
     <string name="title_SMSPermission">SMS</string>
     <string name="title_contactsPermission">CONTACTS</string>
-    <string name="description_SMSPermission" translatable="false">This app sends commands via SMS, in order to make the target phone ring.</string>
-    <string name="description_contactsPermission" translatable="false">We need to have access to contacts in order to make a target number ring, choosing it from the address book.</string>
+    <string name="description_SMSPermission">This app uses SMS to communicate between phones.</string>
+    <string name="description_contactsPermission">This applicazion uses contact list to let you select the contacts to ring the phone to.</string>
     <string name="exit_dialog_button">Exit</string>
     <string name="abort_dialog_button">Abort</string>
     <string name="hint_phone_number">phone number</string>

@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/permissions_text_view"
-            android:layout_width="328dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-light"
@@ -45,7 +45,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="222dp"
+        android:layout_width="wrap_content"
         android:layout_height="206dp"
         android:layout_marginTop="100dp"
         android:contentDescription="TODO"
@@ -57,12 +57,14 @@
     <Button
         android:id="@+id/request_permissions_button"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="177dp"
-        android:layout_height="69dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
+        android:paddingHorizontal="16dp"
         android:text="@string/give_permissions_button_text"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/nice_grey"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

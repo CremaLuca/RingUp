@@ -8,7 +8,6 @@
     <string name="hint_password">password</string>
     <string name="hint_phone_number">numero di telefono</string>
     <string name="instructions_text">RingUp aiuta a trovare il telefono se lo hai perso. Basta inserire il numero di telefono e la password. Per far si che altri possano aiutarti a trovare il telefono devi impostare la password del TUO dispositivo.</string>
-    <string name="instructions_title">Istruzioni</string>
     <string name="menu_change_password">Cambia password</string>
     <string name="text_notification_button">Ferma</string>
     <string name="text_stop_ring_dialog">Il telefono sta squillando, puoi fermarlo da qui.</string>
@@ -28,4 +27,10 @@
     <string name="toast_invalid_phone_number">Numero di telefono non valido</string>
     <string name="toast_contact_has_no_phone_number">Questo contatto non ha un numero di telefono</string>
     <string name="toast_app_needs_permissions">L\'applicazione ha bisogno di questi permessi</string>
+    <string name="description_SMSPermission">Questa applicazione utilizza gli SMS per la comunicazione tra telefoni.</string>
+    <string name="description_contactsPermission">Questa applicazione usa la lista dei contatti per selezionare i contatti a cui far squillare il telefono.</string>
+    <string name="how_ring_up_works">Come funziona RingUp?</string>
+    <string name="set_pass_button_text">Imposta password</string>
+    <string name="set_dialog_button_text">IMPOSTA</string>
+    <string name="permissions_text">Per poter trovare un telefono e fare in modo che altri trovino il tuo, RingUp ha bisogno dei permessi per inviare e ricevere SMS. Inoltre l\'app ha bisogno di poter leggere i contatti dalla rubrica.</string>
 </resources>
