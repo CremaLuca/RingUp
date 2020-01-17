@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RingUp</string>
+    <string name="abort_dialog_button">Annulla</string>
+    <string name="alpha_edition">edizione alpha</string>
+    <string name="exit_dialog_button">Esci</string>
+    <string name="give_permissions_button_text">Capito</string>
+    <string name="hint_password">password</string>
+    <string name="hint_phone_number">numero di telefono</string>
+    <string name="instructions_text">RingUp aiuta a trovare il telefono se lo hai perso. Basta inserire il numero di telefono e la password. Per far si che altri possano aiutarti a trovare il telefono devi impostare la password del TUO dispositivo.</string>
+    <string name="instructions_title">Istruzioni</string>
+    <string name="menu_change_password">Cambia password</string>
+    <string name="text_notification_button">Ferma</string>
+    <string name="text_stop_ring_dialog">Il telefono sta squillando, puoi fermarlo da qui.</string>
+    <string name="title_SMSPermission">SMS</string>
+    <string name="title_contactsPermission">Contatti</string>
+    <string name="toast_password_set">La password è stata impostata</string>
+    <string name="toast_password_not_set">La password NON impostata</string>
+    <string name="toast_password_not_changed">La password non è stata cambiata</string>
+    <string name="toast_password_must_be_set">La password deve essere impostata</string>
+    <string name="toast_password_changed">La password è stata cambiata</string>
+    <string name="toast_permissions_already_granted">Tutti i permessi già ottenuti, ottimo!</string>
+    <string name="toast_phone_number_absent">Inserisci un numero di telefono</string>
+    <string name="welcome_message">Benvenuto in RingUp!</string>
+    <string name="toast_password_absent">Inserisci la password</string>
+    <string name="toast_pass_phone_number_absent">Inserisci il numero di telefono e la sua password</string>
+    <string name="toast_message_sent_listener">Comando inviato a</string>
+    <string name="toast_invalid_phone_number">Numero di telefono non valido</string>
+    <string name="toast_contact_has_no_phone_number">Questo contatto non ha un numero di telefono</string>
+    <string name="toast_app_needs_permissions">L\'applicazione ha bisogno di questi permessi</string>
+</resources>
