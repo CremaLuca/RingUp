@@ -27,7 +27,7 @@
     <string name="give_permissions_button_text">Got it!</string>
 
     <string name="exit_dialog_button">Cancel</string>
-    <string name="hint_phone_number">phone number</string>
+    <string name="hint_phone_number">Phone number</string>
     <string name="hint_password">Password</string>
     <string name="set_device_password">Set device password</string>
     <string name="change_device_password">Change device password</string>

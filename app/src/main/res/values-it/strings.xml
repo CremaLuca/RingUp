@@ -5,7 +5,7 @@
     <string name="exit_dialog_button">Annulla</string>
     <string name="give_permissions_button_text">Capito</string>
     <string name="hint_password">Password</string>
-    <string name="hint_phone_number">numero di telefono</string>
+    <string name="hint_phone_number">Numero di telefono</string>
     <string name="menu_change_password">Cambia password</string>
     <string name="text_notification_button">Ferma</string>
     <string name="text_stop_ring_dialog">Il telefono sta squillando, puoi fermarlo da qui.</string>

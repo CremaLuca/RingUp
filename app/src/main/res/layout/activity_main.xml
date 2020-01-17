@@ -17,14 +17,11 @@
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_marginTop="130dp"
-        android:background="@drawable/app_default_edit_text"
         android:ems="10"
         android:hint="@string/hint_phone_number"
         android:inputType="phone"
         android:textAlignment="center"
-        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/actionBar"
         android:autofillHints="" />
@@ -45,17 +42,12 @@
         android:id="@+id/password_field"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:layout_marginStart="70dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="70dp"
-        android:background="@drawable/app_default_edit_text"
         android:ems="10"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:textAlignment="center"
-        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phone_number_field" />
 
@@ -78,20 +70,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ring_button"
-        app:layout_constraintVertical_bias="0.050000012" />
+        app:layout_constraintVertical_bias="0.1" />
 
     <Button
         android:id="@+id/address_book_button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="34dp"
         android:layout_height="37dp"
-        android:layout_marginTop="61dp"
-        android:layout_marginBottom="22dp"
-        android:background="@drawable/ic_person_phonebook"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/baseline_contacts_white_18dp"
+        android:backgroundTint="@color/colorPrimary"
         android:onClick="openAddressBook"
-        app:layout_constraintBottom_toTopOf="@+id/password_field"
-        app:layout_constraintEnd_toEndOf="@+id/phone_number_field"
-        app:layout_constraintTop_toBottomOf="@+id/actionBar"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toEndOf="@+id/phone_number_field"
+        app:layout_constraintTop_toTopOf="@+id/phone_number_field" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
