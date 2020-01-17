@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RingUp</string>
-    <string name="abort_dialog_button">Annulla</string>
     <string name="alpha_edition">edizione alpha</string>
     <string name="exit_dialog_button">Esci</string>
     <string name="give_permissions_button_text">Capito</string>
@@ -10,10 +9,6 @@
     <string name="menu_change_password">Cambia password</string>
     <string name="text_notification_button">Ferma</string>
     <string name="text_stop_ring_dialog">Il telefono sta squillando, puoi fermarlo da qui.</string>
-    <string name="title_SMSPermission">SMS</string>
-    <string name="title_contactsPermission">Contatti</string>
-    <string name="toast_password_set">La password è stata impostata</string>
-    <string name="toast_password_not_set">La password NON impostata</string>
     <string name="toast_password_not_changed">La password non è stata cambiata</string>
     <string name="toast_password_must_be_set">La password deve essere impostata</string>
     <string name="toast_password_changed">La password è stata cambiata</string>
@@ -26,12 +21,9 @@
     <string name="toast_invalid_phone_number">Numero di telefono non valido</string>
     <string name="toast_contact_has_no_phone_number">Questo contatto non ha un numero di telefono</string>
     <string name="toast_app_needs_permissions">L\'applicazione ha bisogno di questi permessi</string>
-    <string name="description_SMSPermission">Questa applicazione utilizza gli SMS per la comunicazione tra telefoni.</string>
-    <string name="description_contactsPermission">Questa applicazione usa la lista dei contatti per selezionare i contatti a cui far squillare il telefono.</string>
     <string name="how_ring_up_works">Come funziona RingUp?</string>
     <string name="set_pass_button_text">Imposta la password</string>
     <string name="set_dialog_button_text">Imposta</string>
-    <string name="permission_explanation">Perché RingUp funzioni correttamente, ha bisogno dei seguenti permessi:</string>
     <string name="contacts_permission_explanation">Quando vuoi far squillare un altro telefono potrai selezionare un contatto dalla lista dei contatti.</string>
     <string name="sms_permission_explanation">L\'app non usa la connessione dati e deve essere in grado di inviare e ricevere messaggi SMS.</string>
     <string name="instructions_step_1">Imposta la password del tuo telefono</string>
