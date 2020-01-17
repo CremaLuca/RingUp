@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">RingUp</string>
-    <string name="text_stop_ring_dialog">Your phone is ringing, stop it from here if you want</string>
+    <string name="text_stop_ring_dialog">Your phone is ringing, you can stop it from here</string>
     <string name="text_notification_button">Stop</string>
 
     <string name="toast_password_absent">Insert a password</string>
-    <string name="toast_phone_number_absent">Insert a number</string>
+    <string name="toast_phone_number_absent">Insert a phone number</string>
     <string name="toast_pass_phone_number_absent">Insert a phone number and its password</string>
     <string name="toast_invalid_phone_number">Invalid phone number</string>
     <string name="toast_message_sent_listener">Command sent to</string>
@@ -21,20 +21,20 @@
     <string name="set_pass_button_text">Set password</string>
 
     <string name="welcome_message">Welcome to RingUp!\n</string>
-    <string name="permissions_text">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS.\nFurthermore, the app needs to read contacts from the address book.</string>
+    <string name="permissions_text" translatable="false">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS.\nFurthermore, the app needs to read contacts from the address book.</string>
     <string name="give_permissions_button_text">Got it!</string>
 
     <string name="title_SMSPermission">SMS</string>
     <string name="title_contactsPermission">CONTACTS</string>
-    <string name="description_SMSPermission">This app sends commands via SMS, in order to make the target phone ring.</string>
-    <string name="description_contactsPermission">We need to have access to contacts in order to make a target number ring, choosing it from the address book.</string>
+    <string name="description_SMSPermission" translatable="false">This app sends commands via SMS, in order to make the target phone ring.</string>
+    <string name="description_contactsPermission" translatable="false">We need to have access to contacts in order to make a target number ring, choosing it from the address book.</string>
     <string name="exit_dialog_button">Exit</string>
     <string name="abort_dialog_button">Abort</string>
     <string name="hint_phone_number">phone number</string>
     <string name="hint_password">password</string>
     <string name="alpha_edition">alpha edition</string>
     <string name="menu_change_password">Change password</string>
-    <string name="toast_dont_show_again">You have to go on the application setting menu and give it the necessary permissions</string>
+    <string name="toast_dont_show_again" translatable="false">You have to go on the application setting menu and give it the necessary permissions</string>
     <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
     <string name="set_dialog_button_text">SET</string>
 
