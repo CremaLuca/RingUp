@@ -50,7 +50,8 @@
             <TextView
                 android:id="@+id/instruction_step_1_text"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
@@ -87,7 +88,8 @@
             <TextView
                 android:id="@+id/instruction_step_2_text"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
@@ -124,7 +126,8 @@
             <TextView
                 android:id="@+id/instruction_step_3_text"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
@@ -161,7 +164,8 @@
             <TextView
                 android:id="@+id/instruction_step_4_text"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="56dp"
                 android:fontFamily="sans-serif-light"
