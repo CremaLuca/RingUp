@@ -36,8 +36,6 @@ public class PermissionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permissions);
 
-        Activity activity = this;
-
         TextView permissionsTextView = findViewById(R.id.permissions_text_view);
         permissionsTextView.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
 

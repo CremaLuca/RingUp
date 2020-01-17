@@ -16,8 +16,9 @@
     <string name="toast_password_not_changed">Password has not been changed</string>
     <string name="toast_password_must_be_set">Password must be set</string>
 
-    <string name="instructions_text">RingUp will find a lost phone.\nJust insert its phone number and the password associated.\n\nIn order to let other people to find your phone you have to set YOUR device password…</string>
-    <string name="instructions_title">Instruction activity</string>
+    <string name="how_ring_up_works">How RingUp works?\n</string>
+    <string name="instructions_text">All you have to do to find someone\'s phone is to make sure RingUp is installed on that phone, after which you just need to know it\'s password!\nFor this reason, your phone will also need a password.</string>
+    <string name="set_pass_button_text">Set password</string>
 
     <string name="welcome_message">Welcome to RingUp!\n</string>
     <string name="permissions_text">In order to find a phone and let others find yours, RingUp needs the permission to send and receive SMS.\nFurthermore, the app needs to read contacts from the address book.</string>
@@ -35,5 +36,7 @@
     <string name="menu_change_password">Change password</string>
     <string name="toast_dont_show_again">You have to go on the application setting menu and give it the necessary permissions</string>
     <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
+    <string name="set_dialog_button_text">SET</string>
+
 
 </resources>
