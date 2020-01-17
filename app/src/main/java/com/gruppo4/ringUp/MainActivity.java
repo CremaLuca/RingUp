@@ -31,6 +31,7 @@ import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.gruppo4.permissions.PermissionsHandler;
 import com.gruppo4.ringUp.structure.AppManager;
 import com.gruppo4.ringUp.structure.NotificationHandler;
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
 
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (SMSMessage message, SMSMessage.SentState sentState) -> {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_activity_layout),getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Snackbar.LENGTH_LONG).show();
                 });
                 ringButton.setEnabled(false);
                 adviceTextView.setText(adviceText);
