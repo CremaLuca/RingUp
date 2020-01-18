@@ -89,7 +89,7 @@ public class PermissionsActivity extends AppCompatActivity {
      */
     public void changeActivity() {
         Intent nextActivity;
-        if (new PasswordManager(getApplicationContext()).isPassSaved()) {
+        if (PasswordManager.isPassSaved(getApplicationContext())) {
             //Start the MainActivity
             nextActivity = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(nextActivity);

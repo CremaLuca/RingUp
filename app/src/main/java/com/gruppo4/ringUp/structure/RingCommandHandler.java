@@ -64,7 +64,7 @@ public class RingCommandHandler {
     }
 
     /**
-     * Extracts the password and the peer from the RingCommand and creates a SMSMessage object
+     * Extracts the password and the peer from the RingCommand and creates a SMSMessage object with e {@link RingCommandHandler#SIGNATURE} in front
      *
      * @param ringCommand to parse, it must be a valid one
      * @return a SMSMessage object
@@ -72,7 +72,7 @@ public class RingCommandHandler {
      * @throws InvalidTelephoneNumberException thrown when the phone number is not valid
      */
     public SMSMessage parseCommand(RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
-        return new SMSMessage(ringCommand.getPeer(), ringCommand.getPassword());
+        return new SMSMessage(ringCommand.getPeer(), SIGNATURE + ringCommand.getPassword());
     }
 
 }

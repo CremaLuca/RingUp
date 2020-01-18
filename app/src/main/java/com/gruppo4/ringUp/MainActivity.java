@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private Button ringButton;
     private TextView adviceTextView;
     private EditText phoneNumberField, passwordField;
-    private static final String IDENTIFIER = RingCommandHandler.SIGNATURE;
     private static final int WAIT_TIME_RING_BTN_ENABLED = 10 * 1000;
     private static int timerValue = WAIT_TIME_RING_BTN_ENABLED;
     private static String adviceText = "Wait " + timerValue + " seconds for a new ring";
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         Context context = getApplicationContext();
 
-        passwordManager = new PasswordManager(context);
+        passwordManager = new PasswordManager();
 
         Intent preActIntent;
         //If the permissions are not given, the permissionsActivity is opened
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             startActivity(preActIntent);
             this.finish();
             //If the permissions are all granted then checks if a password is stored in memory: if NOT then open the instructionsActivity
-        } else if (!passwordManager.isPassSaved()) {
+        } else if (!passwordManager.isPassSaved(context)) {
             preActIntent = new Intent(context, InstructionsActivity.class);
             startActivity(preActIntent);
             this.finish();
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         } else {
             try {
                 //Creation of the ring command
-                final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), IDENTIFIER + password);
+                final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), password);
 
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (SMSMessage message, SMSMessage.SentState sentState) -> {
                     Snackbar.make(findViewById(R.id.main_activity_layout),getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Snackbar.LENGTH_LONG).show();
@@ -277,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     @Override
     public void onPasswordChanged(String password, Context context) {
         Toast.makeText(context, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
-        passwordManager.setPassword(password);
+        passwordManager.setPassword(context, password);
     }
 
     @Override

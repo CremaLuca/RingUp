@@ -15,6 +15,7 @@ import com.gruppo4.ringUp.structure.audioUtility.AudioUtilityManager;
 import com.gruppo4.ringUp.structure.exceptions.IllegalPasswordException;
 
 import static com.gruppo4.ringUp.structure.NotificationHandler.notificationFlag;
+import static com.gruppo4.ringUp.structure.RingCommandHandler.SIGNATURE;
 
 /**
  * This is a singleton class used to manage a received RingCommand or to send one
@@ -76,7 +77,9 @@ public class AppManager {
     }
 
     /**
-     * Method used to send a RingCommand via SMS using the library class {@link SMSManager}
+     * Method used to send a ring command via SMS using the library class {@link SMSManager}.
+     * The ring command is obtained through {@link RingCommandHandler#parseCommand(RingCommand)} which transforms a {@link RingCommand}
+     * in a {@link com.eis.smslibrary.SMSMessage} with the right {@link RingCommandHandler#SIGNATURE}.
      *
      * @param context         of the application
      * @param ringCommand     to send

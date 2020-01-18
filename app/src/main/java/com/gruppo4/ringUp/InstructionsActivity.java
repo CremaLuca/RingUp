@@ -33,7 +33,7 @@ public class InstructionsActivity extends AppCompatActivity implements PasswordD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
 
-        passwordManager = new PasswordManager(getApplicationContext());
+        passwordManager = new PasswordManager();
 
         Button setPassButton = findViewById(R.id.set_pass_button);
         setPassButton.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +55,7 @@ public class InstructionsActivity extends AppCompatActivity implements PasswordD
      */
     @Override
     public void onPasswordSet(String password, Context context) {
-        passwordManager.setPassword(password);
+        passwordManager.setPassword(context, password);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         //This activity will no longer be necessary
