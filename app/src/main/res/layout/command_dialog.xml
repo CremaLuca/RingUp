@@ -36,15 +36,17 @@
 
     <ImageButton
         android:id="@+id/select_contact_imageButton"
+        style="@android:style/Widget.Material.ImageButton"
         android:layout_width="56dp"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/colorPrimary"
         android:onClick="openAddressBook"
         android:scaleType="fitCenter"
         android:src="@drawable/baseline_contacts_black_48dp"
-        android:tint="@color/colorPrimary"
+        android:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/password_editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

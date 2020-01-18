@@ -48,7 +48,7 @@ public class CommandDialog extends AppCompatDialogFragment {
         View view = layoutInflater.inflate(R.layout.command_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setPositiveButton(R.string.give_permissions_button_text, null)
+                .setPositiveButton(R.string.give_permissions_button_text, null) //listener is null because setting a listener here would make the dialog close every time the button is pressed
                 .setNegativeButton(R.string.exit_dialog_button, (dialog, which) -> dialog.cancel());
 
         phoneNumberTextField = view.findViewById(R.id.telephone_number_editText);
@@ -65,9 +65,13 @@ public class CommandDialog extends AppCompatDialogFragment {
     public void onStart() {
         super.onStart();
         AlertDialog dialog = (AlertDialog) getDialog();
+        //Setting the button callback here so that the dialog doesn't dismiss after every click on positive button
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> onPositiveDialogButton());
     }
 
+    /**
+     * Callback for positive button click. Checks if phone number and password are entered correctly then sends a ring command.
+     */
     private void onPositiveDialogButton() {
         Log.v("CommandDialog", "Positive button clicked");
         String phoneNumber = phoneNumberTextField.getText().toString();
