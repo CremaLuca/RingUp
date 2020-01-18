@@ -5,33 +5,19 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationManagerCompat;
-
 import com.eis.smslibrary.SMSManager;
-import com.eis.smslibrary.SMSMessage;
-import com.eis.smslibrary.SMSPeer;
-import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.gruppo4.permissions.PermissionsHandler;
 import com.gruppo4.ringUp.structure.AppManager;
 import com.gruppo4.ringUp.structure.NotificationHandler;
@@ -40,9 +26,15 @@ import com.gruppo4.ringUp.structure.ReceivedMessageListener;
 import com.gruppo4.ringUp.structure.RingCommand;
 import com.gruppo4.ringUp.structure.RingCommandHandler;
 import com.gruppo4.ringUp.structure.RingtoneHandler;
+import com.gruppo4.ringUp.structure.dialog.CommandDialog;
 import com.gruppo4.ringUp.structure.dialog.PasswordDialog;
 import com.gruppo4.ringUp.structure.dialog.PasswordDialogListener;
 import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationManagerCompat;
 
 /**
  * @author Gruppo4
@@ -53,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
     private Button ringButton;
     private TextView adviceTextView;
-    private EditText phoneNumberField, passwordField;
     private static final String IDENTIFIER = RingCommandHandler.SIGNATURE;
     private static final int WAIT_TIME_RING_BTN_ENABLED = 10 * 1000;
     private static int timerValue = WAIT_TIME_RING_BTN_ENABLED;
@@ -61,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     static final int CHANGE_PASS_COMMAND = 0;
     static final int SET_PASS_COMMAND = 1;
     static final String DIALOG_TAG = "Device Password";
-    private static final int PICK_CONTACT = 1;
+
     private PasswordManager passwordManager;
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
@@ -103,11 +94,17 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
         //Setting up the custom listener in order to receive messages
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, context);
-        phoneNumberField = findViewById(R.id.phone_number_field);
-        passwordField = findViewById(R.id.password_field);
         adviceTextView = findViewById(R.id.advice_text_view);
-        ringButton = findViewById(R.id.ring_button);
-        ringButton.setOnClickListener(v -> sendRingCommand());
+    }
+
+    /**
+     * Callback for ring button
+     *
+     * @param view
+     */
+    public void onRingButtonClick(View view) {
+        CommandDialog dialog = new CommandDialog(getApplicationContext(), findViewById(R.id.main_activity_layout));
+        dialog.show(getSupportFragmentManager(), "CommandDialog");
     }
 
     //**************************************SEND_COMMAND**************************************
@@ -118,9 +115,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
      * @author Alberto Ursino
      * @author Luca Crema
      */
-    public void sendRingCommand() {
-        String phoneNumber = phoneNumberField.getText().toString();
-        String password = passwordField.getText().toString();
+    /**public void sendRingCommand() {
 
         if (password.isEmpty() && phoneNumber.isEmpty()) {
             Toast.makeText(getApplicationContext(), getString(R.string.toast_pass_phone_number_absent), Toast.LENGTH_SHORT).show();
@@ -160,8 +155,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             }
 
 
-        }
-    }
+     }
+     }*/
 
     //**************************************MENU**************************************
 
@@ -193,57 +188,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         }
     }
 
-    //**************************************RUBRIC**************************************
-
-    /**
-     * Method to open the system address book
-     *
-     * @param view The view calling the method
-     * @author Alessandra Tonin
-     */
-    public void openAddressBook(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(intent, PICK_CONTACT);
-    }
-
-    /**
-     * Method to handle the picked contact
-     *
-     * @param requestCode The code of the request
-     * @param resultCode  The result of  the request
-     * @param data        The data of the result
-     * @author Alessandra Tonin
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_CONTACT) {
-            if (resultCode == RESULT_OK) {
-                Uri contactData = data.getData();
-                String number = "";
-                Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
-                cursor.moveToFirst();
-                String hasPhone = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                if (hasPhone.equals("1")) {
-                    Cursor phones = getContentResolver().query
-                            (ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-                                            + " = " + contactId, null, null);
-                    while (phones.moveToNext()) {
-                        number = phones.getString(phones.getColumnIndex
-                                (ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[-() ]", "");
-                    }
-                    phones.close();
-                    //Put the number in the phoneNumberField
-                    phoneNumberField.setText(number);
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_contact_has_no_phone_number), Toast.LENGTH_LONG).show();
-                }
-                cursor.close();
-            }
-        }
-    }
 
     //**************************************PASSWORD_DIALOG**************************************
 
