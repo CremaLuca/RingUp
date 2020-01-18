@@ -1,12 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
 
     <!-- Customize your theme here. -->
-    <style name="CustomToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/nice_grey</item> <!--- toolbar background -->
-        <item name="android:textColorSecondary">@color/white</item> <!--- 3 dots menu color -->
+    <style name="ringUpToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@color/white</item> <!--- toolbar background -->
+        <item name="android:textColorSecondary">@color/black</item> <!--- 3 dots menu and app title color -->
     </style>
 
     <!-- Menu theme here. -->
