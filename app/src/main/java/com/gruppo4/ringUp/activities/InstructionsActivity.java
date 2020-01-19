@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp;
+package com.gruppo4.ringUp.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +9,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gruppo4.ringUp.R;
 import com.gruppo4.ringUp.structure.PasswordManager;
-import com.gruppo4.ringUp.structure.dialog.PasswordDialog;
-import com.gruppo4.ringUp.structure.dialog.PasswordDialogListener;
+import com.gruppo4.ringUp.dialog.PasswordDialog;
+import com.gruppo4.ringUp.dialog.PasswordDialogListener;
 import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
 
-import static com.gruppo4.ringUp.MainActivity.DIALOG_TAG;
-import static com.gruppo4.ringUp.MainActivity.SET_PASS_COMMAND;
+import static com.gruppo4.ringUp.activities.MainActivity.DIALOG_TAG;
+import static com.gruppo4.ringUp.activities.MainActivity.SET_PASS_COMMAND;
 
 /**
  * Class used to inform the user on what ringUp is and what it is used for.

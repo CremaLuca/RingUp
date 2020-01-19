@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.gruppo4.ringUp.MainActivity;
+import com.gruppo4.ringUp.activities.MainActivity;
 import com.gruppo4.ringUp.R;
 
 /**

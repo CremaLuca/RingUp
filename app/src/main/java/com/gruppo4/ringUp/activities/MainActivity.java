@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp;
+package com.gruppo4.ringUp.activities;
 
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -32,16 +32,16 @@ import com.eis.smslibrary.SMSPeer;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
 import com.google.android.material.snackbar.Snackbar;
-import com.gruppo4.permissions.PermissionsHandler;
+import com.gruppo4.ringUp.R;
+import com.gruppo4.ringUp.permissions.PermissionsHandler;
 import com.gruppo4.ringUp.structure.AppManager;
 import com.gruppo4.ringUp.structure.NotificationHandler;
 import com.gruppo4.ringUp.structure.PasswordManager;
 import com.gruppo4.ringUp.structure.ReceivedMessageListener;
 import com.gruppo4.ringUp.structure.RingCommand;
-import com.gruppo4.ringUp.structure.RingCommandHandler;
 import com.gruppo4.ringUp.structure.RingtoneHandler;
-import com.gruppo4.ringUp.structure.dialog.PasswordDialog;
-import com.gruppo4.ringUp.structure.dialog.PasswordDialogListener;
+import com.gruppo4.ringUp.dialog.PasswordDialog;
+import com.gruppo4.ringUp.dialog.PasswordDialogListener;
 import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
 
 /**
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
             startActivity(preActIntent);
             this.finish();
             //If the permissions are all granted then checks if a password is stored in memory: if NOT then open the instructionsActivity
-        } else if (!passwordManager.isPassSaved(context)) {
+        } else if (!PasswordManager.isPassSaved(context)) {
             preActIntent = new Intent(context, InstructionsActivity.class);
             startActivity(preActIntent);
             this.finish();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         SMSManager.getInstance().setReceivedListener(ReceivedMessageListener.class, context);
         phoneNumberField = findViewById(R.id.phone_number_field);
         passwordField = findViewById(R.id.password_field);
-        adviceTextView = findViewById(R.id.advice_text_view);
+        adviceTextView = findViewById(R.id.timer_text_view);
         ringButton = findViewById(R.id.ring_button);
         ringButton.setOnClickListener(v -> sendRingCommand());
     }
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
                     public void onTick(long millisUntilFinished) {
                         timerValue = (int) millisUntilFinished;
-                        adviceTextView.setText("Wait " + timerValue / COUNTDOWN_INTERVAL + " seconds for send a new find request");
+                        adviceTextView.setText(getString(R.string.ten_second_timer_timer) + timerValue / COUNTDOWN_INTERVAL);
                     }
 
                     public void onFinish() {

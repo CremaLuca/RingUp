@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp.structure.audioUtility;
+package com.gruppo4.ringUp.audioUtility;
 
 /**
  * @author Francesco Bau'

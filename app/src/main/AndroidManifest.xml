@@ -19,9 +19,9 @@
         android:roundIcon="@mipmap/first_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".InstructionsActivity" />
-        <activity android:name=".PermissionsActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.InstructionsActivity" />
+        <activity android:name=".activities.PermissionsActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

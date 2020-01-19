@@ -35,5 +35,6 @@
     <string name="menu_change_password">Change password</string>
     <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
     <string name="set_dialog_button_text">Set</string>
+    <string name="ten_second_timer_timer">Time to wait for the next RingUp: </string>
 
 </resources>

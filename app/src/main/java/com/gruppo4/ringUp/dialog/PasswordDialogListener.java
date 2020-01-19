@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp.structure.dialog;
+package com.gruppo4.ringUp.dialog;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp;
+package com.gruppo4.ringUp.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,16 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.gruppo4.permissions.PermissionsHandler;
+import com.gruppo4.ringUp.R;
+import com.gruppo4.ringUp.permissions.PermissionsHandler;
 import com.gruppo4.ringUp.structure.PasswordManager;
-
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 /**
  * Class used to inform the user of which permissions the app needed and requires them

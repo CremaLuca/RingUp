@@ -32,4 +32,5 @@
     <string name="instructions_step_4">Ascolta attentamente se senti la tua suoneria e trova il tuo telefono!</string>
     <string name="change_device_password">Cambia la password del telefono</string>
     <string name="set_device_password">Imposta la password del telefono</string>
+    <string name="ten_second_timer_timer">Tempo di attesa per il prossimo RingUp: </string>
 </resources>
