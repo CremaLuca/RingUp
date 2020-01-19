@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), password);
 
                 AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (SMSMessage message, SMSMessage.SentState sentState) -> {
-                    Snackbar.make(findViewById(R.id.main_activity_layout),getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.main_activity_layout), getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Snackbar.LENGTH_LONG).show();
                 });
                 ringButton.setEnabled(false);
                 adviceTextView.setText(adviceText);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
 
                     public void onTick(long millisUntilFinished) {
                         timerValue = (int) millisUntilFinished;
-                        adviceTextView.setText(getString(R.string.ten_second_timer_timer) + timerValue / COUNTDOWN_INTERVAL);
+                        adviceTextView.setText(getString(R.string.ten_second_timer_timer) + " " + timerValue / COUNTDOWN_INTERVAL);
                     }
 
                     public void onFinish() {
