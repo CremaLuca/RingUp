@@ -13,33 +13,64 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.gruppo4.ringUp.R;
 
 /**
- * Class used to manage the password entry dialog
+ * This class allows you to create and manage a personalized alert dialog.
+ * The class asks, through the constructor, for a command and a context, respectively they will be used to define the type of dialog to be obtained and to manage the calls to the listeners.
+ * <p>
+ * {@link #command}(s) available:
+ * - {@link #SET_PASS_COMMAND}: two buttons dialog with its correspondent title and listeners;
+ * - {@link #CHANGE_PASS_COMMAND}: two buttons dialog with its correspondent title and listeners;
+ * <p>
+ * Each button will trigger a listener, e.g for the dialog created by the {@link #SET_PASS_COMMAND} we have:
+ * - POSITIVE BUTTON -> {@link SetPasswordListener#onPasswordSet(String, Context)};
+ * - NEGATIVE BUTTON -> {@link SetPasswordListener#onPasswordNotSet(Context)}.
  *
  * @author Alberto Ursino with useful help: https://www.youtube.com/watch?v=ARezg1D9Zd0
  */
 public class PasswordDialog extends AppCompatDialogFragment {
 
-    private PasswordDialogListener passwordDialogListener;
-    private static final int CHANGE_PASS_COMMAND = 0;
-    private static final int SET_PASS_COMMAND = 1;
-    private static final int SET_PASS_DELIVERY = R.string.set_device_password;
-    private static final int CHANGE_PASS_DELIVERY = R.string.change_device_password;
+    //Listeners
+    private ChangePasswordListener changePasswordListener;
+    private SetPasswordListener passwordSetListener;
+
+    //Commands
+    public static final int CHANGE_PASS_COMMAND = 0;
+    public static final int SET_PASS_COMMAND = 1;
+
+    //Dialog titles
+    private TextView dialogTitle;
+    private static final int SET_PASS_TITLE = R.string.set_device_password;
+    private static final int CHANGE_PASS_TITLE = R.string.change_device_password;
+
+    private EditText passwordField;
+
     private Context context;
-    private int command;
+    int command;
 
     /**
-     * @param command to manage
+     * Constructor used to capture a {@link #command} and a {@link #context}.
+     *
+     * @param command passed by the calling method
      * @param context of the application
+     * @author Albeto Ursino
      */
     public PasswordDialog(int command, Context context) {
         this.command = command;
         this.context = context;
     }
 
+    /**
+     * Android method used to create a personalized alert dialog.
+     *
+     * @author Implemented by Alberto Ursino
+     * @see DialogFragment#onCreateDialog(android.os.Bundle)
+     */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
@@ -47,51 +78,73 @@ public class PasswordDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
 
-        final TextView dialogTitle = view.findViewById(R.id.password_dialog_title);
-        final EditText fieldToFill = view.findViewById(R.id.devicePassword);
-        final Button positiveButton = view.findViewById(R.id.set);
-        final Button negativeButton = view.findViewById(R.id.exit);
+        dialogTitle = view.findViewById(R.id.password_dialog_title);
+        passwordField = view.findViewById(R.id.devicePassword);
+        Button positiveButton = view.findViewById(R.id.set);
+        Button negativeButton = view.findViewById(R.id.exit);
 
-        //Fix the dialog title
-        if (command == SET_PASS_COMMAND) {
-            dialogTitle.setText(getString(SET_PASS_DELIVERY));
-        } else if (command == CHANGE_PASS_COMMAND) {
-            dialogTitle.setText(getString(CHANGE_PASS_DELIVERY));
-        }
+        fixTitle(command);
 
+        //----------POSITIVE BUTTON----------
         positiveButton.setOnClickListener(v -> {
-            String password = fieldToFill.getText().toString();
+            String password = passwordField.getText().toString();
             if (password.isEmpty()) {
                 Toast.makeText(context, getString(R.string.toast_password_absent), Toast.LENGTH_SHORT).show();
             } else if (command == SET_PASS_COMMAND) {
-                passwordDialogListener.onPasswordSet(password, context);
+                passwordSetListener.onPasswordSet(password, context); // <-- password set listener calling
                 dismiss();
             } else if (command == CHANGE_PASS_COMMAND) {
-                passwordDialogListener.onPasswordChanged(password, context);
+                changePasswordListener.onPasswordChanged(password, context); // <-- password changed listener calling
                 dismiss();
             }
         });
 
+        //----------NEGATIVE BUTTON----------
         negativeButton.setOnClickListener(v -> {
             if (command == SET_PASS_COMMAND) {
-                passwordDialogListener.onPasswordNotSet(context); // <-- listener calling
+                passwordSetListener.onPasswordNotSet(context); // <-- password not set listener calling
                 dismiss();
             } else if (command == CHANGE_PASS_COMMAND) {
-                passwordDialogListener.onPasswordNotChanged(context); // <-- listener calling
+                changePasswordListener.onPasswordNotChanged(context); // <-- password not changed listener calling
                 dismiss();
             }
         });
 
-        //The alert dialog won't be closed if the user presses outside it
+        //The dialog does not close if the user clicks outside of it
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
+
         return dialog;
     }
 
+    /**
+     * @param command The title is fixed based on this command
+     * @author Alberto Ursino
+     */
+    private void fixTitle(int command) {
+        switch (command) {
+            case (CHANGE_PASS_COMMAND):
+                dialogTitle.setText(getString(CHANGE_PASS_TITLE));
+                break;
+            case (SET_PASS_COMMAND):
+                dialogTitle.setText(getString(SET_PASS_TITLE));
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Android method needed to set up the dialog created by {@link PasswordDialog#onCreateDialog(android.os.Bundle)} method.
+     *
+     * @param context of the application
+     * @author Implemented by Alberto Ursino
+     * @see Fragment#onAttach(android.content.Context)
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        passwordDialogListener = (PasswordDialogListener) context;
+        //Setting up the listeners
+        passwordSetListener = (SetPasswordListener) context;
+        changePasswordListener = (ChangePasswordListener) context;
     }
-
 }

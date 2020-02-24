@@ -18,8 +18,9 @@ import com.gruppo4.ringUp.structure.PasswordManager;
 /**
  * Class used to inform the user of which permissions the app needed and requires them
  *
- * @author Francesco Bau'
  * @author Alberto Ursino
+ * @author Francesco Bau'
+ * @version 1.0
  * @since 07/01/2020
  */
 public class PermissionsActivity extends AppCompatActivity {
