@@ -91,10 +91,10 @@ public class PasswordDialog extends AppCompatDialogFragment {
             if (password.isEmpty()) {
                 Toast.makeText(context, getString(R.string.toast_password_absent), Toast.LENGTH_SHORT).show();
             } else if (command == SET_PASS_COMMAND) {
-                passwordSetListener.onPasswordSet(password, context); // <-- password set listener calling
+                passwordSetListener.onPasswordSet(password, context); // <-- password-set-listener calling
                 dismiss();
             } else if (command == CHANGE_PASS_COMMAND) {
-                changePasswordListener.onPasswordChanged(password, context); // <-- password changed listener calling
+                changePasswordListener.onPasswordChanged(password, context); // <-- password-changed listener calling
                 dismiss();
             }
         });
@@ -102,10 +102,10 @@ public class PasswordDialog extends AppCompatDialogFragment {
         //----------NEGATIVE BUTTON----------
         negativeButton.setOnClickListener(v -> {
             if (command == SET_PASS_COMMAND) {
-                passwordSetListener.onPasswordNotSet(context); // <-- password not set listener calling
+                passwordSetListener.onPasswordNotSet(context); // <-- password-not-set listener calling
                 dismiss();
             } else if (command == CHANGE_PASS_COMMAND) {
-                changePasswordListener.onPasswordNotChanged(context); // <-- password not changed listener calling
+                changePasswordListener.onPasswordNotChanged(context); // <-- password-not-changed listener calling
                 dismiss();
             }
         });
@@ -134,17 +134,16 @@ public class PasswordDialog extends AppCompatDialogFragment {
     }
 
     /**
-     * Android method needed to set up the dialog created by {@link PasswordDialog#onCreateDialog(android.os.Bundle)} method.
-     *
-     * @param context of the application
      * @author Implemented by Alberto Ursino
      * @see Fragment#onAttach(android.content.Context)
      */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        //Setting up the listeners
-        passwordSetListener = (SetPasswordListener) context;
-        changePasswordListener = (ChangePasswordListener) context;
+        //Setting listeners
+        if (command == SET_PASS_COMMAND)
+            passwordSetListener = (SetPasswordListener) context;
+        else
+            changePasswordListener = (ChangePasswordListener) context;
     }
 }
