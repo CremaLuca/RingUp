@@ -31,7 +31,7 @@
     <string name="hint_password">Password</string>
     <string name="set_device_password">Set device password</string>
     <string name="change_device_password">Change device password</string>
-    <string name="alpha_edition">alpha edition</string>
+    <string name="version">3.0</string>
     <string name="menu_change_password">Change password</string>
     <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
     <string name="set_dialog_button_text">Set</string>

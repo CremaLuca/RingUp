@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RingUp</string>
-    <string name="alpha_edition">edizione alpha</string>
+    <string name="version">3.0</string>
     <string name="exit_dialog_button">Annulla</string>
     <string name="give_permissions_button_text">Capito</string>
     <string name="hint_password">Password</string>
