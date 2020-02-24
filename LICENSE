@@ -1,16 +1,3 @@
-# RingUp
-Android application to make a phone ring at maximum volume even if DND is active and data connection is off.
-
-## How does it work?
-1. Download the app and set the phone's password.
-2. Lose your phone, doesn't matter if you forgot to turn on data connection or if it's in DND and ring volume is at minimum.
-3. Download the app on one of your friends' phone and let them set their password.
-4. Use your friend's phone to send yourself a RingUp with the correct password.
-5. Listen carefully for your phone's ringtone and find it.
-
-## License
-
-```
 MIT License
 
 Copyright (c) 2020 Luca Crema, Alberto Ursino
@@ -32,4 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
