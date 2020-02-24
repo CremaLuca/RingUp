@@ -1,3 +1,40 @@
 <resources>
-    <string name="app_name">app</string>
+    <string name="app_name">RingUp</string>
+    <string name="text_stop_ring_dialog">Your phone is ringing, you can stop it from here</string>
+    <string name="text_notification_button">Stop</string>
+
+    <string name="toast_password_absent">Insert a password</string>
+    <string name="toast_phone_number_absent">Insert a phone number</string>
+    <string name="toast_pass_phone_number_absent">Insert a phone number and its password</string>
+    <string name="toast_invalid_phone_number">Invalid phone number</string>
+    <string name="toast_message_sent_listener">Command sent to</string>
+    <string name="toast_app_needs_permissions">App needs these permissions</string>
+    <string name="toast_contact_has_no_phone_number">This contact does not have a phone number</string>
+    <string name="toast_password_changed">Password has been changed</string>
+    <string name="toast_password_not_changed">Password has not been changed</string>
+    <string name="toast_password_must_be_set">Password must be set</string>
+
+    <string name="how_ring_up_works">How does RingUp work?</string>
+    <string name="instructions_step_1">Set your own device\'s password</string>
+    <string name="instructions_step_2">Forget where you left your phone</string>
+    <string name="instructions_step_3">Ask someone else to install this app then send yourself a RingUp</string>
+    <string name="instructions_step_4">Listen carefully for your ringtone and find your phone!</string>
+    <string name="set_pass_button_text">Set password</string>
+
+    <string name="welcome_message">Welcome to RingUp!</string>
+    <string name="contacts_permission_explanation">When you want to ring another phone you can choose between one of your contacts from the contacts list.</string>
+    <string name="sms_permission_explanation">The app works without data connection so it needs to be able to send and receive SMS messages.</string>
+    <string name="give_permissions_button_text">Got it!</string>
+
+    <string name="exit_dialog_button">Cancel</string>
+    <string name="hint_phone_number">Phone number</string>
+    <string name="hint_password">Password</string>
+    <string name="set_device_password">Set device password</string>
+    <string name="change_device_password">Change device password</string>
+    <string name="alpha_edition">alpha edition</string>
+    <string name="menu_change_password">Change password</string>
+    <string name="toast_permissions_already_granted">All the permissions are already granted, nice!</string>
+    <string name="set_dialog_button_text">Set</string>
+    <string name="ten_second_timer_timer">Time to wait for the next RingUp: </string>
+
 </resources>

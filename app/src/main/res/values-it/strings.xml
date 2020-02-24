@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RingUp</string>
+    <string name="alpha_edition">edizione alpha</string>
+    <string name="exit_dialog_button">Annulla</string>
+    <string name="give_permissions_button_text">Capito</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_phone_number">Numero di telefono</string>
+    <string name="menu_change_password">Cambia password</string>
+    <string name="text_notification_button">Ferma</string>
+    <string name="text_stop_ring_dialog">Il telefono sta squillando, puoi fermarlo da qui.</string>
+    <string name="toast_password_not_changed">La password non è stata cambiata</string>
+    <string name="toast_password_must_be_set">Devi impostare una password</string>
+    <string name="toast_password_changed">La password è stata cambiata</string>
+    <string name="toast_permissions_already_granted">Tutti i permessi già ottenuti, ottimo!</string>
+    <string name="toast_phone_number_absent">Inserisci un numero di telefono</string>
+    <string name="welcome_message">Benvenuto in RingUp!</string>
+    <string name="toast_password_absent">Inserisci la password</string>
+    <string name="toast_pass_phone_number_absent">Inserisci il numero di telefono e la sua password</string>
+    <string name="toast_message_sent_listener">Comando inviato a</string>
+    <string name="toast_invalid_phone_number">Numero di telefono non valido</string>
+    <string name="toast_contact_has_no_phone_number">Questo contatto non ha un numero di telefono</string>
+    <string name="toast_app_needs_permissions">L\'applicazione ha bisogno di questi permessi</string>
+    <string name="how_ring_up_works">Come funziona RingUp?</string>
+    <string name="set_pass_button_text">Imposta la password</string>
+    <string name="set_dialog_button_text">Imposta</string>
+    <string name="contacts_permission_explanation">Quando vuoi far squillare un altro telefono potrai selezionare un contatto dalla lista dei contatti.</string>
+    <string name="sms_permission_explanation">L\'app non usa la connessione dati e deve essere in grado di inviare e ricevere messaggi SMS.</string>
+    <string name="instructions_step_1">Imposta la password del tuo telefono</string>
+    <string name="instructions_step_2">Dimenticati dove hai lasciato il telefono</string>
+    <string name="instructions_step_3">Chiedi a qualcuno di installare quest\'app e mandati un RingUp</string>
+    <string name="instructions_step_4">Ascolta attentamente se senti la tua suoneria e trova il tuo telefono!</string>
+    <string name="change_device_password">Cambia la password del telefono</string>
+    <string name="set_device_password">Imposta la password del telefono</string>
+    <string name="ten_second_timer_timer">Tempo di attesa per il prossimo RingUp:</string>
+</resources>
