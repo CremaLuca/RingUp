@@ -65,7 +65,23 @@ public class PasswordDialog extends AppCompatDialogFragment {
     }
 
     /**
-     * Android method used to create a personalized alert dialog.
+     * Android method used to associate the dialog to its activity which contain it.
+     *
+     * @author Implemented by Alberto Ursino
+     * @see Fragment#onAttach(android.content.Context)
+     */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        //Setting listeners
+        if (command == SET_PASS_COMMAND)
+            passwordSetListener = (SetPasswordListener) context;
+        else
+            changePasswordListener = (ChangePasswordListener) context;
+    }
+
+    /**
+     * Android method used to create a personalized {@link DialogFragment}, in this case an {@link AlertDialog}.
      *
      * @author Implemented by Alberto Ursino
      * @see DialogFragment#onCreateDialog(android.os.Bundle)
@@ -133,17 +149,4 @@ public class PasswordDialog extends AppCompatDialogFragment {
         }
     }
 
-    /**
-     * @author Implemented by Alberto Ursino
-     * @see Fragment#onAttach(android.content.Context)
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        //Setting listeners
-        if (command == SET_PASS_COMMAND)
-            passwordSetListener = (SetPasswordListener) context;
-        else
-            changePasswordListener = (ChangePasswordListener) context;
-    }
 }
