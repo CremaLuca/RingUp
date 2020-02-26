@@ -17,8 +17,7 @@ import com.gruppo4.ringUp.dialog.PasswordDialog;
 import static com.gruppo4.ringUp.activities.MainActivity.DIALOG_TAG;
 
 /**
- * Class used to inform the user on what ringUp is and what it is used for.
- * It also requires the setting up of the device password.
+ * The following activity aims to inform the user about what the application is doing and to set the password of his device, necessary for using the app.
  *
  * @author Alberto Ursino
  * @version 1.0
@@ -41,13 +40,15 @@ public class InstructionsActivity extends AppCompatActivity implements SetPasswo
     }
 
     /**
-     * 1) Saves the password in memory through the {@link PasswordManager} class
+     * Method used to, in chronological order:
+     * 1) Saves the personal device password in memory through the {@link PasswordManager} class
      * 2) Starts the {@link MainActivity}
      * 3) Closes the {@link InstructionsActivity}, it is no longer necessary
      *
      * @param password that will be stored
      * @param context  of the application
      * @author Alberto Ursino
+     * @see SetPasswordListener#onPasswordSet(String, Context)
      */
     @Override
     public void onPasswordSet(String password, Context context) {
@@ -58,11 +59,11 @@ public class InstructionsActivity extends AppCompatActivity implements SetPasswo
     }
 
     /**
-     * If the user doesn't set any password, a toast is displayed telling him that the app needs it
-     * For more information: {@link SetPasswordListener#onPasswordSet(String, Context)}
+     * If the user aborts the password setting, a toast is displayed telling him that the app needs it.
      *
      * @param context of the application
      * @author Alberto Ursino
+     * @see SetPasswordListener#onPasswordNotSet(Context)
      */
     @Override
     public void onPasswordNotSet(Context context) {
@@ -70,14 +71,12 @@ public class InstructionsActivity extends AppCompatActivity implements SetPasswo
     }
 
     /**
-     * Creates the dialog used to insert a non empty password or exit/abort
-     * For more information: {@link SetPasswordListener#onPasswordNotSet(Context)}
+     * Creates the alert dialog through the {@link PasswordDialog} class with the {@link PasswordDialog#SET_PASS_COMMAND} command.
      *
      * @author Alberto Ursino
      */
     void openPassDialog() {
-        PasswordDialog passwordDialog;
-        passwordDialog = new PasswordDialog(PasswordDialog.SET_PASS_COMMAND, getApplicationContext());
+        PasswordDialog passwordDialog = new PasswordDialog(PasswordDialog.SET_PASS_COMMAND, getApplicationContext());
         passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
     }
 }
