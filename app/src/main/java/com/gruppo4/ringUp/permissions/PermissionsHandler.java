@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -20,14 +21,17 @@ public class PermissionsHandler {
     /**
      * Checks if all permissions are granted.
      *
-     * @param permissions The permission(s) to check. It can't be null.
-     * @return true if the app has all permissions granted, false otherwise.
+     * @param context     The target Context. It can't be null.
+     * @param permissions The permission(s) to check.
+     * @return false if the app has at least 1 permission denied, true otherwise.
      * @author Francesco Bau', helped by Alberto Ursino.
      */
-    public static boolean checkPermissions(Context context, @NonNull String[] permissions) {
-        for (String permission : permissions) {
-            if (isGranted(context, permission))
-                return false;
+    public static boolean checkPermissions(@NonNull Context context, @Nullable String[] permissions) {
+        if (permissions != null) {
+            for (String permission : permissions) {
+                if (isGranted(context, permission))
+                    return false;
+            }
         }
         return true;
     }
@@ -35,18 +39,21 @@ public class PermissionsHandler {
     /**
      * Checks which permissions are NOT granted.
      *
+     * @param context     The target Context. It can't be null.
      * @param permissions The permission(s) to check.
      * @return The NOT granted permission(s).
      * @author Francesco Bau'
      * @author Alberto Ursino
      */
-    public static String[] getDeniedPermissions(Context context, String[] permissions) {
+    public static String[] getDeniedPermissions(@NonNull Context context, @Nullable String[] permissions) {
         ArrayList<String> deniedPermissions = new ArrayList<>();
         int arrayLength = 0;
-        for (int i = 0; i < permissions.length; i++) {
-            if (isGranted(context, permissions[i])) {
-                deniedPermissions.add(permissions[i]);
-                arrayLength++;
+        if (permissions != null) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (isGranted(context, permissions[i])) {
+                    deniedPermissions.add(permissions[i]);
+                    arrayLength++;
+                }
             }
         }
         return deniedPermissions.toArray(new String[arrayLength]);
@@ -55,11 +62,12 @@ public class PermissionsHandler {
     /**
      * Checks if a single permission is granted.
      *
-     * @param permission The permission to check.
+     * @param context    The target Context. It can't be null.
+     * @param permission The permission to check. It can't be null.
      * @return true if the permission is granted, false otherwise.
      * @author Francesco Bau'
      */
-    private static boolean isGranted(Context context, String permission) {
+    private static boolean isGranted(@NonNull Context context, @NonNull String permission) {
         return context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED;
     }
 
