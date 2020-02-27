@@ -21,18 +21,20 @@ public class NotificationActionReceiver extends BroadcastReceiver {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             MessageReceivedService service = new MessageReceivedService();
 
-            switch (intent.getAction()) {
+            if(intent.getAction() != null) {
+                switch (intent.getAction()) {
 
-                //Stops the alarm and cancels the specific notification which launched this action
-                case MessageReceivedService.STOP_ACTION: {
-                    service.stopAlarm();
-                    int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
-                    notificationManager.cancel(id);
-                    break;
+                    //Stops the alarm and cancels the specific notification which launched this action
+                    case MessageReceivedService.STOP_ACTION: {
+                        service.stopAlarm();
+                        int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                        notificationManager.cancel(id);
+                        break;
+                    }
+
+                    default:
+                        break;
                 }
-
-                default:
-                    break;
             }
         }
     }

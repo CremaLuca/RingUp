@@ -2,4 +2,10 @@
     <string name="app_name">RingUp</string>
     <string name="send_message">Send message</string>
     <string name="hint">Insert phone number</string>
+    <string name="channel_name">Test Channel</string>
+    <string name="test_message">Test Message</string>
+    <string name="channel_description">Channel Description</string>
+    <string name="stop" translatable="false">Stop</string>
+    <string name="notification_title">Your phone is ringing</string>
+    <string name="notification_text">Stop it from here or open the app</string>
 </resources>

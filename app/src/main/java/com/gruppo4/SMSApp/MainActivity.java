@@ -37,8 +37,7 @@ import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
  */
 public class MainActivity extends AppCompatActivity {
 
-    public static final String CHANNEL_NAME = "TestChannelName";
-    public static final String CHANNEL_ID = "123";
+    public final static String CHANNEL_ID = "123";
 
     private EditText edtPhoneNumber;
     private Button sendButton;
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startFromService() {
         Intent intent = getIntent();
-        if(intent != null) {
+        if(intent.getAction() != null) {
             switch(intent.getAction()) {
                 case MessageReceivedService.ALERT_ACTION: {
                     createStopRingDialog();
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void sendTestMessage() {
         String phoneNumber = edtPhoneNumber.getText().toString();
-        String testMessage = "TestMessage";
+        String testMessage = getResources().getString(R.string.test_message);
         SMSHandler.getInstance().sendMessage(new SMSMessage(new SMSPeer(phoneNumber),testMessage));
     }
 
@@ -152,11 +151,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //IMPORTANCE_HIGH makes pop-up the notification
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
 
-            String description = "TestChannelDescription";
-            channel.setDescription(description);
+            String channelName = getResources().getString(R.string.channel_name);
+            //IMPORTANCE_HIGH makes pop-up the notification
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH);
+
+            String channelDescription = getResources().getString(R.string.channel_description);
+            channel.setDescription(channelDescription);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setCancelable(true);
 
         builder.setPositiveButton(
-                "Stop", new DialogInterface.OnClickListener() {
+                getResources().getString(R.string.stop), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         new MessageReceivedService().stopAlarm();

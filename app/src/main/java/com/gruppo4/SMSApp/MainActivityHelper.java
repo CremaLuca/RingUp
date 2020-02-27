@@ -2,6 +2,10 @@ package com.gruppo4.SMSApp;
 
 /**
  * Sets, updates and returns the state of MainActivity
+ *
+ * Written for future uses
+ *
+ * @author Marco Tommasini
  */
 public class MainActivityHelper {
 
