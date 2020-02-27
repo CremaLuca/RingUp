@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +23,17 @@ import com.eis.smslibrary.SMSPeer;
 import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
 
 /**
- * @author Gruppo 4
+ * MainActivity manages the front-end of RingUp
+ * and lets the user send a test message to an inserted phone number
+ *
+ * Also manages:
+ * creation of a notification when a message arrives
+ * creation of a dialog box to stop the alarm
+ * updating of this activity's state
+ *
+ * @author Luca Crema
+ * @author Marco Tommasini
+ * @author Alessandra Tonin
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -34,27 +43,23 @@ public class MainActivity extends AppCompatActivity {
     private EditText edtPhoneNumber;
     private Button sendButton;
 
-    public void setup() {
-        //Initialize the receiver
-        SMSHandler.getInstance().setup(getApplicationContext());
-        SMSHandler.getInstance().setReceivedListener(MessageReceivedService.class);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Initializing the state of the activity
         MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONCREATE);
-
         setContentView(R.layout.activity_main);
 
+        //Managing the background service
         SMSBackgroundHandler.onAppCreate(this);
 
         createNotificationChannel();
+        setupHandler();
 
-        setup();
 
-        //Only if the activity is started by a service
+        //Checks if the activity was launched by a service
+        //and manages that case
         startFromService();
 
         edtPhoneNumber = findViewById(R.id.edtPhoneNumber);
@@ -66,16 +71,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if(!checkPermission()) {
+        if(!checkPermission())
             requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
-        }else{
-            Log.d("MainActivity", "You have the right permissions for this app");
-        }
     }
 
     /**
-     * Updates intent obtained from a service's call
-     * @param intent
+     * Checks SEND_SMS and RECEIVE_SMS permissions
+     * @return  true if the app has permissions, false otherwise
+     */
+    public boolean checkPermission() {
+        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) ||
+                !(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
+            return false;
+        else
+            return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    /**
+     * Setup SMSHandler and initializes the receiver
+     * which is needed to listen to new incoming messages
+     */
+    public void setupHandler() {
+        SMSHandler.getInstance().setup(getApplicationContext());
+        SMSHandler.getInstance().setReceivedListener(MessageReceivedService.class);
+    }
+
+    /**
+     * Called only when this activity is launched with FLAG_ACTIVITY_SINGLE_TOP
+     * because with that flag the activity is not re-launched but just showed (and then this method is called)
+     *
+     * Updates intent obtained from the service's call
+     * @param intent    the vessel for all extras used to communicate from the service
      */
     @Override
     protected void onNewIntent(Intent intent) {
@@ -84,6 +115,83 @@ public class MainActivity extends AppCompatActivity {
         startFromService();
     }
 
+    /**
+     * Checks if the activity was launched with an intent
+     * Manages what to do from intent's action
+     */
+    private void startFromService() {
+        Intent intent = getIntent();
+        if(intent != null) {
+            switch(intent.getAction()) {
+                case MessageReceivedService.ALERT_ACTION: {
+                    createStopRingDialog();
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Sends a test SMS message to the inserted phone number
+     */
+    public void sendTestMessage() {
+        String phoneNumber = edtPhoneNumber.getText().toString();
+        String testMessage = "TestMessage";
+        SMSHandler.getInstance().sendMessage(new SMSMessage(new SMSPeer(phoneNumber),testMessage));
+    }
+
+    /**
+     * Create the NotificationChannel, but only on API 26+ because
+     * the NotificationChannel class is new and not in the support library
+     *
+     * Register the channel with the system; you can't change the importance
+     * or other notification behaviors after this
+     */
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //IMPORTANCE_HIGH makes pop-up the notification
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+
+            String description = "TestChannelDescription";
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    /**
+     * Creates and shows AlertDialog with two options:
+     * [stop] --> stops the ringtone and cancels the notification
+     * touch outside the dialog --> cancels the dialog and lets the ringtone ends by itself after a timeout
+     */
+    private void createStopRingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Your phone is ringing, stop it from here if you want");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton(
+                "Stop", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new MessageReceivedService().stopAlarm();
+                        //Cancel the right notification by id
+                        int id = getIntent().getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                        if(id != -1)
+                            NotificationManagerCompat.from(getApplicationContext()).cancel(id);
+                        dialogInterface.dismiss();
+                    }
+                }
+        );
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    //region    Update MainActivityState
     @Override
     protected void onStart() {
         super.onStart();
@@ -111,105 +219,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //Starts the service
         SMSBackgroundHandler.onAppDestroy(this);
         MainActivityHelper.setState(MainActivityHelper.MainActivityState.ONDESTROY);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-    }
-
-    /**
-     * Sends an SMS message to the inserted number
-     *
-     */
-    public void sendTestMessage() {
-        Log.d("MainActivity", "Sending test message");
-
-        SMSHandler.getInstance().sendMessage(new SMSMessage(new SMSPeer(edtPhoneNumber.getText().toString()),"Test message"));
-    }
-
-    /**
-     * Create the NotificationChannel, but only on API 26+ because
-     * the NotificationChannel class is new and not in the support library
-     *
-     * Register the channel with the system; you can't change the importance
-     * or other notification behaviors after this
-     */
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String description = "TestChannelDescription";
-            //IMPORTANCE_HIGH makes pop-up the notification
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    /**
-     * Manages action from intent
-     */
-    private void startFromService() {
-        Log.d("MainActivity","startFromService called");
-        Intent intent = getIntent();
-        if(intent != null) {
-            switch(intent.getAction()) {
-                case MessageReceivedService.ALERT_ACTION: {
-                    createStopRingDialog();
-                    Log.d("MainActivity","Creating StopRingDialog...");
-                    break;
-                }
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Creates and shows AlertDialog with one option:
-     * [stop] --> stop the ringtone and cancel the notification
-     *
-     */
-    private void createStopRingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Your phone is ringing, stop it from here if you want");
-        builder.setCancelable(true);
-        Log.d("MainActivity","StopRingDialog created");
-
-        builder.setPositiveButton(
-                "Stop", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        MessageReceivedService service = new MessageReceivedService();
-                        service.stopAlarm();
-                        Log.d("MainActivity","Stopping ringtone");
-                        //cancel the right notification by id
-                        int id = getIntent().getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
-                        NotificationManagerCompat.from(getApplicationContext()).cancel(id);
-                        Log.d("MainActivity","Notification " + id + " cancelled");
-                        dialogInterface.dismiss();
-                    }
-                }
-        );
-
-        AlertDialog alert = builder.create();
-        alert.show();
-        Log.d("MainActivity","Showing StopRingDialog...");
-    }
-
-    /**
-     * @return true if the app has permissions, false otherwise
-     */
-    public boolean checkPermission() {
-        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) ||
-                !(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
-            return false;
-        else
-            return true;
-    }
+    //endregion
 }
