@@ -34,12 +34,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".dataLink.background.SMSAutoStartReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETE"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

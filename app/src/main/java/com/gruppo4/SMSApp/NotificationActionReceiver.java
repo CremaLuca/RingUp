@@ -9,6 +9,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 /**
  * Manages the result of an action triggered by a notification
+ *
  * @author Marco Tommasini
  */
 public class NotificationActionReceiver extends BroadcastReceiver {
@@ -22,12 +23,14 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
             switch (intent.getAction()) {
 
+                //Stops the alarm and cancels the specific notification which launched this action
                 case MessageReceivedService.STOP_ACTION: {
                     service.stopAlarm();
                     int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
                     notificationManager.cancel(id);
                     break;
                 }
+
                 default:
                     break;
             }
