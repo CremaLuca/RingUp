@@ -33,7 +33,7 @@ import com.gruppo4.ringUp.structure.PasswordManager;
 public class PermissionsActivity extends AppCompatActivity {
 
     static final String[] permissions = new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS};
-    String[] requiredPermissions;
+    private String[] requiredPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class PermissionsActivity extends AppCompatActivity {
      * In this case the dialog will close showing an adequate toast.
      * On the contrary, the user will be directed to the new activity according to the situation.
      *
-     * @param requestCode  The code has to be equals to {@link PermissionsHandler#REQUEST_CODE}
+     * @param requestCode  The code has to be equal to {@link PermissionsHandler#REQUEST_CODE}
      * @param permissions  Permissions in the {@link #requiredPermissions} string array, requested with the {@link Activity#requestPermissions(String[], int)} method
      * @param grantResults Result of the callback:
      *                     0 -> Permissions GRANTED;
@@ -95,7 +95,7 @@ public class PermissionsActivity extends AppCompatActivity {
      *
      * @author Alberto Ursino
      */
-    public void changeActivity() {
+    private void changeActivity() {
         Intent nextActivity;
         if (PasswordManager.isPassSaved(getApplicationContext())) {
             //Start the MainActivity

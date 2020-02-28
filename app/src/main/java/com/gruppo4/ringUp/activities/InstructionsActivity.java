@@ -41,9 +41,9 @@ public class InstructionsActivity extends AppCompatActivity implements SetPasswo
 
     /**
      * Method used to, in chronological order:
-     * 1) Saves the personal device password in memory through the {@link PasswordManager} class
-     * 2) Starts the {@link MainActivity}
-     * 3) Closes the {@link InstructionsActivity}, it is no longer necessary
+     * 1) Save the personal device password in secondary storage through the {@link PasswordManager#setPassword(Context, String)} method;
+     * 2) Start the {@link MainActivity};
+     * 3) Close the {@link InstructionsActivity}, it is no longer necessary.
      *
      * @param password that will be stored
      * @param context  of the application
@@ -75,7 +75,7 @@ public class InstructionsActivity extends AppCompatActivity implements SetPasswo
      *
      * @author Alberto Ursino
      */
-    void openPassDialog() {
+    private void openPassDialog() {
         PasswordDialog passwordDialog = new PasswordDialog(PasswordDialog.SET_PASS_COMMAND, getApplicationContext());
         passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
     }
