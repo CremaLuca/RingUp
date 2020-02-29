@@ -10,31 +10,25 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.ringUp.R;
+import com.gruppo4.ringUp.dialog.SetPasswordListener;
 import com.gruppo4.ringUp.structure.PasswordManager;
 import com.gruppo4.ringUp.dialog.PasswordDialog;
-import com.gruppo4.ringUp.dialog.PasswordDialogListener;
-import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
 
 import static com.gruppo4.ringUp.activities.MainActivity.DIALOG_TAG;
-import static com.gruppo4.ringUp.activities.MainActivity.SET_PASS_COMMAND;
 
 /**
- * Class used to inform the user on what ringUp is and what it is used for.
- * It also requires the setting up of the device password.
+ * The following activity aims to inform the user about what the application is doing and to set the password of his device, necessary for using the app.
  *
  * @author Alberto Ursino
+ * @version 1.0
  * @since 07/01/2020
  */
-public class InstructionsActivity extends AppCompatActivity implements PasswordDialogListener {
-
-    PasswordManager passwordManager;
+public class InstructionsActivity extends AppCompatActivity implements SetPasswordListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
-
-        passwordManager = new PasswordManager();
 
         Button setPassButton = findViewById(R.id.set_pass_button);
         setPassButton.setOnClickListener(new View.OnClickListener() {
@@ -46,51 +40,43 @@ public class InstructionsActivity extends AppCompatActivity implements PasswordD
     }
 
     /**
-     * 1) Saves the password through {@link PasswordManager}
-     * 2) Starts the {@link MainActivity}
-     * 3) Closes the {@link InstructionsActivity}
+     * Method used to, in chronological order:
+     * 1) Save the personal device password in secondary storage through the {@link PasswordManager#setPassword(Context, String)} method;
+     * 2) Start the {@link MainActivity};
+     * 3) Close the {@link InstructionsActivity}, it is no longer necessary.
      *
      * @param password that will be stored
      * @param context  of the application
      * @author Alberto Ursino
+     * @see SetPasswordListener#onPasswordSet(String, Context)
      */
     @Override
     public void onPasswordSet(String password, Context context) {
-        passwordManager.setPassword(context, password);
+        PasswordManager.setPassword(context, password);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
-        //This activity will no longer be necessary
         this.finish();
     }
 
     /**
-     * If the user doesn't set any password, a toast is displayed telling him that the app needs it
+     * If the user aborts the password setting, a toast is displayed telling him that the app needs it.
      *
      * @param context of the application
+     * @author Alberto Ursino
+     * @see SetPasswordListener#onPasswordNotSet(Context)
      */
     @Override
     public void onPasswordNotSet(Context context) {
         Toast.makeText(context, getString(R.string.toast_password_must_be_set), Toast.LENGTH_LONG).show();
     }
 
-    //Useless in this activity
-    @Override
-    public void onPasswordChanged(String password, Context context) {
-    }
-
-    //Useless in this activity
-    @Override
-    public void onPasswordNotChanged(Context context) {
-    }
-
     /**
-     * Creates the dialog used to insert a non empty password or exit/abort
+     * Creates the alert dialog through the {@link PasswordDialog} class with the {@link PasswordDialog#SET_PASS_COMMAND} command.
      *
      * @author Alberto Ursino
      */
-    void openPassDialog() throws IllegalCommandException {
-        PasswordDialog passwordDialog;
-        passwordDialog = new PasswordDialog(SET_PASS_COMMAND, getApplicationContext());
+    private void openPassDialog() {
+        PasswordDialog passwordDialog = new PasswordDialog(PasswordDialog.SET_PASS_COMMAND, getApplicationContext());
         passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
     }
 }

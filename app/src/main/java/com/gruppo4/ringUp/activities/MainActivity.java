@@ -33,6 +33,7 @@ import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 import com.eis.smslibrary.listeners.SMSSentListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.gruppo4.ringUp.R;
+import com.gruppo4.ringUp.dialog.ChangePasswordListener;
 import com.gruppo4.ringUp.permissions.PermissionsHandler;
 import com.gruppo4.ringUp.structure.AppManager;
 import com.gruppo4.ringUp.structure.NotificationHandler;
@@ -41,13 +42,11 @@ import com.gruppo4.ringUp.structure.ReceivedMessageListener;
 import com.gruppo4.ringUp.structure.RingCommand;
 import com.gruppo4.ringUp.structure.RingtoneHandler;
 import com.gruppo4.ringUp.dialog.PasswordDialog;
-import com.gruppo4.ringUp.dialog.PasswordDialogListener;
-import com.gruppo4.ringUp.structure.exceptions.IllegalCommandException;
 
 /**
  * @author Gruppo4
  */
-public class MainActivity extends AppCompatActivity implements PasswordDialogListener {
+public class MainActivity extends AppCompatActivity implements ChangePasswordListener {
 
     public static final String APP_NAME = "RingUp";
 
@@ -57,11 +56,8 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     private static final int WAIT_TIME_RING_BTN_ENABLED = 10 * 1000;
     private static int timerValue = WAIT_TIME_RING_BTN_ENABLED;
     private static String adviceText = "Wait " + timerValue + " seconds for a new ring";
-    static final int CHANGE_PASS_COMMAND = 0;
-    static final int SET_PASS_COMMAND = 1;
     static final String DIALOG_TAG = "Device Password";
     private static final int PICK_CONTACT = 1;
-    private PasswordManager passwordManager;
     public static final String CHANNEL_NAME = "TestChannelName";
     public static final String CHANNEL_ID = "123";
     private static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Stop Ringtone Notification";
@@ -73,8 +69,6 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
         setContentView(R.layout.activity_main);
 
         Context context = getApplicationContext();
-
-        passwordManager = new PasswordManager();
 
         Intent preActIntent;
         //If the permissions are not given, the permissionsActivity is opened
@@ -185,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.change_password_menu_item:
-                openDialog(CHANGE_PASS_COMMAND);
+                openDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -247,38 +241,33 @@ public class MainActivity extends AppCompatActivity implements PasswordDialogLis
     //**************************************PASSWORD_DIALOG**************************************
 
     /**
-     * Creates the dialog used to insert a non empty password or exit/abort
+     * Creates the dialog used to insert a non empty password or exit/abort.
+     * Dialog is created through the {@link PasswordDialog} class
      *
-     * @param command Specified type of dialog that should be opened, represented by an int value
-     * @throws IllegalCommandException usually thrown when the dialog command passed is not valid
      * @author Alberto Ursino
      */
-    void openDialog(int command) throws IllegalCommandException {
+    void openDialog() {
         PasswordDialog passwordDialog;
-        if (command == CHANGE_PASS_COMMAND) {
-            passwordDialog = new PasswordDialog(CHANGE_PASS_COMMAND, getApplicationContext());
-            passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
-        } else {
-            throw new IllegalCommandException();
-        }
+        passwordDialog = new PasswordDialog(PasswordDialog.CHANGE_PASS_COMMAND, getApplicationContext());
+        passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
     }
 
-    //Useless in this activity
-    @Override
-    public void onPasswordSet(String password, Context context) {
-    }
-
-    //Useless in this activity
-    @Override
-    public void onPasswordNotSet(Context context) {
-    }
-
+    /**
+     * For more information: {@link ChangePasswordListener#onPasswordChanged(String, Context)}
+     *
+     * @author Alberto Ursino
+     */
     @Override
     public void onPasswordChanged(String password, Context context) {
         Toast.makeText(context, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
-        passwordManager.setPassword(context, password);
+        PasswordManager.setPassword(context, password);
     }
 
+    /**
+     * For more information: {@link ChangePasswordListener#onPasswordNotChanged(Context)}
+     *
+     * @author Alberto Ursino
+     */
     @Override
     public void onPasswordNotChanged(Context context) {
         Toast.makeText(context, getString(R.string.toast_password_not_changed), Toast.LENGTH_LONG).show();
