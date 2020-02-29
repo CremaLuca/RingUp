@@ -17,6 +17,12 @@ public class SMSKeepAliveService extends Service {
 
     private static SMSReceivedBroadcastReceiver broadcastReceiverInstance;
 
+    /**
+     * Callback method that allows clients to bind to this service class and interact with it
+     *
+     * @param arg0  the intent sent by clients that want to interact with this service
+     * @return  IBinder object that defines the programming interface that clients can use to interact with the service
+     */
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
@@ -45,7 +51,7 @@ public class SMSKeepAliveService extends Service {
     private void registerMessageBroadcastReceiver() {
         broadcastReceiverInstance = new SMSReceivedBroadcastReceiver();
         IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-        filter.setPriority(100);
+        filter.setPriority(100);    //Set to a high value of priority, 100 is just a representative number
         registerReceiver(broadcastReceiverInstance, filter);
     }
 }

@@ -24,7 +24,7 @@ public class MainActivityHelper {
         return state;
     }
 
-    public static void setState(MainActivityState state) {
-        state = state;
+    static void setState(MainActivityState updatedState) {
+        state = updatedState;
     }
 }

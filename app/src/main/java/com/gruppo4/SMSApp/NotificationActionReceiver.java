@@ -14,6 +14,8 @@ import androidx.core.app.NotificationManagerCompat;
  */
 public class NotificationActionReceiver extends BroadcastReceiver {
 
+    final static int DEFAULT_NOTIFICATION_ID = -1;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent != null) {
@@ -27,7 +29,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
                     //Stops the alarm and cancels the specific notification which launched this action
                     case MessageReceivedService.STOP_ACTION: {
                         service.stopAlarm();
-                        int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                        int id = intent.getIntExtra(MessageReceivedService.NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
                         notificationManager.cancel(id);
                         break;
                     }

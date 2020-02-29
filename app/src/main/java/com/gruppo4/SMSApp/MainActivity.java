@@ -38,6 +38,8 @@ import com.gruppo4.sms.dataLink.background.SMSBackgroundHandler;
 public class MainActivity extends AppCompatActivity {
 
     public final static String CHANNEL_ID = "123";
+    final static int DEFAULT_REQUESTCODE = 1;
+    final static int DEFAULT_NOTIFICATION_ID = -1;
 
     private EditText edtPhoneNumber;
     private Button sendButton;
@@ -65,25 +67,27 @@ public class MainActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.test_button);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 sendTestMessage();
             }
         });
 
-        if(!checkPermission())
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, 1);
+        String[] permissions = new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS};
+        if(!checkPermission(permissions))
+            requestPermissions(permissions, DEFAULT_REQUESTCODE);
     }
 
     /**
      * Checks SEND_SMS and RECEIVE_SMS permissions
      * @return  true if the app has permissions, false otherwise
      */
-    public boolean checkPermission() {
-        if (!(getApplicationContext().checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) ||
-                !(getApplicationContext().checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED))
-            return false;
-        else
-            return true;
+    public boolean checkPermission(String[] permissions) {
+        for (String p : permissions) {
+            if (!(getApplicationContext().checkSelfPermission(p) == PackageManager.PERMISSION_GRANTED))
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -92,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Setup SMSHandler and initializes the receiver
+     * Setup {@link SMSHandler} and initializes the receiver
      * which is needed to listen to new incoming messages
      */
     public void setupHandler() {
@@ -171,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void createStopRingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Your phone is ringing, stop it from here if you want");
+        builder.setMessage(getResources().getString(R.string.dialog_text));
         builder.setCancelable(true);
 
         builder.setPositiveButton(
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         new MessageReceivedService().stopAlarm();
                         //Cancel the right notification by id
-                        int id = getIntent().getIntExtra(MessageReceivedService.NOTIFICATION_ID, -1);
+                        int id = getIntent().getIntExtra(MessageReceivedService.NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
                         if(id != -1)
                             NotificationManagerCompat.from(getApplicationContext()).cancel(id);
                         dialogInterface.dismiss();

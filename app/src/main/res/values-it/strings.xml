@@ -7,4 +7,5 @@
     <string name="channel_name">Canale Test</string>
     <string name="notification_title">Il tuo telefono sta squillando</string>
     <string name="notification_text">Fermalo da qui oppure apri l\'app</string>
+    <string name="dialog_text">"Il tuo telefono sta squillando, puoi fermarlo da qui "</string>
 </resources>
