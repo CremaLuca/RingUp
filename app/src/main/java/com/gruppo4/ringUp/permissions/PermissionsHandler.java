@@ -23,13 +23,13 @@ public class PermissionsHandler {
      *
      * @param context     The target Context. It can't be null.
      * @param permissions The permission(s) to check.
-     * @return false if the app has at least 1 permission denied, true otherwise.
+     * @return false if the app has at least 1 non-granted permission, true otherwise.
      * @author Francesco Bau', helped by Alberto Ursino.
      */
     public static boolean checkPermissions(@NonNull Context context, @Nullable String[] permissions) {
         if (permissions != null) {
             for (String permission : permissions) {
-                if (isGranted(context, permission))
+                if (isNotGranted(context, permission))
                     return false;
             }
         }
@@ -49,9 +49,9 @@ public class PermissionsHandler {
         ArrayList<String> deniedPermissions = new ArrayList<>();
         int arrayLength = 0;
         if (permissions != null) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (isGranted(context, permissions[i])) {
-                    deniedPermissions.add(permissions[i]);
+            for (String permission : permissions) {
+                if (isNotGranted(context, permission)) {
+                    deniedPermissions.add(permission);
                     arrayLength++;
                 }
             }
@@ -60,14 +60,16 @@ public class PermissionsHandler {
     }
 
     /**
-     * Checks if a single permission is granted.
+     * Checks if a single permission is NOT granted.
      *
      * @param context    The target Context. It can't be null.
-     * @param permission The permission to check. It can't be null.
-     * @return true if the permission is granted, false otherwise.
+     * @param permission The permission to check.
+     * @return true if a permission is NOT granted, false otherwise.
      * @author Francesco Bau'
      */
-    private static boolean isGranted(@NonNull Context context, @NonNull String permission) {
+    private static boolean isNotGranted(@NonNull Context context, @Nullable String permission) {
+        if(permission==null)
+            return false;
         return context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED;
     }
 
