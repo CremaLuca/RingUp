@@ -68,7 +68,9 @@ public class AppManager extends BroadcastReceiver {
      */
     public void setup(@NonNull final Context context) {
         //Retrieve preferred timeout time
-        timeoutTime = retrievePreferencesTimeoutTime();
+        timeoutTime = retrievePreferencesTimeoutTime(context);
+        //Create the notification channel
+        NotificationHandler.createNotificationChannel(context);
     }
 
     /**
@@ -123,7 +125,7 @@ public class AppManager extends BroadcastReceiver {
      *
      * @return timeout time in ms.
      */
-    private int retrievePreferencesTimeoutTime() {
+    private int retrievePreferencesTimeoutTime(@NonNull final Context context) {
         //TODO: changeable timeout time
         return 20000;
     }

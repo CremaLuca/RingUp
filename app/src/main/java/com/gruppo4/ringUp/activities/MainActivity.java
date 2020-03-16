@@ -1,13 +1,10 @@
 package com.gruppo4.ringUp.activities;
 
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
@@ -56,17 +53,15 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
     private static String adviceText = "Wait " + timerValue + " seconds for a new ring";
     static final String DIALOG_TAG = "Device Password";
     private static final int PICK_CONTACT = 1;
-    public static final String CHANNEL_NAME = "TestChannelName";
-    public static final String CHANNEL_ID = "123";
-    private static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Stop Ringtone Notification";
     private static final int COUNTDOWN_INTERVAL = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Context context = getApplicationContext();
+
+        AppManager.getInstance().setup(context);
 
         Intent preActIntent;
         //If the permissions are not given, the permissionsActivity is opened
@@ -86,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
         toolbar.setTitle(APP_NAME);
         toolbar.setTitleTextColor(getColor(R.color.black));
         setSupportActionBar(toolbar);
-
-        createNotificationChannel();
 
         //Only if the activity is started by a service
         startFromService();
@@ -271,29 +264,6 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
         Toast.makeText(context, getString(R.string.toast_password_not_changed), Toast.LENGTH_LONG).show();
     }
 
-    //**************************************NOTIFICATION**************************************
-
-    /**
-     * Creates the NotificationChannel, but only on API 26+ because
-     * the NotificationChannel class is new and not in the support library
-     * <p>
-     * Register the channel with the system; you can't change the importance
-     * or other notification behaviors after this
-     */
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //IMPORTANCE_HIGH makes pop-up the notification
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription(NOTIFICATION_CHANNEL_DESCRIPTION);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            } else {
-                Log.d("MainActivity", "getSystemService(NotificationManager.class), in createNotificationChannel method, returns a null object");
-            }
-        }
-    }
 
     /**
      * Updates intent obtained from a service's call
