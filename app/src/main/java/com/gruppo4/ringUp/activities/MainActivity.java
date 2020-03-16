@@ -34,14 +34,14 @@ import com.eis.smslibrary.listeners.SMSSentListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.gruppo4.ringUp.R;
 import com.gruppo4.ringUp.dialog.ChangePasswordListener;
-import com.gruppo4.ringUp.structure.PermissionsHandler;
+import com.gruppo4.ringUp.dialog.PasswordDialog;
 import com.gruppo4.ringUp.structure.AppManager;
 import com.gruppo4.ringUp.structure.NotificationHandler;
 import com.gruppo4.ringUp.structure.PasswordManager;
+import com.gruppo4.ringUp.structure.PermissionsHandler;
 import com.gruppo4.ringUp.structure.ReceivedMessageListener;
 import com.gruppo4.ringUp.structure.RingCommand;
-import com.gruppo4.ringUp.structure.RingtoneHandler;
-import com.gruppo4.ringUp.dialog.PasswordDialog;
+import com.gruppo4.ringUp.structure.ringtone.RingtoneHandler;
 
 /**
  * @author Gruppo4

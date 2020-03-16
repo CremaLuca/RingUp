@@ -11,8 +11,9 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.gruppo4.ringUp.activities.MainActivity;
 import com.gruppo4.ringUp.R;
+import com.gruppo4.ringUp.activities.MainActivity;
+import com.gruppo4.ringUp.structure.ringtone.RingtoneHandler;
 
 /**
  * Class used to handle the ringUp notifications

@@ -5,7 +5,7 @@ import android.content.Context;
 import it.lucacrema.preferences.PreferencesManager;
 
 /**
- * Class used to control the saving of a password
+ * Controls a String in memory.
  *
  * @author Alberto Ursino
  */

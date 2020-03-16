@@ -18,15 +18,15 @@ public class PermissionsHandler {
     public static final int REQUEST_CODE = 0;
 
     /**
-     * Checks if all permissions are granted.
+     * Checks if all requested permissions are granted.
      *
-     * @param permissions The permission(s) to check. It can't be null.
+     * @param permissionList The permission(s) to check. It can't be null.
      * @return true if the app has all permissions granted, false otherwise.
      * @author Francesco Bau', helped by Alberto Ursino.
      */
-    public static boolean checkPermissions(Context context, @NonNull String[] permissions) {
-        for (String permission : permissions) {
-            if (isGranted(context, permission))
+    public static boolean checkPermissions(Context context, @NonNull String[] permissionList) {
+        for (String permission : permissionList) {
+            if (!isPermissionGranted(context, permission))
                 return false;
         }
         return true;
@@ -35,32 +35,46 @@ public class PermissionsHandler {
     /**
      * Checks which permissions are NOT granted.
      *
-     * @param permissions The permission(s) to check.
-     * @return The NOT granted permission(s).
+     * @param permissionList The permissions to check.
+     * @return An array containing denied permissions (not granted) from the parameter's. Empty if they're all granted.
      * @author Francesco Bau'
      * @author Alberto Ursino
      */
-    public static String[] getDeniedPermissions(Context context, String[] permissions) {
+    public static String[] getDeniedPermissions(Context context, String[] permissionList) {
         ArrayList<String> deniedPermissions = new ArrayList<>();
-        int arrayLength = 0;
-        for (int i = 0; i < permissions.length; i++) {
-            if (isGranted(context, permissions[i])) {
-                deniedPermissions.add(permissions[i]);
-                arrayLength++;
-            }
+        for (String permission : permissionList) {
+            if (!isPermissionGranted(context, permission))
+                deniedPermissions.add(permission);
         }
-        return deniedPermissions.toArray(new String[arrayLength]);
+        return deniedPermissions.toArray(new String[0]);
+    }
+
+    /**
+     * Checks which permissions are granted.
+     *
+     * @param permissionList The permissions to check.
+     * @return An array containing only the granted permissions. Empty if none is granted.
+     * @author Luca Crema
+     */
+    public static String[] getGrantedPermissions(Context context, String[] permissionList) {
+        ArrayList<String> grantedPermissions = new ArrayList<>();
+        for (String permission : permissionList) {
+            if (isPermissionGranted(context, permission))
+                grantedPermissions.add(permission);
+
+        }
+        return grantedPermissions.toArray(new String[0]);
     }
 
     /**
      * Checks if a single permission is granted.
      *
-     * @param permission The permission to check.
+     * @param permissionName The permission to check.
      * @return true if the permission is granted, false otherwise.
      * @author Francesco Bau'
      */
-    private static boolean isGranted(Context context, String permission) {
-        return context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED;
+    private static boolean isPermissionGranted(Context context, String permissionName) {
+        return context.checkSelfPermission(permissionName) == PackageManager.PERMISSION_GRANTED;
     }
 
 }

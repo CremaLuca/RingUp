@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp.structure;
+package com.gruppo4.ringUp.structure.ringtone;
 
 import android.content.Context;
 import android.media.AudioAttributes;

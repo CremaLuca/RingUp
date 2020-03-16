@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp.structure;
+package com.gruppo4.ringUp.structure.ringtone;
 
 /**
  * @author Francesco Bau'

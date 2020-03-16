@@ -13,7 +13,7 @@ import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
  */
 public class RingCommandHandler {
 
-    public static final String SIGNATURE = "ringUp password: ";
+    public static final String SIGNATURE = "RingUp password: ";
     public static final String CLASS_TAG = "RingCommandHandler";
 
     /**

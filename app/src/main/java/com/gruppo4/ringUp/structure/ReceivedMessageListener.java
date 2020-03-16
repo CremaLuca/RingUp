@@ -5,6 +5,7 @@ import android.util.Log;
 import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.listeners.SMSReceivedServiceListener;
 import com.gruppo4.ringUp.structure.exceptions.IllegalPasswordException;
+import com.gruppo4.ringUp.structure.ringtone.RingtoneHandler;
 
 /**
  * Class used to capture the message and create a ring command
