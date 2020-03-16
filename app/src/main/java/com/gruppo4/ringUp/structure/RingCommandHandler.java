@@ -2,18 +2,25 @@ package com.gruppo4.ringUp.structure;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.eis.smslibrary.SMSMessage;
 import com.eis.smslibrary.exceptions.InvalidSMSMessageException;
 import com.eis.smslibrary.exceptions.InvalidTelephoneNumberException;
 
 /**
- * Class used to parse RingCommand to SMSMessage and back
+ * Class used to parse RingCommand to SMSMessage and back.
  *
- * @author Alberto Ursino, Luca Crema, Marco Mariotto
+ * @author Alberto Ursino
+ * @author Luca Crema
+ * @author Marco Mariotto
  */
 public class RingCommandHandler {
 
     public static final String SIGNATURE = "RingUp password: ";
+    /**
+     * Used in logs
+     */
     public static final String CLASS_TAG = "RingCommandHandler";
 
     /**
@@ -43,7 +50,7 @@ public class RingCommandHandler {
      * @param smsMessage to parse
      * @return a RingCommand object, null if the message doesn't contain a valid one
      */
-    public RingCommand parseMessage(SMSMessage smsMessage) {
+    public RingCommand parseMessage(@NonNull final SMSMessage smsMessage) {
         String smsMessageData = smsMessage.getData();
         Log.d(CLASS_TAG, "Message received: " + smsMessageData);
 
@@ -71,7 +78,7 @@ public class RingCommandHandler {
      * @throws InvalidSMSMessageException      thrown when an SMSMessage received invalid params
      * @throws InvalidTelephoneNumberException thrown when the phone number is not valid
      */
-    public SMSMessage parseCommand(RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public SMSMessage parseCommand(@NonNull final RingCommand ringCommand) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         return new SMSMessage(ringCommand.getPeer(), SIGNATURE + ringCommand.getPassword());
     }
 
