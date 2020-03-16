@@ -13,12 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.ringUp.R;
-import com.gruppo4.ringUp.structure.PermissionsHandler;
 import com.gruppo4.ringUp.structure.PasswordManager;
+import com.gruppo4.ringUp.structure.PermissionsHandler;
 
 /**
- * The following activity aims to inform the user about why the application needs certain permissions.
- * Necessary permissions for this application (RingUp) are:
+ * This activity aims to inform the user about why the application needs certain permissions.
+ * Necessary permissions for the application are:
  * - SEND_SMS and RECEIVE_SMS;
  * - READ_CONTACTS.
  * The {@link PermissionsActivity} (PA) is directly linked to the {@link InstructionsActivity} (IA) and the {@link MainActivity} (MA).
@@ -32,14 +32,28 @@ import com.gruppo4.ringUp.structure.PasswordManager;
  */
 public class PermissionsActivity extends AppCompatActivity {
 
-    static final String[] permissions = new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS};
-    private String[] requiredPermissions;
+    static final String[] permissions = new String[]{
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_CONTACTS
+    };
+
+    private int REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permissions);
 
+        setPermissionsButtonClickListener();
+    }
+
+    /**
+     * Sets the callback for onClick to open the permission request dialog.
+     *
+     * @author Luca Crema
+     */
+    private void setPermissionsButtonClickListener() {
         Button permissionsButton = findViewById(R.id.request_permissions_button);
         permissionsButton.setOnClickListener(new View.OnClickListener() {
             /**
@@ -47,17 +61,16 @@ public class PermissionsActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                requiredPermissions = PermissionsHandler.getDeniedPermissions(getApplicationContext(), permissions);
+                String[] missingPermissions = PermissionsHandler.getDeniedPermissions(getApplicationContext(), permissions);
                 //Maybe all the permissions are already granted
-                if (requiredPermissions.length != 0)
-                    requestPermissions(requiredPermissions, PermissionsHandler.REQUEST_CODE);
+                if (missingPermissions.length != 0)
+                    requestPermissions(missingPermissions, REQUEST_CODE);
                 else {
                     Toast.makeText(getApplicationContext(), getString(R.string.toast_permissions_already_granted), Toast.LENGTH_SHORT).show();
                     changeActivity();
                 }
             }
         });
-
     }
 
     /**
@@ -66,8 +79,8 @@ public class PermissionsActivity extends AppCompatActivity {
      * In this case the dialog will close showing an adequate toast.
      * On the contrary, the user will be directed to the new activity according to the situation.
      *
-     * @param requestCode  The code has to be equal to {@link PermissionsHandler#REQUEST_CODE}
-     * @param permissions  Permissions in the {@link #requiredPermissions} string array, requested with the {@link Activity#requestPermissions(String[], int)} method
+     * @param requestCode  The code has to be equal to {@link #REQUEST_CODE}
+     * @param permissions  Permissions requested with the {@link Activity#requestPermissions(String[], int)} method
      * @param grantResults Result of the callback:
      *                     0 -> Permissions GRANTED;
      *                     -1 -> Permissions NOT GRANTED
@@ -76,7 +89,7 @@ public class PermissionsActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean check = true;
-        if (requestCode == PermissionsHandler.REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE) {
             for (int singleResult : grantResults) {
                 if (singleResult == -1) {
                     Toast.makeText(getApplicationContext(), getString(R.string.toast_app_needs_permissions), Toast.LENGTH_SHORT).show();
@@ -91,25 +104,23 @@ public class PermissionsActivity extends AppCompatActivity {
 
     /**
      * Method called when the user has given all necessary permissions.
-     * If the user has already set a password then the user will be directed directly to the {@link MainActivity}, on the contrary he will go to the {@link InstructionsActivity}.
+     * If the user has already set a password then the user will be directed directly to the {@link MainActivity}, otherwise he will go to the {@link InstructionsActivity}.
      *
      * @author Alberto Ursino
+     * @author Luca Crema
      */
     private void changeActivity() {
         Intent nextActivity;
         if (PasswordManager.isPassSaved(getApplicationContext())) {
             //Start the MainActivity
             nextActivity = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(nextActivity);
-            //This activity will no longer be necessary
-            this.finish();
         } else {
             //Start the InstructionsActivity
             nextActivity = new Intent(getApplicationContext(), InstructionsActivity.class);
-            startActivity(nextActivity);
-            //This activity will no longer be necessary
-            this.finish();
         }
+        startActivity(nextActivity);
+        //This activity will no longer be necessary
+        this.finish();
     }
 
 }

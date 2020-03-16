@@ -12,10 +12,9 @@ import java.util.ArrayList;
  * Through this class you can request permissions, check them and other useful things such as get all denied permissions.
  *
  * @author Alberto Ursino
+ * @author Luca Crema
  */
 public class PermissionsHandler {
-
-    public static final int REQUEST_CODE = 0;
 
     /**
      * Checks if all requested permissions are granted.
