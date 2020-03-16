@@ -1,6 +1,8 @@
 package com.gruppo4.ringUp.structure;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Ringtone;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,7 +24,7 @@ import com.gruppo4.ringUp.structure.ringtone.RingtoneHandler;
  * @author Alberto Ursino
  * @author Luca Crema
  */
-public class AppManager {
+public class AppManager extends BroadcastReceiver {
 
     /**
      * Instance of the class that is instantiated in getInstance method
@@ -34,6 +36,20 @@ public class AppManager {
      * Private constructor.
      */
     private AppManager() {
+    }
+
+    /**
+     * Broadcast receiver's method to handle received intents.
+     */
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent == null)
+            return;
+        switch (intent.getAction()) {
+            case NotificationHandler.STOP_RINGTONE_NOTIFICATION_ACTION:
+                onNotificationStopButton(context);
+                break;
+        }
     }
 
     /**
@@ -124,12 +140,13 @@ public class AppManager {
     }
 
     /**
-     * Stops all ringtones from playing.
+     * Stops all ringtone from playing and removes notification.
      *
      * @param context current app context.
      */
-    private void stopRingtone(@NonNull final Context context) {
+    public void stopRingtone(@NonNull final Context context) {
         RingtoneHandler.getInstance().stopAllRingtones();
+        NotificationHandler.removeRingNotification(context);
     }
 
     /**
@@ -148,9 +165,9 @@ public class AppManager {
     /**
      * Callback for when the notification ("the phone is ringing") is pressed.
      */
-    public void onNotificationPressed(@NonNull final Context context, int notificationID) {
+    public void onNotificationStopButton(@NonNull final Context context) {
         stopRingtone(context);
-        NotificationHandler.removeNotifications(context, notificationID);
+        NotificationHandler.removeRingNotification(context);
     }
 
 }

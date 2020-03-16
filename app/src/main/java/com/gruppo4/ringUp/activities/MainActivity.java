@@ -24,7 +24,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.eis.smslibrary.SMSManager;
 import com.eis.smslibrary.SMSMessage;
@@ -41,7 +40,6 @@ import com.gruppo4.ringUp.structure.PasswordManager;
 import com.gruppo4.ringUp.structure.PermissionsHandler;
 import com.gruppo4.ringUp.structure.ReceivedMessageListener;
 import com.gruppo4.ringUp.structure.RingCommand;
-import com.gruppo4.ringUp.structure.ringtone.RingtoneHandler;
 
 /**
  * @author Gruppo4
@@ -317,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
         Intent intent = getIntent();
         if (intent != null && intent.getAction() != null) {
             switch (intent.getAction()) {
-                case NotificationHandler.ALERT_ACTION: {
+                case NotificationHandler.PRESSED_NOTIFICATION_ACTION: {
                     createStopRingDialog();
                     Log.d("MainActivity", "Creating StopRingDialog...");
                     break;
@@ -337,24 +335,16 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
     private void createStopRingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage(getString(R.string.text_stop_ring_dialog));
-        builder.setCancelable(true);
-        Log.d("MainActivity", "StopRingDialog created");
+        builder.setCancelable(false);
 
         builder.setPositiveButton(
                 getString(R.string.text_notification_button), (dialogInterface, i) -> {
-                    RingtoneHandler.getInstance().stopAllRingtones();
-                    Log.d("MainActivity", "Stopping ringtone");
-                    //cancel the right notification by id
-                    int id = getIntent().getIntExtra(NotificationHandler.NOTIFICATION_ID_TAG, -1);
-                    NotificationManagerCompat.from(getApplicationContext()).cancel(id);
-                    Log.d("MainActivity", "Notification " + id + " cancelled");
+                    AppManager.getInstance().stopRingtone(getApplicationContext());
                     dialogInterface.dismiss();
                 }
         );
 
-        AlertDialog alert = builder.create();
-        alert.show();
-        Log.d("MainActivity", "Showing StopRingDialog...");
+        builder.create().show();
     }
 
 }
