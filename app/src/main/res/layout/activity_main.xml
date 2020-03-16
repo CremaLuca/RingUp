@@ -33,6 +33,7 @@
         android:layout_width="170dp"
         android:layout_height="170dp"
         android:background="@drawable/ring_button_icon"
+        android:elevation="@dimen/cardview_default_elevation"
         app:layout_constraintBottom_toTopOf="@+id/alpha_edition"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -89,9 +90,23 @@
         android:layout_marginStart="16dp"
         android:background="@drawable/baseline_contacts_black_48dp"
         android:backgroundTint="@color/white"
+        android:elevation="@dimen/cardview_default_elevation"
         android:onClick="openAddressBook"
         app:layout_constraintBottom_toBottomOf="@+id/phone_number_field"
         app:layout_constraintStart_toEndOf="@+id/phone_number_field"
         app:layout_constraintTop_toTopOf="@+id/phone_number_field" />
+
+    <Button
+        android:id="@+id/change_password_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/baseline_device_unknown_black_48dp"
+        android:backgroundTint="@color/white"
+        android:onClick="openChangePasswordDialog"
+        app:layout_constraintBottom_toTopOf="@+id/alpha_edition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timer_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,16 +9,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.eis.smslibrary.SMSManager;
@@ -138,36 +134,6 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
         }
     }
 
-    //**************************************MENU**************************************
-
-    /**
-     * Method used to show up the {@link menu/app_menu.xml}
-     *
-     * @author Alberto Ursino
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.app_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Called when the user selects an item from the {@link menu/app_menu.xml}
-     *
-     * @author Alberto Ursino
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.change_password_menu_item:
-                openDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     /**
      * Method to open the system address book
      *
@@ -222,11 +188,9 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
 
     /**
      * Creates the dialog used to insert a non empty password or exit/abort.
-     * Dialog is created through the {@link PasswordDialog} class
-     *
-     * @author Alberto Ursino
+     * Dialog is created using the {@link PasswordDialog} class.
      */
-    void openDialog() {
+    public void openChangePasswordDialog(View view) {
         PasswordDialog passwordDialog;
         passwordDialog = new PasswordDialog(PasswordDialog.CHANGE_PASS_COMMAND, getApplicationContext());
         passwordDialog.show(getSupportFragmentManager(), DIALOG_TAG);
