@@ -13,7 +13,6 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.gruppo4.ringUp.R;
 import com.gruppo4.ringUp.activities.MainActivity;
-import com.gruppo4.ringUp.structure.ringtone.RingtoneHandler;
 
 /**
  * Class used to handle the ringUp notifications
@@ -24,48 +23,28 @@ public class NotificationHandler extends BroadcastReceiver {
 
     public final static String STOP_ACTION = "stopAction";
     public final static String ALERT_ACTION = "alertAction";
-    public final static String NOTIFICATION_ID = "notificationID";
-    /**
-     * flag used to avoid creation of more than one notification
-     * false -> no notification is pending, true -> a notification is already pending
-     */
-    public static boolean notificationFlag = false;
+    public final static String NOTIFICATION_ID_TAG = "notificationID";
+    private final static int NOTIFICATION_ID_VALUE = 666;
 
     /**
      * Creates a notification and sets a Intent for managing commands from there
      *
-     * @param context of the application
-     * @author Marco Tommasini
-     * @author Luca Crema
-     * @author Alessandra Tonin
-     * @author Implemented by Alberto Ursino
+     * @param context current application's context.
      */
     public static void createNotification(Context context) {
-        notificationFlag = true;
 
         final int notification_id = (int) System.currentTimeMillis();
 
-        //StopAction stops the defaultRing
-        Intent stopIntent = new Intent(context, NotificationHandler.class);
-        stopIntent.setAction(STOP_ACTION);
-        stopIntent.putExtra(NOTIFICATION_ID, notification_id);
-        PendingIntent stopPI = PendingIntent.getBroadcast(context, notification_id, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent stopRingtonePI = getBroadcastStopRingtonePendingIntent(context);
 
-        //OpenAction opens the MainActivity
-        //LAG_ACTIVITY_SINGLE_TOP is used for having only one MainActivity running
-        //otherwise the AlertDialog will not show up
-        Intent openIntent = new Intent(context, MainActivity.class);
-        openIntent.setAction(ALERT_ACTION);
-        openIntent.putExtra(NOTIFICATION_ID, notification_id);
-        openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent openPI = PendingIntent.getActivity(context, notification_id, openIntent, 0);
+        PendingIntent openAppPI = getBroadcastOpenAppPendingIntent(context);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.foreground_icon)
-                .setContentTitle("Your phone is ringing")
-                .setContentText("Stop it from here or open the app")
-                .addAction(android.R.drawable.ic_lock_idle_alarm, "Stop", stopPI)
-                .setContentIntent(openPI)
+                .setContentTitle("Your phone is ringing") //TODO: TRANSLATE THIS
+                .setContentText("Stop it from here or open the app") //TODO: TRANSLATE THAT
+                .addAction(android.R.drawable.ic_lock_idle_alarm, "Stop", stopRingtonePI) // TODO: AND ALSO THIS
+                .setContentIntent(openAppPI)
                 .setAutoCancel(true);
 
         final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -77,31 +56,49 @@ public class NotificationHandler extends BroadcastReceiver {
         handler.postDelayed(() -> {
             Log.d("MessageReceivedService", "Ringtone stopped");
             notificationManager.cancel(notification_id);
-            notificationFlag = false;
         }, AppManager.getInstance().timeoutTime);
     }
 
+    private static PendingIntent getBroadcastStopRingtonePendingIntent(Context context) {
+        //StopAction stops the defaultRing
+        Intent stopIntent = new Intent(context, NotificationHandler.class);
+        stopIntent.setAction(STOP_ACTION);
+        stopIntent.putExtra(NOTIFICATION_ID_TAG, NOTIFICATION_ID_VALUE);
+        return PendingIntent.getBroadcast(context, NOTIFICATION_ID_VALUE, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private static PendingIntent getBroadcastOpenAppPendingIntent(Context context) {
+        //StopAction stops the defaultRing
+        Intent openIntent = new Intent(context, MainActivity.class);
+        openIntent.setAction(ALERT_ACTION);
+        openIntent.putExtra(NOTIFICATION_ID_TAG, NOTIFICATION_ID_VALUE);
+        openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return PendingIntent.getActivity(context, NOTIFICATION_ID_VALUE, openIntent, 0);
+    }
+
     /**
-     * Manages the intent received
+     * Removes a notification from the given notification ID (usually obtained from the intent after a press).
      *
-     * @author Implemented by Alberto Ursino
+     * @param context        current app context.
+     * @param notificationID id of the notification to remove.
+     */
+    public static void removeNotifications(Context context, int notificationID) {
+        NotificationManagerCompat.from(context).cancel(notificationID);
+    }
+
+    /**
+     * Manages the received intents from the broadcast.
+     * Should handle the STOP_ACTION intent.
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent != null) {
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        if (intent == null)
+            return;
+        if (!STOP_ACTION.equals(intent.getAction()))
+            return;
 
-            if (STOP_ACTION.equals(intent.getAction())) {
-                RingtoneHandler.getInstance().stopAllRingtones();
-                int notificationID = intent.getIntExtra(NOTIFICATION_ID, -1);
-                notificationManager.cancel(notificationID);
-                notificationFlag = false;
-            } else {
-                Log.d("NotificationHandler", "onReceive action is null");
-            }
-        } else {
-            Log.d("NotificationHandler", "onReceive intent is null");
-        }
+        int notificationID = intent.getIntExtra(NOTIFICATION_ID_TAG, -1);
+        AppManager.getInstance().onNotificationPressed(context, notificationID);
     }
 
 }

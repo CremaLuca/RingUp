@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
     //**************************************SEND_COMMAND**************************************
 
     /**
-     * Method used to send the ring command through the {@link AppManager#sendCommand(Context, RingCommand, SMSSentListener)} method
+     * Method used to send the ring command through the {@link AppManager#sendRingCommand(Context, RingCommand, SMSSentListener)} method
      *
      * @author Alberto Ursino
      * @author Luca Crema
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
                 //Creation of the ring command
                 final RingCommand ringCommand = new RingCommand(new SMSPeer(phoneNumber), password);
 
-                AppManager.getInstance().sendCommand(getApplicationContext(), ringCommand, (SMSMessage message, SMSMessage.SentState sentState) -> {
+                AppManager.getInstance().sendRingCommand(getApplicationContext(), ringCommand, (SMSMessage message, SMSMessage.SentState sentState) -> {
                     Snackbar.make(findViewById(R.id.main_activity_layout), getString(R.string.toast_message_sent_listener) + " " + phoneNumber, Snackbar.LENGTH_LONG).show();
                 });
                 ringButton.setEnabled(false);
@@ -345,9 +345,8 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
                     RingtoneHandler.getInstance().stopAllRingtones();
                     Log.d("MainActivity", "Stopping ringtone");
                     //cancel the right notification by id
-                    int id = getIntent().getIntExtra(NotificationHandler.NOTIFICATION_ID, -1);
+                    int id = getIntent().getIntExtra(NotificationHandler.NOTIFICATION_ID_TAG, -1);
                     NotificationManagerCompat.from(getApplicationContext()).cancel(id);
-                    NotificationHandler.notificationFlag = false;
                     Log.d("MainActivity", "Notification " + id + " cancelled");
                     dialogInterface.dismiss();
                 }
