@@ -1,4 +1,4 @@
-package com.gruppo4.ringUp.permissions;
+package com.gruppo4.ringUp.structure;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

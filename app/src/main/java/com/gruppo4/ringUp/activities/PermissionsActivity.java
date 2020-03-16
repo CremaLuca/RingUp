@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gruppo4.ringUp.R;
-import com.gruppo4.ringUp.permissions.PermissionsHandler;
+import com.gruppo4.ringUp.structure.PermissionsHandler;
 import com.gruppo4.ringUp.structure.PasswordManager;
 
 /**
