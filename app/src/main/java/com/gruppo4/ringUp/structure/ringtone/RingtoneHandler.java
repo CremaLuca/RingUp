@@ -10,6 +10,8 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayList;
+
 /**
  * Class that interfaces with the RingtoneManager class of the Android library
  *
@@ -26,6 +28,8 @@ public class RingtoneHandler {
      * Instance of the class that is instantiated in getInstance method
      */
     private static RingtoneHandler instance = null;
+
+    private ArrayList<Ringtone> playedRingtone = new ArrayList<>();
 
     /**
      * Private constructor
@@ -76,6 +80,7 @@ public class RingtoneHandler {
      */
     public void playRingtone(Ringtone ringtone) {
         playRingtone(ringtone, AudioAttributes.USAGE_ALARM);
+        playedRingtone.add(ringtone);
     }
 
     /**
@@ -85,6 +90,20 @@ public class RingtoneHandler {
      */
     public void stopRingtone(Ringtone ringtone) {
         ringtone.stop();
+        playedRingtone.remove(ringtone);
+    }
+
+    /**
+     * Stops all ringtones from ringing that have been started from this handler.
+     *
+     * @author Luca Crema
+     * @since 16/03/2020
+     */
+    public void stopAllRingtones() {
+        for (Ringtone r : playedRingtone) {
+            r.stop();
+        }
+        playedRingtone.clear();
     }
 
     /**

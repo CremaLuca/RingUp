@@ -20,23 +20,19 @@ import static com.gruppo4.ringUp.structure.NotificationHandler.notificationFlag;
 /**
  * This is a singleton class used to manage a received RingCommand or to send one
  *
- * @author Alberto Ursino, Luca Crema, Alessandra Tonin, Marco Mariotto
+ * @author Alberto Ursino
+ * @author Luca Crema
+ * @author Alessandra Tonin
+ * @author Marco Mariotto
  */
 public class AppManager {
 
-    public static final int TIMEOUT_TIME = 20 * 1000;
-    public static Ringtone defaultRing;
+    public int timeoutTime = 20000;
 
     /**
      * Instance of the class that is instantiated in getInstance method
      */
     private static AppManager instance = null;
-
-    /**
-     * Private constructor
-     */
-    private AppManager() {
-    }
 
     /**
      * @return the AppManager instance
@@ -48,6 +44,12 @@ public class AppManager {
     }
 
     /**
+     * Private constructor
+     */
+    private AppManager() {
+    }
+
+    /**
      * If the password of the RingCommand received is valid then play defaultRing for fixed amount of time
      *
      * @param context     of the application
@@ -56,24 +58,25 @@ public class AppManager {
      * @throws IllegalPasswordException Exception thrown when the password received is not valid
      * @author Alberto Ursino
      */
-    public void onRingCommandReceived(Context context, @NonNull RingCommand ringCommand, final Ringtone ringtone) throws IllegalPasswordException {
-        defaultRing = ringtone;
+    public void onRingCommandReceived(@NonNull final Context context, @NonNull final RingCommand ringCommand, @NonNull final Ringtone ringtone) throws IllegalPasswordException {
 
         //Controls if the password in the RingCommand object corresponds with the one in memory, if not then launches an exception
         if (!(checkPassword(context, ringCommand)))
             throw new IllegalPasswordException();
 
-        //Exception weren't thrown so let's play the defaultRing!
-        RingtoneHandler.getInstance().playRingtone(defaultRing);
+        //Exception wasn't thrown so play the ringtone at full volume.
         AudioUtilityManager.setMaxVolume(context, AudioUtilityManager.ALARM);
+        RingtoneHandler.getInstance().playRingtone(ringtone);
 
+        //I no notification is pending
+        //TODO: refactor this thing, how come there are notifications "pending"?
         if (!notificationFlag)
             NotificationHandler.createNotification(context);
 
-        //Timer: the defaultRing is playing for TIMEOUT_TIME seconds.
+        //Timer: the defaultRing is playing for timeoutTime seconds.
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            RingtoneHandler.getInstance().stopRingtone(defaultRing);
-        }, TIMEOUT_TIME);
+            RingtoneHandler.getInstance().stopRingtone(ringtone);
+        }, timeoutTime);
     }
 
     /**
@@ -89,7 +92,7 @@ public class AppManager {
      * @author Alberto Ursino
      * @author Luca Crema
      */
-    public void sendCommand(Context context, @NonNull RingCommand ringCommand, SMSSentListener smsSentListener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
+    public void sendCommand(@NonNull final Context context, @NonNull final RingCommand ringCommand, @NonNull final SMSSentListener smsSentListener) throws InvalidSMSMessageException, InvalidTelephoneNumberException {
         SMSManager.getInstance().sendMessage(RingCommandHandler.getInstance().parseCommand(ringCommand), smsSentListener, context);
     }
 

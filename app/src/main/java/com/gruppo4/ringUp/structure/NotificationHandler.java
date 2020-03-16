@@ -32,33 +32,6 @@ public class NotificationHandler extends BroadcastReceiver {
     public static boolean notificationFlag = false;
 
     /**
-     * Manages the intent received
-     *
-     * @author Implemented by Alberto Ursino
-     */
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent != null) {
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-            switch (intent.getAction()) {
-                case STOP_ACTION: {
-                    RingtoneHandler.getInstance().stopRingtone(AppManager.defaultRing);
-                    int id = intent.getIntExtra(NOTIFICATION_ID, -1);
-                    notificationManager.cancel(id);
-                    notificationFlag = false;
-                    break;
-                }
-                default:
-                    Log.d("NotificationHandler", "onReceive -> action is null");
-                    break;
-            }
-        } else {
-            Log.d("NotificationHandler", "onReceive -> intent is null");
-        }
-    }
-
-    /**
      * Creates a notification and sets a Intent for managing commands from there
      *
      * @param context of the application
@@ -105,7 +78,30 @@ public class NotificationHandler extends BroadcastReceiver {
             Log.d("MessageReceivedService", "Ringtone stopped");
             notificationManager.cancel(notification_id);
             notificationFlag = false;
-        }, AppManager.TIMEOUT_TIME);
+        }, AppManager.getInstance().timeoutTime);
+    }
+
+    /**
+     * Manages the intent received
+     *
+     * @author Implemented by Alberto Ursino
+     */
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent != null) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+            if (STOP_ACTION.equals(intent.getAction())) {
+                RingtoneHandler.getInstance().stopAllRingtones();
+                int notificationID = intent.getIntExtra(NOTIFICATION_ID, -1);
+                notificationManager.cancel(notificationID);
+                notificationFlag = false;
+            } else {
+                Log.d("NotificationHandler", "onReceive action is null");
+            }
+        } else {
+            Log.d("NotificationHandler", "onReceive intent is null");
+        }
     }
 
 }

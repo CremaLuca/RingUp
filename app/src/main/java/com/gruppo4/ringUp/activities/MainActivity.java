@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
 
         builder.setPositiveButton(
                 getString(R.string.text_notification_button), (dialogInterface, i) -> {
-                    RingtoneHandler.getInstance().stopRingtone(AppManager.defaultRing);
+                    RingtoneHandler.getInstance().stopAllRingtones();
                     Log.d("MainActivity", "Stopping ringtone");
                     //cancel the right notification by id
                     int id = getIntent().getIntExtra(NotificationHandler.NOTIFICATION_ID, -1);
