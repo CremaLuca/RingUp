@@ -16,16 +16,16 @@ import com.gruppo4.ringUp.activities.MainActivity;
  *
  * @author Alberto Ursino
  * @author Luca Crema
+ * @since 16/03/2020
  */
 public class NotificationHandler {
 
     public final static String STOP_RINGTONE_NOTIFICATION_ACTION = "stopRingtoneAction";
     public final static String PRESSED_NOTIFICATION_ACTION = "pressedNotificationAction";
-    private static final String CLASS_TAG = "NotificationHandler";
     private final static int NOTIFICATION_ID = 666;
 
     /**
-     * Creates a notification and sets a Intent for managing commands from there
+     * Creates a notification and sets the intents to manage callbacks.
      *
      * @param context current application's context.
      */
@@ -46,15 +46,25 @@ public class NotificationHandler {
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }
 
+    /**
+     * Creates the PendingIntent to be thrown when the notification button "stop" is pressed
+     *
+     * @param context current application's context
+     * @return A Pending intent to stop the ringtone without opening the app.
+     */
     private static PendingIntent getBroadcastStopRingtonePendingIntent(Context context) {
-        //StopAction stops the defaultRing
         Intent stopIntent = new Intent(context, AppManager.class);
         stopIntent.setAction(STOP_RINGTONE_NOTIFICATION_ACTION);
         return PendingIntent.getBroadcast(context, NOTIFICATION_ID, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private static PendingIntent getBroadcastOpenAppPendingIntent(Context context) {
-        //StopAction stops the defaultRing
+    /**
+     * Creates the PendingIntent to be thrown when the notification is "opened" by pressing on it
+     *
+     * @param context current application's context
+     * @return A Pending intent to open the MainActivity.
+     */
+    private static PendingIntent getBroadcastOpenAppPendingIntent(@NonNull final Context context) {
         Intent openIntent = new Intent(context, MainActivity.class);
         openIntent.setAction(PRESSED_NOTIFICATION_ACTION);
         openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -64,7 +74,7 @@ public class NotificationHandler {
     /**
      * Removes a notification from the given notification ID (usually obtained from the intent after a press).
      *
-     * @param context        current app context.
+     * @param context current app context.
      */
     public static void removeRingNotification(Context context) {
         NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID);
