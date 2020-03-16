@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.eis.smslibrary.SMSManager;
 import com.eis.smslibrary.SMSMessage;
@@ -42,8 +41,6 @@ import com.gruppo4.ringUp.structure.RingCommand;
  * @author Gruppo4
  */
 public class MainActivity extends AppCompatActivity implements ChangePasswordListener {
-
-    public static final String APP_NAME = "RingUp";
 
     private Button ringButton;
     private TextView adviceTextView;
@@ -75,12 +72,6 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
             startActivity(preActIntent);
             this.finish();
         }
-
-        //Setting up the action bar
-        Toolbar toolbar = findViewById(R.id.actionBar);
-        toolbar.setTitle(APP_NAME);
-        toolbar.setTitleTextColor(getColor(R.color.black));
-        setSupportActionBar(toolbar);
 
         //Only if the activity is started by a service
         startFromService();
@@ -176,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements ChangePasswordLis
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    //**************************************RUBRIC**************************************
 
     /**
      * Method to open the system address book
